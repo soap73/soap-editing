@@ -50,6 +50,11 @@ function aspectClass(ratio: string) {
     default: return 'aspect-video';
   }
 }
+
+function cardWidthClass(ratio: string) {
+  if (ratio === '9:16') return 'w-[140px] sm:w-[160px] md:w-[180px] justify-self-center';
+  return '';
+}
 ---
 
 <section id="projects" class="relative z-10 w-full">
@@ -72,9 +77,10 @@ function aspectClass(ratio: string) {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
+      const widthClass = cardWidthClass(project.aspectRatio || '16:9');
       return (
       <article
-        class={`project-card group relative overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass}`}
+        class={`project-card group relative overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass} ${widthClass}`}
         style={`transition-delay: ${(i % 4) * 0.06}s; view-transition-name: project-${project.id}`}
         data-category={project.category || 'youtube'}
         data-youtube={ids.youtubeId}
