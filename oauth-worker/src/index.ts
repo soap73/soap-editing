@@ -2,7 +2,45 @@ import { Hono } from 'hono';
 
 const app = new Hono();
 
-app.get('/oauth/callback', async (c) => {
+// Step 1: CMS opens popup here → handshake, then redirect to GitHub
+app.get('/oauth/callback', (c) => {
+  const clientId = c.env?.OAUTH_CLIENT_ID || '';
+  const baseUrl = new URL(c.req.url).origin;
+  const redirectUri = `${baseUrl}/callback`;
+  const scope = c.req.query('scope') || 'repo,user';
+
+  const githubUrl =
+    `https://github.com/login/oauth/authorize` +
+    `?client_id=${clientId}` +
+    `&scope=${scope}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+  const html = `<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8" /></head>
+<body>
+<script>
+  (function() {
+    // Step 1: Tell the CMS we're authorizing
+    window.opener.postMessage('authorizing:github', '*');
+
+    // Step 2: Wait for CMS to confirm, then redirect to GitHub
+    window.addEventListener('message', function handler(e) {
+      if (e.data === 'authorizing:github') {
+        window.removeEventListener('message', handler);
+        window.location.href = ${JSON.stringify(githubUrl)};
+      }
+    });
+  })();
+</script>
+</body>
+</html>`;
+
+  return c.html(html);
+});
+
+// Step 3: GitHub redirects here → exchange code for token
+app.get('/callback', async (c) => {
   const code = c.req.query('code');
   if (!code) {
     return c.text('No authorization code provided', 400);
@@ -34,18 +72,22 @@ app.get('/oauth/callback', async (c) => {
     return c.text('No access token received', 400);
   }
 
-  const redirectUrl = c.env?.REDIRECT_URL || '/admin/';
-  const script = `
-    <script>
-      window.opener.postMessage(
-        ${JSON.stringify({ token: data.access_token, provider: 'github' })},
-        "${c.env?.ORIGIN || '*'}"
-      );
-      window.close();
-    </script>
-  `;
+  const payload = JSON.stringify({ token: data.access_token, provider: 'github' });
+  const message = `authorization:github:success:${payload}`;
+  const html = `<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8" /></head>
+<body>
+<script>
+  (function() {
+    window.opener.postMessage(${JSON.stringify(message)}, '*');
+    setTimeout(function() { window.close(); }, 500);
+  })();
+</script>
+</body>
+</html>`;
 
-  return c.html(script);
+  return c.html(html);
 });
 
 export default app;

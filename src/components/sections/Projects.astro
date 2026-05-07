@@ -16,6 +16,32 @@ function thumbnailUrl(project: typeof sorted[number]) {
   }
   return project.thumbnail || '/placeholder-thumb.jpg';
 }
+
+function extractYoutubeId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function extractVimeoId(url: string): string | null {
+  const m = url.match(/vimeo\.com\/(\d+)/);
+  return m ? m[1] : null;
+}
+
+function resolveVideoIds(project: typeof sorted[number]) {
+  let youtubeId = project.youtubeId || '';
+  let vimeoId = project.vimeoId || '';
+  if (!youtubeId && !vimeoId && project.videoUrl) {
+    youtubeId = extractYoutubeId(project.videoUrl) || '';
+    if (!youtubeId) vimeoId = extractVimeoId(project.videoUrl) || '';
+  }
+  return { youtubeId, vimeoId };
+}
 ---
 
 <section id="projects" class="relative z-10 w-full">
@@ -36,12 +62,14 @@ function thumbnailUrl(project: typeof sorted[number]) {
 
   <!-- Grid -->
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0" id="projects-grid">
-    {sorted.map((project) => (
+    {sorted.map((project) => {
+      const ids = resolveVideoIds(project);
+      return (
       <article
         class="group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 transition-all duration-500"
         data-category={project.category || 'youtube'}
-        data-youtube={project.youtubeId || ''}
-        data-vimeo={project.vimeoId || ''}
+        data-youtube={ids.youtubeId}
+        data-vimeo={ids.vimeoId}
         data-title={project.title}
         data-video={project.videoUrl || ''}
         onclick="openVideo(this)"
@@ -60,7 +88,8 @@ function thumbnailUrl(project: typeof sorted[number]) {
           <span class="mt-4 w-10 h-10 rounded-full border border-brand-white/40 flex items-center justify-center text-brand-white text-sm group-hover:border-brand-white transition-colors">&#9654;</span>
         </div>
       </article>
-    ))}
+      );
+    })}
   </div>
 </section>
 
@@ -115,9 +144,20 @@ function thumbnailUrl(project: typeof sorted[number]) {
     const modal = document.getElementById('video-modal') as HTMLDialogElement;
     if (!modal) return;
 
-    const youtubeId = el.dataset.youtube || '';
-    const vimeoId = el.dataset.vimeo || '';
+    let youtubeId = el.dataset.youtube || '';
+    let vimeoId = el.dataset.vimeo || '';
+    const videoUrl = el.dataset.video || '';
     const title = el.dataset.title || '';
+
+    // Fallback: extract ID from videoUrl if not explicitly set
+    if (!youtubeId && !vimeoId && videoUrl) {
+      const ytMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+      if (ytMatch) { youtubeId = ytMatch[1]; }
+      else {
+        const vmMatch = videoUrl.match(/vimeo\.com\/(\d+)/);
+        if (vmMatch) { vimeoId = vmMatch[1]; }
+      }
+    }
 
     const iframe = document.createElement('iframe');
     iframe.allow = 'autoplay; fullscreen';
