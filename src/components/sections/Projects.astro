@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { categories } from '../../consts';
 
 const projects = await getCollection('projects');
 const sorted = projects
@@ -52,6 +53,20 @@ function aspectClass(ratio: string) {
 ---
 
 <section id="projects" class="relative z-10 w-full">
+  <!-- Category filters -->
+  <div class="px-6 pb-6 flex flex-wrap gap-2 reveal-up" id="category-filters">
+    {categories.map((cat) => (
+      <button
+        class="cat-btn px-4 py-1.5 text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400"
+        data-category={cat.id}
+        data-i18n={`categories.${cat.id === 'court-metrage' ? 'courtMetrage' : cat.id === 'reseaux-sociaux' ? 'reseauxSociaux' : cat.id}`}
+      >
+        {cat.label}
+      </button>
+    ))}
+  </div>
+
+  <!-- Grid -->
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0" id="projects-grid">
     {sorted.map((project, i) => {
       const ids = resolveVideoIds(project);
@@ -61,6 +76,7 @@ function aspectClass(ratio: string) {
       <article
         class={`project-card group relative overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass}`}
         style={`transition-delay: ${(i % 4) * 0.06}s; view-transition-name: project-${project.id}`}
+        data-category={project.category || 'youtube'}
         data-youtube={ids.youtubeId}
         data-vimeo={ids.vimeoId}
         data-title={project.title}
@@ -68,25 +84,28 @@ function aspectClass(ratio: string) {
         data-video-file={project.videoFile || ''}
         onclick={hasVideo ? 'openVideo(this)' : undefined}
       >
-        {project.preview ? (
+        {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
+          <video src={project.preview} autoplay loop muted playsinline
+            class="w-full h-full object-cover"
+          />
+        ) : project.preview ? (
           <img src={project.preview} alt={project.title}
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            class="w-full h-full object-cover"
             loading="lazy"
           />
         ) : (
           <img
             src={thumbnailUrl(project)}
             alt={project.title}
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            class="w-full h-full object-cover"
             loading="lazy"
           />
         )}
         {hasVideo && (
-          <div class="absolute inset-0 bg-brand-black/0 group-hover:bg-brand-black/30 transition-all duration-400" />
+          <div class="absolute inset-0 bg-brand-black/0 group-hover:bg-brand-black/40 transition-all duration-400 flex items-center justify-center">
+            <span class="text-brand-white text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-400">{project.title}</span>
+          </div>
         )}
-        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-brand-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400">
-          <span class="text-brand-white text-xs font-medium">{project.title}</span>
-        </div>
       </article>
       );
     })}
@@ -94,13 +113,14 @@ function aspectClass(ratio: string) {
 </section>
 
 <dialog
-  class="fixed inset-0 z-[60] m-0 h-full w-full max-w-none bg-black p-0"
+  class="fixed inset-0 z-[60] m-0 h-full w-full max-w-none bg-brand-black p-0"
   id="video-modal"
   aria-modal="true"
   role="dialog"
+  style="--tw-bg-opacity:1; background-color:rgb(0,0,0);"
 >
-  <div class="flex h-full flex-col items-center justify-center p-6">
-    <div class="w-full max-w-5xl">
+  <div class="flex h-full flex-col items-center justify-center p-6" style="cursor:auto;">
+    <div class="w-full max-w-5xl" style="cursor:auto;">
       <div class="flex items-center justify-between mb-4">
         <h2 class="font-heading text-lg text-brand-white"></h2>
         <button
@@ -111,12 +131,60 @@ function aspectClass(ratio: string) {
           Fermer
         </button>
       </div>
-      <div class="relative aspect-video w-full bg-brand-gray-900"></div>
+      <div class="relative aspect-video w-full bg-brand-black"></div>
     </div>
   </div>
 </dialog>
 
 <script>
+  // Category filtering
+  let activeCat = 'all';
+
+  function updateFilters(cat: string) {
+    activeCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      const isActive = b.getAttribute('data-category') === cat;
+      b.classList.toggle('border-brand-white', isActive);
+      b.classList.toggle('text-brand-white', isActive);
+      b.classList.toggle('bg-brand-white/10', isActive);
+      b.classList.toggle('border-brand-gray-800', !isActive);
+      b.classList.toggle('text-brand-gray-400', !isActive);
+    });
+    let visibleCount = 0;
+    const cards = document.querySelectorAll('#projects-grid > article');
+    cards.forEach((card) => {
+      const cardCat = card.getAttribute('data-category') || '';
+      const visible = cat === 'all' || cardCat === cat;
+      const el = card as HTMLElement;
+      if (visible) {
+        visibleCount++;
+        el.style.display = '';
+        el.classList.add('filtered-out');
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            el.classList.remove('filtered-out');
+          });
+        });
+      } else {
+        el.classList.add('filtered-out');
+        setTimeout(() => {
+          if (el.classList.contains('filtered-out')) {
+            el.style.display = 'none';
+          }
+        }, 350);
+      }
+    });
+  }
+
+  // Init: "All" active by default
+  updateFilters('all');
+
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      updateFilters(btn.getAttribute('data-category')!);
+    });
+  });
+
   // Video modal
   const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
   let modalAnimating = false;

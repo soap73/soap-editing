@@ -193,6 +193,14 @@
     width: 0%;
     transition: width 0.15s linear;
   }
+
+  /* Video modal */
+  #video-modal::backdrop {
+    background: rgb(0,0,0);
+  }
+  #video-modal, #video-modal * {
+    cursor: auto;
+  }
 }
 
 @layer utilities {
