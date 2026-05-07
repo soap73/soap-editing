@@ -1,6 +1,6 @@
 ---
 client: ""
-thumbnail: /projects/behind-the-screen-thumbnails_compressed.gif
+preview: /projects/bts-thumbnail.mp4
 featured: true
 order: 1
 date: 2025-12-01

@@ -5,7 +5,8 @@ featured: true
 order: 2
 date: 2025-09-15
 title: Mono no Aware
-videoFile: /projects/mono-no-aware.mp4
+videoUrl: https://youtu.be/-NH-S3OIx7E
+youtubeId: -NH-S3OIx7E
 tags:
   - documentaire
   - luxe
