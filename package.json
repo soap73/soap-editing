@@ -16,6 +16,7 @@
     "@fontsource/inter": "^5.2.8",
     "@tailwindcss/postcss": "^4.2.4",
     "astro": "^6.3.0",
+    "decap-cms-app": "^3.12.2",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
