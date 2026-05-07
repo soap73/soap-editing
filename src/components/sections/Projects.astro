@@ -76,8 +76,9 @@ function resolveVideoIds(project: typeof sorted[number]) {
         onclick="openVideo(this)"
       >
         {project.preview ? (
-          <video src={project.preview} muted loop autoplay playsinline
+          <img src={project.preview} alt={project.title}
             class="w-full h-full object-cover"
+            loading="lazy"
           />
         ) : (
           <img
