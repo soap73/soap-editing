@@ -66,7 +66,7 @@ function resolveVideoIds(project: typeof sorted[number]) {
       const ids = resolveVideoIds(project);
       return (
       <article
-        class="group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 transition-all duration-500 reveal-up"
+        class="project-card group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 reveal-up"
         style={`transition-delay: ${(i % 4) * 0.08}s; view-transition-name: project-${project.id}`}
         data-category={project.category || 'youtube'}
         data-youtube={ids.youtubeId}
@@ -137,11 +137,25 @@ function resolveVideoIds(project: typeof sorted[number]) {
       b.classList.toggle('text-brand-gray-400', !isActive);
     });
     let visibleCount = 0;
-    document.querySelectorAll('#projects-grid > article').forEach((card) => {
+    const cards = document.querySelectorAll('#projects-grid > article');
+    cards.forEach((card) => {
       const cardCat = card.getAttribute('data-category') || '';
       const visible = cat === 'all' || cardCat === cat;
-      (card as HTMLElement).style.display = visible ? '' : 'none';
-      if (visible) visibleCount++;
+      const el = card as HTMLElement;
+      if (visible) {
+        visibleCount++;
+        el.style.display = '';
+        requestAnimationFrame(() => {
+          el.classList.remove('filtered-out');
+        });
+      } else {
+        el.classList.add('filtered-out');
+        setTimeout(() => {
+          if (el.classList.contains('filtered-out')) {
+            el.style.display = 'none';
+          }
+        }, 350);
+      }
     });
     const empty = document.getElementById('empty-state');
     if (empty) empty.classList.toggle('hidden', visibleCount > 0);
@@ -157,16 +171,17 @@ function resolveVideoIds(project: typeof sorted[number]) {
   });
 
   // Video modal
+  const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
+  let modalAnimating = false;
+
   (window as any).openVideo = function(el: HTMLElement) {
-    const modal = document.getElementById('video-modal') as HTMLDialogElement;
-    if (!modal) return;
+    if (!modal || modalAnimating) return;
 
     let youtubeId = el.dataset.youtube || '';
     let vimeoId = el.dataset.vimeo || '';
     const videoUrl = el.dataset.video || '';
     const title = el.dataset.title || '';
 
-    // Fallback: extract ID from videoUrl if not explicitly set
     if (!youtubeId && !vimeoId && videoUrl) {
       const ytMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
       if (ytMatch) { youtubeId = ytMatch[1]; }
@@ -190,23 +205,39 @@ function resolveVideoIds(project: typeof sorted[number]) {
     iframe.title = title;
     modal.querySelector('.aspect-video')?.appendChild(iframe);
     modal.querySelector('h2')!.textContent = title;
+
+    // Animate in
+    const wrapper = modal.firstElementChild as HTMLElement;
+    wrapper.style.opacity = '0';
+    wrapper.style.transform = 'scale(0.92)';
+    wrapper.style.transition = 'opacity 0.35s ease-out, transform 0.35s ease-out';
+
     modal.showModal();
     document.body.style.overflow = 'hidden';
 
+    requestAnimationFrame(() => {
+      wrapper.style.opacity = '1';
+      wrapper.style.transform = 'scale(1)';
+    });
+
     const dot = document.getElementById('cursor-dot');
     if (dot) dot.style.display = 'none';
-    modal.style.cursor = 'auto';
-    modal.querySelectorAll('*').forEach(el => ((el as HTMLElement).style.cursor = 'auto'));
   };
 
   (window as any).closeModal = function() {
-    const modal = document.getElementById('video-modal') as HTMLDialogElement;
-    if (!modal) return;
-    modal.close();
-    document.body.style.overflow = '';
+    if (!modal || modalAnimating) return;
+    modalAnimating = true;
+
+    const wrapper = modal.firstElementChild as HTMLElement;
+    wrapper.style.opacity = '0';
+    wrapper.style.transform = 'scale(0.92)';
+
+    setTimeout(() => {
+      modal.close();
+      modalAnimating = false;
+    }, 300);
   };
 
-  const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
   if (modal) {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) (window as any).closeModal();

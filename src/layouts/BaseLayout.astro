@@ -47,6 +47,7 @@ const siteUrl = 'https://soap-editing.pages.dev';
     </div>
 
     <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="scroll-progress" id="scroll-progress"></div>
 
     <slot />
 
@@ -93,6 +94,10 @@ const siteUrl = 'https://soap-editing.pages.dev';
   const backBtn = document.getElementById('back-to-top')!;
   window.addEventListener('scroll', () => {
     backBtn.classList.toggle('visible', window.scrollY > 400);
+    // Scroll progress bar
+    const progress = document.getElementById('scroll-progress')!;
+    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    progress.style.width = Math.min(scrollPercent, 100) + '%';
   }, { passive: true });
 
   // Custom cursor
