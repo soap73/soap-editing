@@ -1,6 +1,6 @@
 ---
 client: LVMH
-thumbnail: /projects/mono-no-awre-thumbnails_compressed.gif
+preview: /projects/thumb-mononoawre.mp4
 featured: true
 order: 2
 date: 2025-09-15
