@@ -212,6 +212,14 @@
   .reveal-up-delay-4 { transition-delay: 0.6s; }
 
   .text-shadow-glow { text-shadow: 0 2px 24px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5); }
+  .text-glow-white { text-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(255,255,255,0.15); }
+  .stat-number {
+    transition: transform 0.5s ease-out, text-shadow 0.5s ease-out;
+  }
+  .group:hover .stat-number {
+    transform: scale(1.2);
+    text-shadow: 0 0 28px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.25);
+  }
 
   /* Hero word reveal */
   @keyframes reveal-word {
