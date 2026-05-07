@@ -1,0 +1,72 @@
+---
+export interface Project {
+  title: string;
+  videoUrl: string;
+  youtubeId?: string;
+  vimeoId?: string;
+}
+
+const { project } = Astro.props as { project: Project };
+const { title, youtubeId, vimeoId } = project;
+
+const embedSrc = youtubeId
+  ? `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`
+  : vimeoId
+    ? `https://player.vimeo.com/video/${vimeoId}?autoplay=1&dnt=1`
+    : null;
+---
+
+<dialog
+  class="fixed inset-0 z-[60] m-0 h-full w-full max-w-none bg-brand-black/95 backdrop-blur-md p-0"
+  id="video-modal"
+  aria-modal="true"
+  role="dialog"
+  aria-label={`Vidéo : ${title}`}
+>
+  <div class="flex h-full flex-col items-center justify-center p-6">
+    <div class="w-full max-w-5xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-heading text-lg uppercase text-brand-white">{title}</h2>
+        <button
+          class="text-brand-gray-400 hover:text-brand-white transition-colors text-sm uppercase tracking-wider"
+          onclick="document.getElementById('video-modal')?.close()"
+          aria-label="Fermer"
+        >
+          Close
+        </button>
+      </div>
+      <div class="relative aspect-video w-full bg-brand-gray-900">
+        {
+          embedSrc ? (
+            <iframe
+              src={embedSrc}
+              title={title}
+              allow="autoplay; fullscreen"
+              allowfullscreen
+              class="absolute inset-0 h-full w-full border-0"
+            ></iframe>
+          ) : (
+            <div class="flex h-full items-center justify-center text-brand-gray-400 text-sm">
+              Vidéo non disponible
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.close();
+    });
+    modal.addEventListener('close', () => {
+      modal.querySelector('iframe')?.remove();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.open) modal.close();
+    });
+  }
+</script>

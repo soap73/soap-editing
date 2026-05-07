@@ -1,0 +1,130 @@
+---
+import { site } from '../../consts';
+---
+
+<section id="contact" class="relative z-10 py-20 px-6">
+  <div class="mx-auto max-w-lg text-center">
+    <h2 class="font-heading text-3xl text-brand-white mb-2 reveal-up">Contact</h2>
+    <p class="text-brand-gray-400 text-sm mb-8 reveal-up reveal-up-delay-1">Un projet ? Une collaboration ? Écrivez-moi.</p>
+
+    <form
+      id="contact-form"
+      class="space-y-4 reveal-up reveal-up-delay-2 text-left"
+    >
+      <div>
+        <label for="name" class="block text-xs text-brand-gray-400 uppercase tracking-wider mb-1">Nom</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          autocomplete="name"
+          class="w-full bg-brand-gray-900 border border-brand-gray-800 text-brand-white text-sm px-4 py-3 focus:outline-none focus:border-brand-accent transition-colors invalid:border-red-500"
+          placeholder="Votre nom"
+        />
+        <span class="form-error text-red-400 text-[10px] hidden mt-1">Ce champ est requis.</span>
+      </div>
+      <div>
+        <label for="email" class="block text-xs text-brand-gray-400 uppercase tracking-wider mb-1">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="w-full bg-brand-gray-900 border border-brand-gray-800 text-brand-white text-sm px-4 py-3 focus:outline-none focus:border-brand-accent transition-colors invalid:border-red-500"
+          placeholder="votre@email.com"
+        />
+        <span class="form-error text-red-400 text-[10px] hidden mt-1">Email invalide.</span>
+      </div>
+      <div>
+        <label for="message" class="block text-xs text-brand-gray-400 uppercase tracking-wider mb-1">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="4"
+          required
+          class="w-full bg-brand-gray-900 border border-brand-gray-800 text-brand-white text-sm px-4 py-3 focus:outline-none focus:border-brand-accent transition-colors resize-none invalid:border-red-500"
+          placeholder="Votre message..."
+        ></textarea>
+        <span class="form-error text-red-400 text-[10px] hidden mt-1">Ce champ est requis.</span>
+      </div>
+      <button
+        type="submit"
+        class="w-full border border-brand-white text-brand-white text-sm uppercase tracking-widest py-3 hover:bg-brand-white hover:text-brand-black transition-colors"
+      >
+        Envoyer
+      </button>
+      <p id="form-success" class="text-brand-accent-bright text-sm text-center hidden">
+        Merci ! Votre message a bien été envoyé.
+      </p>
+    </form>
+
+    <div class="mt-12 text-brand-gray-400 text-xs space-y-1 reveal-up reveal-up-delay-3">
+      <p>
+        <a href={`mailto:${site.email}`} class="hover:text-brand-white transition-colors">{site.email}</a>
+      </p>
+      <div class="flex justify-center gap-4">
+        <a
+          href={site.socials.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-brand-white transition-colors uppercase tracking-wider"
+        >
+          Instagram
+        </a>
+        <a
+          href={site.socials.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-brand-white transition-colors uppercase tracking-wider"
+        >
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <p class="text-brand-gray-700 text-xs mt-8">&copy; {new Date().getFullYear()} Soap Editing</p>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      let valid = true;
+      const fields = ['name', 'email', 'message'] as const;
+
+      for (const field of fields) {
+        const input = document.getElementById(field) as HTMLInputElement | HTMLTextAreaElement;
+        const error = input.parentElement?.querySelector('.form-error') as HTMLElement;
+        if (!input.value.trim()) {
+          valid = false;
+          input.classList.add('border-red-500');
+          error?.classList.remove('hidden');
+        } else if (field === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+          valid = false;
+          input.classList.add('border-red-500');
+          error?.classList.remove('hidden');
+        } else {
+          input.classList.remove('border-red-500');
+          error?.classList.add('hidden');
+        }
+      }
+
+      if (!valid) return;
+
+      const name = (document.getElementById('name') as HTMLInputElement).value;
+      const email = (document.getElementById('email') as HTMLInputElement).value;
+      const msg = (document.getElementById('message') as HTMLTextAreaElement).value;
+      const body = `Nom: ${name}%0D%0AEmail: ${email}%0D%0AMessage: ${msg}`;
+
+      document.getElementById('form-success')?.classList.remove('hidden');
+      (form.querySelector('button') as HTMLButtonElement).disabled = true;
+
+      window.location.href = `mailto:${'anthony.vuillerot@gmail.com'}?subject=Contact%20Soap%20Editing&body=${body}`;
+    });
+  }
+</script>

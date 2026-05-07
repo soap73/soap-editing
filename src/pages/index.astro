@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Projects from '../components/sections/Projects.astro';
+import About from '../components/sections/About.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<BaseLayout>
+  <div class="fixed inset-0 z-0">
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      class="absolute inset-0 h-full w-full object-cover"
+    >
+      <source src="/background-wave.mp4" type="video/mp4" />
+    </video>
+    <div class="absolute inset-0 bg-brand-black/60"></div>
+  </div>
+
+  <main class="relative z-10 min-h-screen" transition:name="main-content">
+    <Hero />
+    <Projects />
+    <About />
+    <Contact />
+  </main>
+</BaseLayout>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://soap-editing.pages.dev/sitemap-index.xml

@@ -1,0 +1,39 @@
+backend:
+  name: github
+  branch: main
+  repo: owner/soap-editing  # Replace with your GitHub username/repo
+
+media_folder: "public/projects"
+public_folder: "/projects"
+
+collections:
+  - name: "projects"
+    label: "Projets"
+    label_singular: "Projet"
+    folder: "src/content/projects"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: title
+    editor:
+      preview: false
+    fields:
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - label: "Catégorie"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "YouTube", value: "youtube" }
+          - { label: "Court-Métrage", value: "court-metrage" }
+          - { label: "Réseaux Sociaux", value: "reseaux-sociaux" }
+        default: "youtube"
+      - { label: "Client", name: "client", widget: "string", required: false }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "URL de la vidéo", name: "videoUrl", widget: "string" }
+      - { label: "YouTube ID", name: "youtubeId", widget: "string", required: false, hint: "Pour les vidéos YouTube uniquement" }
+      - { label: "Vimeo ID", name: "vimeoId", widget: "string", required: false, hint: "Pour les vidéos Vimeo uniquement" }
+      - { label: "Miniature", name: "thumbnail", widget: "image", required: false }
+      - { label: "Tags", name: "tags", widget: "list", default: [] }
+      - { label: "Mis en avant", name: "featured", widget: "boolean", default: false }
+      - { label: "Ordre", name: "order", widget: "number", value_type: "int", min: 0 }
+      - { label: "Contenu", name: "body", widget: "markdown", required: false }

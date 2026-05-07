@@ -1,0 +1,175 @@
+---
+import { getCollection } from 'astro:content';
+import { categories } from '../../consts';
+
+const projects = await getCollection('projects');
+const sorted = projects
+  .map((p) => ({ ...p.data, id: p.id }))
+  .sort((a, b) => a.order - b.order);
+
+function thumbnailUrl(project: typeof sorted[number]) {
+  if (project.youtubeId) {
+    return `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+  }
+  if (project.vimeoId) {
+    return project.thumbnail || '/placeholder-thumb.jpg';
+  }
+  return project.thumbnail || '/placeholder-thumb.jpg';
+}
+---
+
+<section id="projects" class="relative z-10 w-full">
+  <!-- Category filters -->
+  <div class="px-6 pb-6 flex flex-wrap gap-2 reveal-up" id="category-filters">
+    {categories.map((cat) => (
+      <button
+        class="cat-btn px-4 py-1.5 text-[11px] uppercase tracking-widest border rounded-full transition-colors
+          {cat.id === 'all'
+            ? 'border-brand-white text-brand-white bg-brand-white/10'
+            : 'border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400'}"
+        data-category={cat.id}
+      >
+        {cat.label}
+      </button>
+    ))}
+  </div>
+
+  <!-- Grid -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0" id="projects-grid">
+    {sorted.map((project) => (
+      <article
+        class="group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 transition-all duration-500"
+        data-category={project.category || 'youtube'}
+        data-youtube={project.youtubeId || ''}
+        data-vimeo={project.vimeoId || ''}
+        data-title={project.title}
+        data-video={project.videoUrl || ''}
+        onclick="openVideo(this)"
+        style="view-transition-name: project-{project.id}"
+      >
+        <img
+          src={thumbnailUrl(project)}
+          alt={project.title}
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
+        <!-- Hover overlay -->
+        <div class="absolute inset-0 bg-brand-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex flex-col items-center justify-center p-4">
+          <span class="text-brand-white text-xs uppercase tracking-widest text-center">{project.title}</span>
+          <span class="mt-2 text-brand-gray-400 text-[10px] uppercase tracking-wider">{project.category === 'court-metrage' ? 'Court-Métrage' : project.category === 'reseaux-sociaux' ? 'Réseaux Sociaux' : project.category === 'youtube' ? 'YouTube' : ''}</span>
+          <span class="mt-4 w-10 h-10 rounded-full border border-brand-white/40 flex items-center justify-center text-brand-white text-sm group-hover:border-brand-white transition-colors">&#9654;</span>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<dialog
+  class="fixed inset-0 z-[60] m-0 h-full w-full max-w-none bg-brand-black/95 backdrop-blur-md p-0"
+  id="video-modal"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="flex h-full flex-col items-center justify-center p-6">
+    <div class="w-full max-w-5xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-heading text-lg text-brand-white"></h2>
+        <button
+          class="text-brand-gray-400 hover:text-brand-white transition-colors text-sm uppercase tracking-wider"
+          onclick="closeModal()"
+        >
+          Close
+        </button>
+      </div>
+      <div class="relative aspect-video w-full bg-brand-gray-900"></div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Category filtering
+  let activeCat = 'all';
+
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.getAttribute('data-category')!;
+      activeCat = cat;
+
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        const isActive = b.getAttribute('data-category') === cat;
+        b.classList.toggle('border-brand-white', isActive);
+        b.classList.toggle('text-brand-white', isActive);
+        b.classList.toggle('border-brand-gray-800', !isActive);
+        b.classList.toggle('text-brand-gray-400', !isActive);
+      });
+
+      document.querySelectorAll('#projects-grid > article').forEach((card) => {
+        const cardCat = card.getAttribute('data-category') || '';
+        (card as HTMLElement).style.display = (activeCat === 'all' || cardCat === activeCat) ? '' : 'none';
+      });
+    });
+  });
+
+  // Video modal
+  (window as any).openVideo = function(el: HTMLElement) {
+    const modal = document.getElementById('video-modal') as HTMLDialogElement;
+    if (!modal) return;
+
+    const youtubeId = el.dataset.youtube || '';
+    const vimeoId = el.dataset.vimeo || '';
+    const title = el.dataset.title || '';
+
+    const iframe = document.createElement('iframe');
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.allowFullscreen = true;
+    iframe.className = 'absolute inset-0 h-full w-full border-0';
+
+    if (youtubeId) {
+      iframe.src = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`;
+    } else if (vimeoId) {
+      iframe.src = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&dnt=1`;
+    }
+
+    iframe.title = title;
+    modal.querySelector('.aspect-video')?.appendChild(iframe);
+    modal.querySelector('h2')!.textContent = title;
+    modal.showModal();
+
+    const dot = document.getElementById('cursor-dot');
+    if (dot) dot.style.display = 'none';
+    modal.style.cursor = 'auto';
+    modal.querySelectorAll('*').forEach(el => ((el as HTMLElement).style.cursor = 'auto'));
+  };
+
+  (window as any).closeModal = function() {
+    const modal = document.getElementById('video-modal') as HTMLDialogElement;
+    if (!modal) return;
+    modal.close();
+  };
+
+  const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) (window as any).closeModal();
+    });
+    modal.addEventListener('close', () => {
+      modal.querySelector('iframe')?.remove();
+      const dot = document.getElementById('cursor-dot');
+      if (dot) dot.style.display = '';
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.open) (window as any).closeModal();
+    });
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+</script>

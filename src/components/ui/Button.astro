@@ -1,0 +1,42 @@
+---
+export interface Props {
+  variant?: 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  btnType?: 'button' | 'submit' | 'reset';
+}
+
+const {
+  variant = 'outline',
+  size = 'md',
+  href,
+  btnType = 'button',
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 font-heading tracking-wider transition-all duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-brand-white disabled:opacity-50 disabled:cursor-not-allowed';
+
+const variantClasses = {
+  outline:
+    'border border-brand-white text-brand-white hover:bg-brand-white hover:text-brand-black active:scale-[0.98] rounded-full',
+  ghost:
+    'text-brand-gray-200 hover:text-brand-white',
+};
+
+const sizeClasses = {
+  sm: 'text-xs px-4 py-2',
+  md: 'text-sm px-6 py-3',
+  lg: 'text-base px-8 py-4',
+};
+
+const classes = `${base} ${variantClasses[variant]} ${sizeClasses[size]}`;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  {...(href ? { href } : { type: btnType })}
+  class={classes}
+>
+  <slot />
+</Tag>

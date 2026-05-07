@@ -1,0 +1,26 @@
+{
+  "name": "soap-editing",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "typecheck": "astro check",
+    "deploy": "astro check && astro build && wrangler pages deploy dist/"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^13.4.0",
+    "@fontsource/dm-serif-display": "^5.2.7",
+    "@fontsource/inter": "^5.2.8",
+    "@tailwindcss/vite": "^4.2.4",
+    "astro": "^6.3.0",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.88.0"
+  }
+}

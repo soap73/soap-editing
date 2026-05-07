@@ -1,0 +1,115 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'Soap Editing',
+  description = 'Video Editor / Motion Designer / Sound Designer — montage vidéo de haute qualité.',
+  ogImage = '/og-image.png',
+} = Astro.props;
+const siteUrl = 'https://soap-editing.pages.dev';
+---
+
+<!doctype html>
+<html lang="fr" class="bg-brand-black text-brand-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+    <meta property="og:url" content={siteUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" href="/_astro/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/_astro/fonts/dm-serif-display-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <ClientRouter />
+  </head>
+  <body class="min-h-screen antialiased">
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+      <span class="preloader-logo">S</span>
+    </div>
+
+    <div class="cursor-dot" id="cursor-dot"></div>
+
+    <slot />
+
+    <!-- Back to top -->
+    <button
+      class="back-to-top"
+      id="back-to-top"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      aria-label="Back to top"
+    >
+      &uarr;
+    </button>
+  </body>
+</html>
+
+<script>
+  // Preloader
+  const preloader = document.getElementById('preloader')!;
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      preloader.classList.add('hidden');
+      // Trigger reveal animations
+      document.querySelectorAll('.reveal-up').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 800);
+  });
+
+  // Back to top
+  const backBtn = document.getElementById('back-to-top')!;
+  window.addEventListener('scroll', () => {
+    backBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  // Custom cursor
+  const dot = document.getElementById('cursor-dot')!;
+  let mouseX = 0;
+  let mouseY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top = mouseY + 'px';
+  });
+
+  function isClickable(el: Element): boolean {
+    const tag = el.tagName.toLowerCase();
+    if (tag === 'a' || tag === 'button') return true;
+    if (el.hasAttribute('onclick')) return true;
+    if (el.getAttribute('role') === 'button') return true;
+    let parent = el.parentElement;
+    for (let i = 0; i < 3 && parent; i++) {
+      if (parent.hasAttribute('onclick')) return true;
+      if (parent.dataset.youtube || parent.dataset.vimeo) return true;
+      parent = parent.parentElement;
+    }
+    return false;
+  }
+
+  document.addEventListener('mouseover', (e) => {
+    const target = e.target as Element;
+    dot.classList.toggle('on-link', isClickable(target));
+  });
+
+  document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
+</script>
