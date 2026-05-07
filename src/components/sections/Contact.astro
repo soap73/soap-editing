@@ -10,6 +10,8 @@ import { site } from '../../consts';
     <form
       id="contact-form"
       class="space-y-4 reveal-up reveal-up-delay-2 text-left"
+      action="/api/contact"
+      method="POST"
     >
       <div>
         <label for="name" class="block text-xs text-brand-gray-400 uppercase tracking-wider mb-1">Nom</label>
@@ -91,7 +93,7 @@ import { site } from '../../consts';
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement;
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       let valid = true;
@@ -119,12 +121,30 @@ import { site } from '../../consts';
       const name = (document.getElementById('name') as HTMLInputElement).value;
       const email = (document.getElementById('email') as HTMLInputElement).value;
       const msg = (document.getElementById('message') as HTMLTextAreaElement).value;
-      const body = `Nom: ${encodeURIComponent(name)}%0D%0AEmail: ${encodeURIComponent(email)}%0D%0AMessage: ${encodeURIComponent(msg)}`;
+      const button = form.querySelector('button') as HTMLButtonElement;
 
-      document.getElementById('form-success')?.classList.remove('hidden');
-      (form.querySelector('button') as HTMLButtonElement).disabled = true;
+      button.textContent = 'Envoi en cours...';
+      button.disabled = true;
 
-      window.location.href = `mailto:anthony.vuillerot@gmail.com?subject=Contact%20Soap%20Editing&body=${body}`;
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message: msg }),
+        });
+
+        if (res.ok) {
+          document.getElementById('form-success')?.classList.remove('hidden');
+          form.reset();
+        } else {
+          alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+        }
+      } catch {
+        alert('Erreur réseau. Veuillez réessayer.');
+      }
+
+      button.textContent = 'Envoyer';
+      button.disabled = false;
     });
   }
 </script>

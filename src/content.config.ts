@@ -17,6 +17,7 @@ const projectsCollection = defineCollection({
     order: z.number().default(0),
     vimeoId: z.string().optional(),
     youtubeId: z.string().optional(),
+    preview: z.string().optional(),
   }),
 });
 

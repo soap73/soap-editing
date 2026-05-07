@@ -40,6 +40,7 @@ collections:
       - { label: "YouTube ID", name: "youtubeId", widget: "string", required: false, hint: "Pour les vidéos YouTube uniquement" }
       - { label: "Vimeo ID", name: "vimeoId", widget: "string", required: false, hint: "Pour les vidéos Vimeo uniquement" }
       - { label: "Miniature", name: "thumbnail", widget: "image", required: false }
+      - { label: "Preview (hover)", name: "preview", widget: "image", required: false, hint: "Courte vidéo qui s'affiche au survol de la miniature" }
       - { label: "Tags", name: "tags", widget: "list", default: [] }
       - { label: "Mis en avant", name: "featured", widget: "boolean", default: false }
       - { label: "Ordre", name: "order", widget: "number", value_type: "int", min: 0 }

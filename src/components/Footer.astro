@@ -1,22 +1,16 @@
-<footer class="border-t border-brand-gray-900 py-10 px-6">
-  <div class="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
-    <span class="text-brand-gray-700 text-xs">
-      &copy; {new Date().getFullYear()} Soap Editing
-    </span>
+---
+import { site } from '../consts';
+---
 
-    <a
-      href="/mentions-legales"
-      class="text-brand-gray-700 hover:text-brand-gray-400 transition-colors text-xs uppercase tracking-wider"
-    >
-      Mentions Légales
-    </a>
-
-    <a
-      href="#hero"
-      class="text-brand-gray-700 hover:text-brand-gray-400 transition-colors text-xs uppercase tracking-widest"
-      aria-label="Back to top"
-    >
-      &uarr; Top
-    </a>
+<footer class="relative z-10 border-t border-brand-gray-900 px-6 py-8">
+  <div class="mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="text-brand-gray-700 text-xs">&copy; {new Date().getFullYear()} Soap Editing — Tous droits réservés.</p>
+    <div class="flex items-center gap-4 text-[10px] uppercase tracking-widest text-brand-gray-600">
+      <a href="#projects" class="hover:text-brand-white transition-colors">Projets</a>
+      <a href="#about" class="hover:text-brand-white transition-colors">À propos</a>
+      <a href="#contact" class="hover:text-brand-white transition-colors">Contact</a>
+      <a href={site.socials.instagram} target="_blank" rel="noopener noreferrer" class="hover:text-brand-white transition-colors">Instagram</a>
+      <a href={site.socials.linkedin} target="_blank" rel="noopener noreferrer" class="hover:text-brand-white transition-colors">LinkedIn</a>
+    </div>
   </div>
 </footer>

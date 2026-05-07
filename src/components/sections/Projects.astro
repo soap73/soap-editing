@@ -78,9 +78,16 @@ function resolveVideoIds(project: typeof sorted[number]) {
         <img
           src={thumbnailUrl(project)}
           alt={project.title}
-          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
           loading="lazy"
         />
+        {project.preview && (
+          <video src={project.preview} muted loop playsinline
+            class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            onmouseenter="this.play()"
+            onmouseleave="this.pause()"
+          />
+        )}
         <!-- Hover overlay -->
         <div class="absolute inset-0 bg-brand-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex flex-col items-center justify-center p-4">
           <span class="text-brand-white text-xs uppercase tracking-widest text-center">{project.title}</span>
