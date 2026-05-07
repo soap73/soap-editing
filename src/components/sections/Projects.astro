@@ -59,11 +59,15 @@ function resolveVideoIds(project: typeof sorted[number]) {
 
   <!-- Grid -->
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0" id="projects-grid">
-    {sorted.map((project) => {
+  <p id="empty-state" class="col-span-full text-center text-brand-gray-600 text-sm py-20 hidden">
+    Aucun projet dans cette catégorie.
+  </p>
+    {sorted.map((project, i) => {
       const ids = resolveVideoIds(project);
       return (
       <article
-        class="group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 transition-all duration-500"
+        class="group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 transition-all duration-500 reveal-up"
+        style={`transition-delay: ${(i % 4) * 0.08}s`}
         data-category={project.category || 'youtube'}
         data-youtube={ids.youtubeId}
         data-vimeo={ids.vimeoId}
@@ -133,10 +137,15 @@ function resolveVideoIds(project: typeof sorted[number]) {
       b.classList.toggle('border-brand-gray-800', !isActive);
       b.classList.toggle('text-brand-gray-400', !isActive);
     });
+    let visibleCount = 0;
     document.querySelectorAll('#projects-grid > article').forEach((card) => {
       const cardCat = card.getAttribute('data-category') || '';
-      (card as HTMLElement).style.display = (cat === 'all' || cardCat === cat) ? '' : 'none';
+      const visible = cat === 'all' || cardCat === cat;
+      (card as HTMLElement).style.display = visible ? '' : 'none';
+      if (visible) visibleCount++;
     });
+    const empty = document.getElementById('empty-state');
+    if (empty) empty.classList.toggle('hidden', visibleCount > 0);
   }
 
   // Init: "All" active by default
