@@ -25,7 +25,8 @@ collections:
       preview: false
     fields:
       - { label: "Titre", name: "title", widget: "string" }
-      - { label: "URL de la vidéo", name: "videoUrl", widget: "string" }
+      - { label: "URL de la vidéo (YouTube/Vimeo)", name: "videoUrl", widget: "string", required: false }
+      - { label: "Fichier vidéo (MP4)", name: "videoFile", widget: "file", required: false, hint: "Drag & drop — max 25 Mo" }
       - label: "Catégorie"
         name: "category"
         widget: "select"

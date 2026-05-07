@@ -6,7 +6,8 @@ const projectsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    videoUrl: z.string(),
+    videoUrl: z.string().optional().default(''),
+    videoFile: z.string().optional(),
     thumbnail: z.string().optional(),
     description: z.string().optional().default(''),
     client: z.string().optional(),
