@@ -146,8 +146,11 @@ function resolveVideoIds(project: typeof sorted[number]) {
       if (visible) {
         visibleCount++;
         el.style.display = '';
+        el.classList.add('filtered-out');
         requestAnimationFrame(() => {
-          el.classList.remove('filtered-out');
+          requestAnimationFrame(() => {
+            el.classList.remove('filtered-out');
+          });
         });
       } else {
         el.classList.add('filtered-out');
