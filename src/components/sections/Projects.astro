@@ -189,6 +189,7 @@ function cardWidthClass(ratio: string) {
       el.style.left = (shortest * colW + offsetX) + 'px';
       el.style.top = colTops[shortest] + 'px';
       el.style.transform = 'none';
+      el.style.opacity = '1';
       colTops[shortest] += h;
     });
 
