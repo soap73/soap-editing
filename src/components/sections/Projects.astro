@@ -52,7 +52,7 @@ function aspectClass(ratio: string) {
 }
 
 function cardWidthClass(ratio: string) {
-  if (ratio === '9:16') return 'w-[140px] sm:w-[160px] md:w-[180px] justify-self-center';
+  if (ratio === '9:16') return 'w-[140px] sm:w-[160px] md:w-[180px]';
   return '';
 }
 ---
@@ -71,8 +71,8 @@ function cardWidthClass(ratio: string) {
     ))}
   </div>
 
-  <!-- Grid -->
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0" id="projects-grid">
+  <!-- Masonry container -->
+  <div class="relative w-full" id="projects-grid">
     {sorted.map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
@@ -80,7 +80,7 @@ function cardWidthClass(ratio: string) {
       const widthClass = cardWidthClass(project.aspectRatio || '16:9');
       return (
       <article
-        class={`project-card group relative overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass} ${widthClass}`}
+        class={`project-card group overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass} ${widthClass}`}
         style={`transition-delay: ${(i % 4) * 0.06}s; view-transition-name: project-${project.id}`}
         data-category={project.category || 'youtube'}
         data-youtube={ids.youtubeId}
@@ -143,6 +143,61 @@ function cardWidthClass(ratio: string) {
 </dialog>
 
 <script>
+  // Masonry layout
+  const grid = document.getElementById('projects-grid') as HTMLElement;
+
+  function getCols() {
+    const w = window.innerWidth;
+    if (w < 768) return 2;
+    if (w < 1024) return 3;
+    return 4;
+  }
+
+  function layoutMasonry() {
+    const cards = grid.querySelectorAll('article');
+    const visible: HTMLElement[] = [];
+    cards.forEach(c => {
+      const el = c as HTMLElement;
+      if (el.style.display !== 'none') visible.push(el);
+    });
+    if (!visible.length) { grid.style.height = '0px'; return; }
+
+    const cols = getCols();
+    const gridWidth = grid.clientWidth;
+    const colW = Math.floor(gridWidth / cols);
+    const colTops = new Array(cols).fill(0);
+
+    visible.forEach(el => {
+      const is916 = el.classList.contains('aspect-[9/16]');
+      const is11 = el.classList.contains('aspect-square');
+      const cardW = is916 ? Math.min(colW, 180) : colW;
+      let h: number;
+      if (is916) h = cardW * (16/9);
+      else if (is11) h = cardW;
+      else h = cardW * (9/16);
+      h = Math.round(h);
+
+      const offsetX = is916 ? Math.floor((colW - cardW) / 2) : 0;
+
+      let shortest = 0;
+      for (let i = 1; i < cols; i++) {
+        if (colTops[i] < colTops[shortest]) shortest = i;
+      }
+
+      el.style.position = 'absolute';
+      el.style.width = cardW + 'px';
+      el.style.left = (shortest * colW + offsetX) + 'px';
+      el.style.top = colTops[shortest] + 'px';
+      el.style.transform = 'none';
+      colTops[shortest] += h;
+    });
+
+    grid.style.position = 'relative';
+    grid.style.height = Math.max(...colTops) + 'px';
+  }
+
+  window.addEventListener('resize', layoutMasonry);
+
   // Category filtering
   let activeCat = 'all';
 
@@ -169,6 +224,7 @@ function cardWidthClass(ratio: string) {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             el.classList.remove('filtered-out');
+            layoutMasonry();
           });
         });
       } else {
@@ -176,6 +232,7 @@ function cardWidthClass(ratio: string) {
         setTimeout(() => {
           if (el.classList.contains('filtered-out')) {
             el.style.display = 'none';
+            layoutMasonry();
           }
         }, 350);
       }
@@ -184,6 +241,9 @@ function cardWidthClass(ratio: string) {
 
   // Init: "All" active by default
   updateFilters('all');
+  // Layout after fonts/images load
+  setTimeout(layoutMasonry, 100);
+  setTimeout(layoutMasonry, 500);
 
   document.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', () => {
