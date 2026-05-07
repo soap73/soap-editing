@@ -52,11 +52,11 @@ const siteUrl = 'https://soap-editing.pages.dev';
     <!-- Lang switcher -->
     <div
       id="lang-switcher"
-      class="fixed top-4 right-4 z-50 flex text-[10px] uppercase tracking-widest border border-brand-gray-800 rounded-full overflow-hidden"
+      class="fixed top-4 right-4 z-50 flex text-[10px] uppercase tracking-widest border border-brand-gray-800 rounded-full overflow-hidden bg-brand-gray-950"
       aria-label="Switch language"
     >
-      <button class="lang-option px-3 py-1.5 transition-all duration-300 rounded-full" data-lang="fr">FR</button>
-      <button class="lang-option px-3 py-1.5 transition-all duration-300 rounded-full" data-lang="en">EN</button>
+      <button class="lang-option px-3 py-1.5 transition-all duration-300 text-brand-gray-400" data-lang="fr">FR</button>
+      <button class="lang-option px-3 py-1.5 transition-all duration-300 text-brand-gray-400" data-lang="en">EN</button>
     </div>
 
     <slot />
@@ -125,15 +125,16 @@ const siteUrl = 'https://soap-editing.pages.dev';
   function setLang(lang: string) {
     document.documentElement.lang = lang;
     localStorage.setItem('lang', lang);
-    const btn = document.getElementById('lang-switcher');
-    if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
     // Update toggle buttons
     document.querySelectorAll('.lang-option').forEach((btn: any) => {
       const isActive = btn.dataset.lang === lang;
-      btn.classList.toggle('bg-brand-accent', isActive);
-      btn.classList.toggle('text-brand-white', isActive);
-      btn.classList.toggle('text-brand-gray-400', !isActive);
-      btn.classList.toggle('bg-transparent', !isActive);
+      if (isActive) {
+        btn.classList.add('bg-brand-accent', 'text-brand-white', 'rounded-full');
+        btn.classList.remove('text-brand-gray-400');
+      } else {
+        btn.classList.remove('bg-brand-accent', 'text-brand-white', 'rounded-full');
+        btn.classList.add('text-brand-gray-400');
+      }
     });
 
     const d = t[lang as 'fr' | 'en'];
@@ -222,7 +223,8 @@ const siteUrl = 'https://soap-editing.pages.dev';
     if (el.hasAttribute('onclick')) return true;
     if (el.getAttribute('role') === 'button') return true;
     let parent = el.parentElement;
-    for (let i = 0; i < 3 && parent; i++) {
+    for (let i = 0; i < 4 && parent; i++) {
+      if (parent.tagName.toLowerCase() === 'a') return true;
       if (parent.hasAttribute('onclick')) return true;
       if (parent.dataset.youtube || parent.dataset.vimeo) return true;
       parent = parent.parentElement;
