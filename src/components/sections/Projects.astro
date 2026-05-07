@@ -49,10 +49,7 @@ function resolveVideoIds(project: typeof sorted[number]) {
   <div class="px-6 pb-6 flex flex-wrap gap-2 reveal-up" id="category-filters">
     {categories.map((cat) => (
       <button
-        class="cat-btn px-4 py-1.5 text-[11px] uppercase tracking-widest border rounded-full transition-colors
-          {cat.id === 'all'
-            ? 'border-brand-white text-brand-white bg-brand-white/10'
-            : 'border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400'}"
+        class="cat-btn px-4 py-1.5 text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400"
         data-category={cat.id}
       >
         {cat.label}
@@ -126,23 +123,28 @@ function resolveVideoIds(project: typeof sorted[number]) {
   // Category filtering
   let activeCat = 'all';
 
+  function updateFilters(cat: string) {
+    activeCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      const isActive = b.getAttribute('data-category') === cat;
+      b.classList.toggle('border-brand-white', isActive);
+      b.classList.toggle('text-brand-white', isActive);
+      b.classList.toggle('bg-brand-white/10', isActive);
+      b.classList.toggle('border-brand-gray-800', !isActive);
+      b.classList.toggle('text-brand-gray-400', !isActive);
+    });
+    document.querySelectorAll('#projects-grid > article').forEach((card) => {
+      const cardCat = card.getAttribute('data-category') || '';
+      (card as HTMLElement).style.display = (cat === 'all' || cardCat === cat) ? '' : 'none';
+    });
+  }
+
+  // Init: "All" active by default
+  updateFilters('all');
+
   document.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const cat = btn.getAttribute('data-category')!;
-      activeCat = cat;
-
-      document.querySelectorAll('.cat-btn').forEach(b => {
-        const isActive = b.getAttribute('data-category') === cat;
-        b.classList.toggle('border-brand-white', isActive);
-        b.classList.toggle('text-brand-white', isActive);
-        b.classList.toggle('border-brand-gray-800', !isActive);
-        b.classList.toggle('text-brand-gray-400', !isActive);
-      });
-
-      document.querySelectorAll('#projects-grid > article').forEach((card) => {
-        const cardCat = card.getAttribute('data-category') || '';
-        (card as HTMLElement).style.display = (activeCat === 'all' || cardCat === activeCat) ? '' : 'none';
-      });
+      updateFilters(btn.getAttribute('data-category')!);
     });
   });
 

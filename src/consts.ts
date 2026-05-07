@@ -16,7 +16,7 @@ export const about = {
     'DaVinci Resolve',
     'After Effects',
   ],
-  clients: ['VZION', 'McSkyz', 'PROFESSION GANGSTER', 'WhenToCop?'],
+  clients: ['VZION', 'McSkyz', 'PROFESSION GANGSTER', 'WhenToCop?', 'La Folle Histoire', 'Affaires Criminelles'],
 } as const;
 
 export const categories = [
