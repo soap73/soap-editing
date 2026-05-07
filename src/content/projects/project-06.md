@@ -1,15 +1,17 @@
 ---
-title: "Mode — Éditorial SS26"
-description: "Film de mode pour une collection capsule. Esthétique argentique, montage non-linéaire."
-category: reseaux-sociaux
-date: 2025-04-01
-videoUrl: "https://vimeo.com/555555555"
-thumbnail: "/projects/mode-editorial.jpg"
-tags:
-  - "mode"
-  - "éditorial"
+thumbnail: /projects/dead-memories-thumbnails.gif
 featured: false
 order: 6
+date: 2025-04-01
+title: Dead Memories
+videoUrl: https://youtu.be/21UWwfHygZA?si=0MZ9pU6Q2OUZmcfB
+aspectRatio: 16:9
+tags:
+  - mode
+  - éditorial
+description: Film de mode pour une collection capsule. Esthétique argentique,
+  montage non-linéaire.
+category: court-metrage
 vimeoId: "555555555"
 ---
 
