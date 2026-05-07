@@ -26,4 +26,12 @@ collections:
     fields:
       - { label: "Titre", name: "title", widget: "string" }
       - { label: "URL de la vidéo", name: "videoUrl", widget: "string" }
+      - label: "Catégorie"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "YouTube", value: "youtube" }
+          - { label: "Court-Métrage", value: "court-metrage" }
+          - { label: "Réseaux Sociaux", value: "reseaux-sociaux" }
+        default: "youtube"
       - { label: "Miniature", name: "thumbnail", widget: "image", required: false }

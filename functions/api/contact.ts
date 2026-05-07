@@ -23,10 +23,10 @@ export const onRequestPost: PagesFunction<{ RESEND_API_KEY: string }> = async ({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Soap Editing <onboarding@resend.dev>',
+        from: 'Soap Edit <onboarding@resend.dev>',
         to: ['anthony.vuillerot@gmail.com'],
         reply_to: email,
-        subject: `Nouveau message de ${name} — Soap Editing`,
+        subject: `Nouveau message de ${name} — Soap Edit`,
         html: `
           <h2>Nouveau message depuis le site</h2>
           <p><strong>Nom :</strong> ${name}</p>
