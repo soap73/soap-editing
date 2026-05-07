@@ -153,7 +153,7 @@ function cardWidthClass(ratio: string) {
     return 4;
   }
 
-  function layoutMasonry() {
+  function layoutGrid() {
     const cards = grid.querySelectorAll('article');
     const visible: HTMLElement[] = [];
     cards.forEach(c => {
@@ -165,39 +165,67 @@ function cardWidthClass(ratio: string) {
     const cols = getCols();
     const gridWidth = grid.clientWidth;
     const colW = Math.floor(gridWidth / cols);
-    const colTops = new Array(cols).fill(0);
 
+    // Separate by aspect ratio
+    const cards169: HTMLElement[] = [];
+    const cards916: HTMLElement[] = [];
     visible.forEach(el => {
-      const is916 = el.classList.contains('aspect-[9/16]');
-      const is11 = el.classList.contains('aspect-square');
-      const cardW = is916 ? Math.min(colW, 180) : colW;
-      let h: number;
-      if (is916) h = cardW * (16/9);
-      else if (is11) h = cardW;
-      else h = cardW * (9/16);
-      h = Math.round(h);
-
-      const offsetX = is916 ? Math.floor((colW - cardW) / 2) : 0;
-
-      let shortest = 0;
-      for (let i = 1; i < cols; i++) {
-        if (colTops[i] < colTops[shortest]) shortest = i;
+      if (el.classList.contains('aspect-[9/16]') || el.classList.contains('aspect-square')) {
+        cards916.push(el);
+      } else {
+        cards169.push(el);
       }
-
-      el.style.position = 'absolute';
-      el.style.width = cardW + 'px';
-      el.style.left = (shortest * colW + offsetX) + 'px';
-      el.style.top = colTops[shortest] + 'px';
-      el.style.transform = 'none';
-      el.style.opacity = '1';
-      colTops[shortest] += h;
     });
 
+    let y = 0;
+    let i169 = 0, i916 = 0;
+    let rowIndex = 0;
+
+    while (i169 < cards169.length || i916 < cards916.length) {
+      if (rowIndex % 2 === 0) {
+        // 16:9 row
+        if (i169 >= cards169.length) { rowIndex++; continue; }
+        const cardW = colW;
+        const h = Math.round(cardW * 9 / 16);
+        for (let i = 0; i < cols && i169 < cards169.length; i++, i169++) {
+          const el = cards169[i169];
+          el.style.position = 'absolute';
+          el.style.width = cardW + 'px';
+          el.style.left = (i * colW) + 'px';
+          el.style.top = y + 'px';
+          el.style.transform = 'none';
+          el.style.opacity = '1';
+        }
+        y += h;
+      } else {
+        // 9:16 row — flow left to right, tight
+        if (i916 >= cards916.length) { rowIndex++; continue; }
+        const cardW = Math.min(colW, 180);
+        const h = Math.round(cardW * 16 / 9);
+        let x = 0;
+
+        while (i916 < cards916.length) {
+          if (x + cardW > gridWidth) break;
+          const el = cards916[i916];
+          el.style.position = 'absolute';
+          el.style.width = cardW + 'px';
+          el.style.left = x + 'px';
+          el.style.top = y + 'px';
+          el.style.transform = 'none';
+          el.style.opacity = '1';
+          x += cardW;
+          i916++;
+        }
+        y += h;
+      }
+      rowIndex++;
+    }
+
     grid.style.position = 'relative';
-    grid.style.height = Math.max(...colTops) + 'px';
+    grid.style.height = y + 'px';
   }
 
-  window.addEventListener('resize', layoutMasonry);
+  window.addEventListener('resize', layoutGrid);
 
   // Category filtering
   let activeCat = 'all';
@@ -225,7 +253,7 @@ function cardWidthClass(ratio: string) {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             el.classList.remove('filtered-out');
-            layoutMasonry();
+            layoutGrid();
           });
         });
       } else {
@@ -233,7 +261,7 @@ function cardWidthClass(ratio: string) {
         setTimeout(() => {
           if (el.classList.contains('filtered-out')) {
             el.style.display = 'none';
-            layoutMasonry();
+            layoutGrid();
           }
         }, 350);
       }
@@ -243,8 +271,8 @@ function cardWidthClass(ratio: string) {
   // Init: "All" active by default
   updateFilters('all');
   // Layout after fonts/images load
-  setTimeout(layoutMasonry, 100);
-  setTimeout(layoutMasonry, 500);
+  setTimeout(layoutGrid, 100);
+  setTimeout(layoutGrid, 500);
 
   document.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', () => {
