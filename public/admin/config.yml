@@ -1,10 +1,17 @@
 backend:
   name: github
   branch: main
-  repo: owner/soap-editing  # Replace with your GitHub username/repo
+  repo: soap73/soap-editing  # Remplacer "owner" par ton username GitHub
+  base_url: https://soap-editing-oauth.anthony-vuillerot.workers.dev  # URL de ton Worker Cloudflare
+  auth_endpoint: /oauth/callback
 
 media_folder: "public/projects"
 public_folder: "/projects"
+
+site_url: "https://soap-editing.pages.dev"
+display_url: "https://soap-editing.pages.dev"
+logo_url: "https://soap-editing.pages.dev/favicon.svg"
+locale: "fr"
 
 collections:
   - name: "projects"

@@ -1,0 +1,9 @@
+name = "soap-editing-oauth"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+
+[vars]
+OAUTH_CLIENT_ID = "Ov23li9DWxynatBIScBt"       # Remplis avec ton Client ID GitHub
+OAUTH_CLIENT_SECRET = "b52d3726847ef051c7cfadbcd4682524e40f727a"   # Remplis avec ton Client Secret GitHub
+REDIRECT_URL = "https://soap-editing.pages.dev/admin/"
+ORIGIN = "https://soap-editing.pages.dev"
