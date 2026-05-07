@@ -1,46 +1,42 @@
----
-import { about } from '../../consts';
----
-
-<section id="about" class="relative z-10 pt-32 pb-24 px-6">
+<section id="about" class="relative z-10 pt-40 pb-24 px-6">
   <div class="mx-auto max-w-2xl text-center">
-    <h2 class="font-heading text-3xl text-brand-white mb-8 reveal-up">À propos</h2>
+    <h2 class="font-heading text-3xl text-brand-white mb-8 reveal-up" data-i18n="about.title">À propos</h2>
 
     <p class="text-brand-gray-400 text-sm md:text-base leading-relaxed reveal-up reveal-up-delay-1 max-w-xl mx-auto">
-      <span class="font-bold italic text-brand-white">{about.intro.split('.')[0] + '.'}</span>
-      {about.intro.slice(about.intro.indexOf('.') + 1)}
+      <span class="font-bold italic text-brand-white" data-i18n="about.intro1">L'art de raconter des histoires par le montage.</span>
+      {' '}
+      <span data-i18n="about.intro2">Mon approche combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, au rendu professionnel et mémorable.</span>
     </p>
 
     <div class="mt-12 flex justify-center gap-12 reveal-up reveal-up-delay-2">
       <div class="text-center">
         <span class="font-heading text-3xl text-brand-white">+50</span>
-        <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mt-1">Projets livrés</p>
+        <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mt-1" data-i18n="about.projectsCount">Projets livrés</p>
       </div>
       <div class="text-center">
         <span class="font-heading text-3xl text-brand-white">3</span>
-        <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mt-1">Années d'expérience</p>
+        <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mt-1" data-i18n="about.yearsExp">Années d'expérience</p>
       </div>
     </div>
 
     <div class="mt-12 reveal-up reveal-up-delay-3">
-      <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mb-3">Stack</p>
+      <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mb-3" data-i18n="about.stack">Stack</p>
       <div class="flex flex-wrap justify-center gap-2">
-        {about.stack.map((tool) => (
-          <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">
-            {tool}
-          </span>
-        ))}
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">Adobe Premiere Pro</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">DaVinci Resolve</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">After Effects</span>
       </div>
     </div>
 
     <div class="mt-8 reveal-up reveal-up-delay-4">
-      <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mb-3">Clients</p>
+      <p class="text-brand-gray-700 text-[10px] uppercase tracking-widest mb-3" data-i18n="about.clients">Clients</p>
       <div class="flex flex-wrap justify-center gap-2">
-        {about.clients.map((client) => (
-          <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">
-            {client}
-          </span>
-        ))}
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">VZION</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">McSkyz</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">PROFESSION GANGSTER</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">WhenToCop?</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">La Folle Histoire</span>
+        <span class="px-3 py-1 text-[10px] uppercase tracking-wider border border-brand-gray-800 rounded-full text-brand-gray-400 hover:text-brand-white hover:scale-110 transition-all duration-300">Affaires Criminelles</span>
       </div>
     </div>
   </div>

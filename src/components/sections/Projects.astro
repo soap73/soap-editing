@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import { categories } from '../../consts';
 
 const projects = await getCollection('projects');
 const sorted = projects
@@ -42,58 +41,53 @@ function resolveVideoIds(project: typeof sorted[number]) {
   }
   return { youtubeId, vimeoId };
 }
+
+function aspectClass(ratio: string) {
+  switch (ratio) {
+    case '9:16': return 'aspect-[9/16]';
+    case '1:1': return 'aspect-square';
+    default: return 'aspect-video';
+  }
+}
 ---
 
 <section id="projects" class="relative z-10 w-full">
-  <!-- Category filters -->
-  <div class="px-6 pb-6 flex flex-wrap gap-2 reveal-up" id="category-filters">
-    {categories.map((cat) => (
-      <button
-        class="cat-btn px-4 py-1.5 text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400"
-        data-category={cat.id}
-      >
-        {cat.label}
-      </button>
-    ))}
-  </div>
-
-  <!-- Grid -->
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0" id="projects-grid">
-  <p id="empty-state" class="col-span-full text-center text-brand-gray-600 text-sm py-20 hidden">
-    Aucun projet dans cette catégorie.
-  </p>
     {sorted.map((project, i) => {
       const ids = resolveVideoIds(project);
+      const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
+      const ratioClass = aspectClass(project.aspectRatio || '16:9');
       return (
       <article
-        class="project-card group relative aspect-video overflow-hidden bg-brand-gray-900 border-0 reveal-up"
-        style={`transition-delay: ${(i % 4) * 0.08}s; view-transition-name: project-${project.id}`}
-        data-category={project.category || 'youtube'}
+        class={`project-card group relative overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass}`}
+        style={`transition-delay: ${(i % 4) * 0.06}s; view-transition-name: project-${project.id}`}
         data-youtube={ids.youtubeId}
         data-vimeo={ids.vimeoId}
         data-title={project.title}
         data-video={project.videoUrl || ''}
         data-video-file={project.videoFile || ''}
-        onclick="openVideo(this)"
+        onclick={hasVideo ? 'openVideo(this)' : undefined}
       >
         {project.preview ? (
           <img src={project.preview} alt={project.title}
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
           <img
             src={thumbnailUrl(project)}
             alt={project.title}
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         )}
-        <!-- Hover overlay -->
-        <div class="absolute inset-0 bg-brand-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex flex-col items-center justify-center p-4">
-          <span class="text-brand-white text-xs uppercase tracking-widest text-center">{project.title}</span>
-          <span class="mt-2 text-brand-gray-400 text-[10px] uppercase tracking-wider">{project.category === 'court-metrage' ? 'Court-Métrage' : project.category === 'reseaux-sociaux' ? 'Réseaux Sociaux' : project.category === 'youtube' ? 'YouTube' : ''}</span>
-          <span class="mt-4 w-10 h-10 rounded-full border border-brand-white/40 flex items-center justify-center text-brand-white text-sm group-hover:border-brand-white transition-colors">&#9654;</span>
+        {hasVideo && (
+          <div class="absolute inset-0 bg-brand-black/0 group-hover:bg-brand-black/40 transition-all duration-400 flex items-center justify-center">
+            <span class="w-10 h-10 rounded-full border border-brand-white/0 group-hover:border-brand-white/30 flex items-center justify-center text-brand-white/0 group-hover:text-brand-white/80 text-sm transition-all duration-400">&#9654;</span>
+          </div>
+        )}
+        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-brand-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400">
+          <span class="text-brand-white text-xs font-medium">{project.title}</span>
         </div>
       </article>
       );
@@ -114,8 +108,9 @@ function resolveVideoIds(project: typeof sorted[number]) {
         <button
           class="text-brand-gray-400 hover:text-brand-white transition-colors text-sm uppercase tracking-wider"
           onclick="closeModal()"
+          data-i18n="modal.close"
         >
-          Close
+          Fermer
         </button>
       </div>
       <div class="relative aspect-video w-full bg-brand-gray-900"></div>
@@ -124,56 +119,6 @@ function resolveVideoIds(project: typeof sorted[number]) {
 </dialog>
 
 <script>
-  // Category filtering
-  let activeCat = 'all';
-
-  function updateFilters(cat: string) {
-    activeCat = cat;
-    document.querySelectorAll('.cat-btn').forEach(b => {
-      const isActive = b.getAttribute('data-category') === cat;
-      b.classList.toggle('border-brand-white', isActive);
-      b.classList.toggle('text-brand-white', isActive);
-      b.classList.toggle('bg-brand-white/10', isActive);
-      b.classList.toggle('border-brand-gray-800', !isActive);
-      b.classList.toggle('text-brand-gray-400', !isActive);
-    });
-    let visibleCount = 0;
-    const cards = document.querySelectorAll('#projects-grid > article');
-    cards.forEach((card) => {
-      const cardCat = card.getAttribute('data-category') || '';
-      const visible = cat === 'all' || cardCat === cat;
-      const el = card as HTMLElement;
-      if (visible) {
-        visibleCount++;
-        el.style.display = '';
-        el.classList.add('filtered-out');
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            el.classList.remove('filtered-out');
-          });
-        });
-      } else {
-        el.classList.add('filtered-out');
-        setTimeout(() => {
-          if (el.classList.contains('filtered-out')) {
-            el.style.display = 'none';
-          }
-        }, 350);
-      }
-    });
-    const empty = document.getElementById('empty-state');
-    if (empty) empty.classList.toggle('hidden', visibleCount > 0);
-  }
-
-  // Init: "All" active by default
-  updateFilters('all');
-
-  document.querySelectorAll('.cat-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      updateFilters(btn.getAttribute('data-category')!);
-    });
-  });
-
   // Video modal
   const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
   let modalAnimating = false;
@@ -223,7 +168,6 @@ function resolveVideoIds(project: typeof sorted[number]) {
 
     modal.querySelector('h2')!.textContent = title;
 
-    // Animate in
     const wrapper = modal.firstElementChild as HTMLElement;
     wrapper.style.opacity = '0';
     wrapper.style.transform = 'scale(0.92)';
@@ -270,5 +214,4 @@ function resolveVideoIds(project: typeof sorted[number]) {
       if (e.key === 'Escape' && modal.open) (window as any).closeModal();
     });
   }
-
 </script>

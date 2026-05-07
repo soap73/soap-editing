@@ -18,6 +18,7 @@ const projectsCollection = defineCollection({
     order: z.number().optional().default(0),
     vimeoId: z.string().optional(),
     youtubeId: z.string().optional(),
+    aspectRatio: z.enum(['16:9', '9:16', '1:1']).optional().default('16:9'),
     preview: z.string().optional(),
   }),
 });
