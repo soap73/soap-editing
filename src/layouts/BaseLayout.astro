@@ -66,12 +66,26 @@ const siteUrl = 'https://soap-editing.pages.dev';
   window.addEventListener('load', () => {
     setTimeout(() => {
       preloader.classList.add('hidden');
-      // Trigger reveal animations
-      document.querySelectorAll('.reveal-up').forEach(el => {
-        el.classList.add('visible');
-      });
     }, 800);
   });
+
+  // Scroll reveal — observe all .reveal-up elements
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  function observeReveal() {
+    document.querySelectorAll('.reveal-up:not(.visible)').forEach(el => revealObserver.observe(el));
+  }
+  observeReveal();
+
+  // Re-observe after Astro page transitions
+  document.addEventListener('astro:page-load', observeReveal);
 
   // Back to top
   const backBtn = document.getElementById('back-to-top')!;
