@@ -1,5 +1,5 @@
 export const site = {
-  name: 'Soap Editing',
+  name: 'Soap Edit',
   tagline: 'Video Editor / Motion Designer / Sound Designer',
   email: 'anthony.vuillerot@gmail.com',
   socials: {
@@ -10,7 +10,7 @@ export const site = {
 
 export const about = {
   intro:
-    "L'art de raconter des histoires par le montage. Mon approche combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, au rendu professionnel et mémorable.",
+    "L'art de raconter des histoires par le montage. Mon approche combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, avec un rendu toujours professionnel.",
   stack: [
     'Adobe Premiere Pro',
     'DaVinci Resolve',
