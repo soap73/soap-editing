@@ -27,8 +27,8 @@ export const onRequestPost: PagesFunction<{ RESEND_API_KEY: string }> = async ({
 
     const resend = new Resend(env.RESEND_API_KEY);
 
-    await resend.emails.send({
-      from: 'Soap Editing <contact@soap-editing.pages.dev>',
+    const { data, error } = await resend.emails.send({
+      from: 'Soap Editing <onboarding@resend.dev>',
       to: 'anthony.vuillerot@gmail.com',
       replyTo: email,
       subject: `Nouveau message de ${name} — Soap Editing`,
@@ -40,6 +40,14 @@ export const onRequestPost: PagesFunction<{ RESEND_API_KEY: string }> = async ({
         <p>${message.replace(/\n/g, '<br>')}</p>
       `,
     });
+
+    if (error) {
+      console.error('Resend error:', error);
+      return new Response(JSON.stringify({ error: 'Erreur lors de l\'envoi.' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
