@@ -6,7 +6,7 @@ const projectsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    description: z.string().min(10),
+    description: z.string().min(1),
     client: z.string().optional(),
     category: z.enum(['youtube', 'court-metrage', 'reseaux-sociaux']).default('youtube'),
     date: z.date(),
