@@ -250,6 +250,7 @@
   .text-shadow-glow { text-shadow: 0 2px 24px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5); }
   .text-glow-white { text-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(255,255,255,0.15); }
   .stat-number {
+    cursor: none;
     transition: transform 0.5s ease-out, text-shadow 0.5s ease-out;
   }
   .group:hover .stat-number {
