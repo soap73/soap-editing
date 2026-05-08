@@ -199,8 +199,9 @@ const siteUrl = 'https://soap-editing.pages.dev';
   }
   observeReveal();
 
-  // Re-observe after Astro page transitions
+  // Re-observe + remove preloader class after Astro page transitions
   document.addEventListener('astro:page-load', () => {
+    document.body.classList.remove('preloading');
     observeReveal();
     setLang(document.documentElement.lang || 'fr');
   });
