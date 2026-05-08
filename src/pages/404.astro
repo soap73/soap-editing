@@ -1,16 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = '404 — Soap Edit';
+const description = 'Page introuvable.';
 ---
 
-<BaseLayout>
+<BaseLayout title={title} description={description}>
   <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 text-center">
     <span class="font-heading text-[12rem] leading-none text-brand-gray-900">404</span>
-    <p class="text-brand-gray-400 text-sm mt-2 mb-8">Cette page n'existe pas.</p>
+    <p class="text-brand-gray-400 text-sm mt-2 mb-8" data-i18n="404.message">Cette page n'existe pas.</p>
     <a
       href="/"
       class="px-6 py-2 border border-brand-white text-brand-white text-xs uppercase tracking-widest rounded-full hover:bg-brand-white hover:text-brand-black transition-colors"
+      data-i18n="404.back"
     >
       Retour à l'accueil
     </a>
   </div>
 </BaseLayout>
+
+<script>
+  // Redirect to home on language switch from 404
+  const langBtns = document.querySelectorAll('.lang-option');
+  langBtns.forEach((btn: any) => {
+    btn.addEventListener('click', () => {
+      setTimeout(() => { window.location.href = '/'; }, 100);
+    });
+  });
+</script>
