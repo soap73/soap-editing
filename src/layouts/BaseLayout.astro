@@ -38,7 +38,7 @@ const siteUrl = 'https://soap-editing.pages.dev';
 
     <ClientRouter />
   </head>
-  <body class="min-h-screen antialiased">
+  <body class="min-h-screen antialiased preloading">
     <!-- Preloader -->
     <div class="preloader" id="preloader" aria-hidden="true">
       <div class="preloader-content">
@@ -177,6 +177,7 @@ const siteUrl = 'https://soap-editing.pages.dev';
   const preloader = document.getElementById('preloader')!;
   window.addEventListener('load', () => {
     setTimeout(() => {
+      document.body.classList.remove('preloading');
       preloader.classList.add('hidden');
     }, 800);
   });

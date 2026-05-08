@@ -107,6 +107,14 @@
     pointer-events: none;
   }
 
+  /* Crossfade page entrance */
+  body {
+    transition: opacity 0.8s ease-out;
+  }
+  body.preloading {
+    opacity: 0;
+  }
+
   .preloader-content {
     display: flex;
     flex-direction: column;
