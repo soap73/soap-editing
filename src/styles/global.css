@@ -89,18 +89,16 @@
     box-shadow: 0 0 12px rgba(255,255,255,0.6), 0 0 4px rgba(255,255,255,0.4);
   }
 
-  /* Preloader — skeleton screen */
+  /* Preloader — cinematic logo reveal */
   .preloader {
     position: fixed;
     inset: 0;
     z-index: var(--z-preloader);
     background: var(--color-brand-black);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
   }
 
   .preloader.hidden {
@@ -109,44 +107,66 @@
     pointer-events: none;
   }
 
-  .preloader .skeleton-bar {
-    height: 12px;
-    border-radius: 6px;
-    background: var(--color-brand-gray-900);
-    position: relative;
-    overflow: hidden;
+  .preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
 
-  .preloader .skeleton-bar::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255,255,255,0.03) 40%,
-      rgba(255,255,255,0.06) 50%,
-      rgba(255,255,255,0.03) 60%,
-      transparent 100%
-    );
-    animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  .preloader-text {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-style: italic;
+    color: var(--color-brand-white);
+    text-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(255,255,255,0.15);
+    animation: preloader-fade-in 0.5s ease-out both;
+    animation-delay: 0.15s;
   }
 
-  .preloader .skeleton-bar:first-child {
-    width: 180px;
+  .preloader-accent {
+    font-style: normal;
+    font-weight: bold;
+    color: var(--color-brand-accent);
+    text-shadow: 0 0 20px rgba(124,58,237,0.5), 0 0 40px rgba(124,58,237,0.2);
   }
 
-  .preloader .skeleton-bar:nth-child(2) {
-    width: 240px;
+  .preloader-line {
+    display: block;
+    height: 1px;
+    background: var(--color-brand-gray-700);
+    width: 0;
+    animation: preloader-line-expand 0.5s ease-out both;
   }
 
-  .preloader .skeleton-bar:nth-child(3) {
-    width: 160px;
+  .preloader-line-top {
+    animation-delay: 0s;
   }
 
-  @keyframes skeleton-shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+  .preloader-line-bottom {
+    animation-delay: 0.1s;
+  }
+
+  @keyframes preloader-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes preloader-line-expand {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: 100%;
+      opacity: 1;
+    }
   }
 
   /* Back to top */
