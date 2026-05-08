@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
   title?: string;
@@ -36,16 +35,8 @@ const siteUrl = 'https://soap-editing.pages.dev';
     <link rel="preload" href="/_astro/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/_astro/fonts/dm-serif-display-latin-400.woff2" as="font" type="font/woff2" crossorigin />
 
-    <ClientRouter />
   </head>
-  <body class="min-h-screen antialiased">
-    <script is:inline>
-      // Only show preloader on initial page load, not SPA navigations
-      if (!window.__soap_visited) {
-        window.__soap_visited = true;
-        document.body.classList.add('preloading');
-      }
-    </script>
+  <body class="min-h-screen antialiased preloading">
     <!-- Preloader -->
     <div class="preloader" id="preloader" aria-hidden="true">
       <div class="preloader-content">
@@ -184,10 +175,6 @@ const siteUrl = 'https://soap-editing.pages.dev';
 
   // ── Preloader ─────────────────────────────────────────
   const preloader = document.getElementById('preloader')!;
-  if (!document.body.classList.contains('preloading')) {
-    // SPA navigation — hide preloader immediately
-    preloader.classList.add('hidden');
-  }
   window.addEventListener('load', () => {
     setTimeout(() => {
       document.body.classList.remove('preloading');
@@ -210,9 +197,8 @@ const siteUrl = 'https://soap-editing.pages.dev';
   }
   observeReveal();
 
-  // Re-observe + remove preloader class after Astro page transitions
+  // Re-observe after page transitions (if ClientRouter used)
   document.addEventListener('astro:page-load', () => {
-    document.body.classList.remove('preloading');
     observeReveal();
     setLang(document.documentElement.lang || 'fr');
   });
