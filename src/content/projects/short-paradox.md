@@ -1,6 +1,6 @@
 ---
 title: Short Paradox
-category: youtube
+category: reseaux-sociaux
 aspectRatio: "9:16"
 order: 23
 preview: /projects/short-paradox-preview.mp4
