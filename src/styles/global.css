@@ -279,3 +279,19 @@
     pointer-events: none;
   }
 }
+
+/* ── Cinematic page transitions ────────────────────────── */
+@keyframes vto-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.97); }
+}
+@keyframes vto-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+::view-transition-old(main-content) {
+  animation: vto-fade-out 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-new(main-content) {
+  animation: vto-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+}

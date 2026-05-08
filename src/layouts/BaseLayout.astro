@@ -38,7 +38,14 @@ const siteUrl = 'https://soap-editing.pages.dev';
 
     <ClientRouter />
   </head>
-  <body class="min-h-screen antialiased preloading">
+  <body class="min-h-screen antialiased">
+    <script is:inline>
+      // Only show preloader on initial page load, not SPA navigations
+      if (!window.__soap_visited) {
+        window.__soap_visited = true;
+        document.body.classList.add('preloading');
+      }
+    </script>
     <!-- Preloader -->
     <div class="preloader" id="preloader" aria-hidden="true">
       <div class="preloader-content">
@@ -177,6 +184,10 @@ const siteUrl = 'https://soap-editing.pages.dev';
 
   // ── Preloader ─────────────────────────────────────────
   const preloader = document.getElementById('preloader')!;
+  if (!document.body.classList.contains('preloading')) {
+    // SPA navigation — hide preloader immediately
+    preloader.classList.add('hidden');
+  }
   window.addEventListener('load', () => {
     setTimeout(() => {
       document.body.classList.remove('preloading');
