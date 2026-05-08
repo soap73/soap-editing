@@ -285,47 +285,27 @@ function cardWidthClass(ratio: string) {
   let modalAnimating = false;
 
   (window as any).openVideo = function(el: HTMLElement) {
-    if (!modal || modalAnimating) return;
-
     const videoFile = el.dataset.videoFile || '';
-    let youtubeId = el.dataset.youtube || '';
-    let vimeoId = el.dataset.vimeo || '';
     const videoUrl = el.dataset.video || '';
-    const title = el.dataset.title || '';
 
+    // External links (YouTube, Instagram, etc.) → open in new tab
+    if (videoUrl && !videoFile) {
+      window.open(videoUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    // Local video file → modal
+    if (!modal || modalAnimating || !videoFile) return;
+
+    const title = el.dataset.title || '';
     const container = modal.querySelector('.aspect-video')!;
 
-    if (videoFile) {
-      const video = document.createElement('video');
-      video.src = videoFile;
-      video.controls = true;
-      video.autoplay = true;
-      video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
-      container.appendChild(video);
-    } else {
-      if (!youtubeId && !vimeoId && videoUrl) {
-        const ytMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
-        if (ytMatch) { youtubeId = ytMatch[1]; }
-        else {
-          const vmMatch = videoUrl.match(/vimeo\.com\/(\d+)/);
-          if (vmMatch) { vimeoId = vmMatch[1]; }
-        }
-      }
-
-      const iframe = document.createElement('iframe');
-      iframe.allow = 'autoplay; fullscreen';
-      iframe.allowFullscreen = true;
-      iframe.className = 'absolute inset-0 h-full w-full border-0';
-
-      if (youtubeId) {
-        iframe.src = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`;
-      } else if (vimeoId) {
-        iframe.src = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&dnt=1`;
-      }
-
-      iframe.title = title;
-      container.appendChild(iframe);
-    }
+    const video = document.createElement('video');
+    video.src = videoFile;
+    video.controls = true;
+    video.autoplay = true;
+    video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
+    container.appendChild(video);
 
     modal.querySelector('h2')!.textContent = title;
 
