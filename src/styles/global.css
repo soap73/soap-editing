@@ -143,7 +143,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 2px;
   }
 
   .preloader-text {
