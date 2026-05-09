@@ -87,8 +87,9 @@ function aspectClass(ratio: string) {
         onclick={hasVideo ? 'openVideo(this)' : undefined}
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
-          <video src={project.preview} autoplay loop muted playsinline
-            class="w-full h-full object-cover"
+          <video src={project.preview} loop muted playsinline preload="none"
+            poster={ids.youtubeId ? `https://img.youtube.com/vi/${ids.youtubeId}/hqdefault.jpg` : undefined}
+            class="w-full h-full object-cover lazy-video"
           />
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
@@ -121,19 +122,19 @@ function aspectClass(ratio: string) {
   role="dialog"
   style="--tw-bg-opacity:1; background-color:rgb(0,0,0);"
 >
-  <div class="flex h-full flex-col items-center justify-center p-6" style="cursor:auto;">
+  <div class="flex h-full flex-col items-center justify-center p-4 md:p-6" style="cursor:auto;">
     <div class="w-full max-w-5xl" style="cursor:auto;">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="font-heading text-lg text-brand-white"></h2>
+      <div class="flex items-center justify-between mb-3 md:mb-4">
+        <h2 class="font-heading text-base md:text-lg text-brand-white truncate pr-2"></h2>
         <button
-          class="text-brand-gray-400 hover:text-brand-white transition-colors text-sm uppercase tracking-wider"
+          class="text-brand-gray-400 hover:text-brand-white transition-colors text-xs md:text-sm uppercase tracking-wider shrink-0"
           onclick="closeModal()"
           data-i18n="modal.close"
         >
           Fermer
         </button>
       </div>
-      <div class="relative aspect-video w-full bg-brand-black"></div>
+      <div class="relative aspect-video w-full bg-brand-black" id="modal-player"></div>
     </div>
   </div>
 </dialog>
@@ -230,6 +231,20 @@ function aspectClass(ratio: string) {
 
   window.addEventListener('resize', layoutGrid);
 
+  // Lazy-load preview videos — only play when visible (56 MB → ~2 MB)
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target as HTMLVideoElement;
+      if (entry.isIntersecting) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, { rootMargin: '200px' });
+
+  document.querySelectorAll('.lazy-video').forEach(v => videoObserver.observe(v));
+
   // Category filtering
   let activeCat = 'all';
 
@@ -287,28 +302,65 @@ function aspectClass(ratio: string) {
   const modal = document.getElementById('video-modal') as HTMLDialogElement | null;
   let modalAnimating = false;
 
+  function extractYtId(url: string): string | null {
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+
   (window as any).openVideo = function(el: HTMLElement) {
     const videoFile = el.dataset.videoFile || '';
     const videoUrl = el.dataset.video || '';
+    const youtubeId = el.dataset.youtube || '';
+    const title = el.dataset.title || '';
 
-    // External links (YouTube, Instagram, etc.) → open in new tab
-    if (videoUrl && !videoFile) {
+    // Instagram → new tab (can't embed)
+    if (videoUrl && videoUrl.includes('instagram.com')) {
       window.open(videoUrl, '_blank', 'noopener,noreferrer');
       return;
     }
 
-    // Local video file → modal
-    if (!modal || modalAnimating || !videoFile) return;
+    if (!modal || modalAnimating) return;
 
-    const title = el.dataset.title || '';
-    const container = modal.querySelector('.aspect-video')!;
+    const ytId = youtubeId || extractYtId(videoUrl);
+    const container = modal.querySelector('#modal-player')!;
 
-    const video = document.createElement('video');
-    video.src = videoFile;
-    video.controls = true;
-    video.autoplay = true;
-    video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
-    container.appendChild(video);
+    if (ytId) {
+      // YouTube facade — show thumbnail + play button
+      const thumbUrl = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+      const facade = document.createElement('div');
+      facade.className = 'absolute inset-0 cursor-pointer group/facade';
+      facade.innerHTML = `
+        <img src="${thumbUrl}" alt="" class="absolute inset-0 w-full h-full object-cover"
+          onerror="this.src='https://img.youtube.com/vi/${ytId}/hqdefault.jpg'" />
+        <div class="absolute inset-0 bg-black/30 group-hover/facade:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+          <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-brand-accent flex items-center justify-center group-hover/facade:scale-110 transition-transform duration-300 shadow-lg shadow-brand-accent/40">
+            <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>`;
+      facade.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`;
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.className = 'absolute inset-0 w-full h-full border-0';
+        facade.replaceWith(iframe);
+      });
+      container.appendChild(facade);
+    } else if (videoFile) {
+      // Local video file
+      const video = document.createElement('video');
+      video.src = videoFile;
+      video.controls = true;
+      video.autoplay = true;
+      video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
+      container.appendChild(video);
+    } else {
+      // Fallback: open in new tab
+      window.open(videoUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
 
     modal.querySelector('h2')!.textContent = title;
 
@@ -348,8 +400,8 @@ function aspectClass(ratio: string) {
       if (e.target === modal) (window as any).closeModal();
     });
     modal.addEventListener('close', () => {
-      modal.querySelector('iframe')?.remove();
-      modal.querySelector('video')?.remove();
+      const container = modal.querySelector('#modal-player');
+      if (container) container.innerHTML = '';
       document.body.style.overflow = '';
       const dot = document.getElementById('cursor-dot');
       if (dot) dot.style.display = '';
