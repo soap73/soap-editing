@@ -1,7 +1,7 @@
 ---
 preview: /projects/dead-memories-preview.mp4
 featured: false
-order: 6
+order: 4
 date: 2025-04-01
 title: Dead Memories
 videoUrl: https://youtu.be/21UWwfHygZA

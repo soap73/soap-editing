@@ -11,7 +11,7 @@ const projectsCollection = defineCollection({
     thumbnail: z.string().optional(),
     description: z.string().optional().default(''),
     client: z.string().optional(),
-    category: z.enum(['youtube', 'court-metrage', 'reseaux-sociaux']).optional().default('youtube'),
+    category: z.enum(['youtube', 'court-metrage', 'reseaux-sociaux', 'cache']).optional().default('youtube'),
     date: z.date().optional().default(new Date()),
     tags: z.array(z.string()).optional().default([]),
     featured: z.boolean().optional().default(false),

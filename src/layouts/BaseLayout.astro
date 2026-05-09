@@ -10,8 +10,8 @@ export interface Props {
 }
 
 const {
-  title = 'Soap Edit | Monteur Vidéo Lyon — Montage, Motion Design & Sound Design',
-  description = 'Monteur vidéo à Lyon spécialisé en montage, motion design et sound design. Contenu percutant pour YouTube, Instagram et courts-métrages avec Premiere Pro et After Effects.',
+  title = 'Soap Edit | Montage Vidéo, Motion Design & Sound Design',
+  description = "Soap Edit - Montage vidéo professionnel, motion design et sound design. Storytelling visuel pour YouTube, réseaux sociaux et courts-métrages.",
   ogImage = '/og-image.png',
   pageUrl = '',
   schema,
@@ -44,6 +44,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     <meta property="og:site_name" content="Soap Edit" />
 
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
