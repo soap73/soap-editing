@@ -69,6 +69,12 @@
 }
 
 @layer components {
+  /* Hide custom cursor on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    .cursor-dot { display: none !important; }
+    html, body, *, a, button, [role="button"], [onclick], input, textarea { cursor: auto !important; }
+  }
+
   /* Custom cursor */
   .cursor-dot {
     position: fixed;
@@ -180,11 +186,11 @@
   /* Back to top */
   .back-to-top {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 16px;
+    right: 16px;
     z-index: var(--z-nav);
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: 1px solid var(--color-brand-gray-700);
     background: var(--color-brand-gray-950);

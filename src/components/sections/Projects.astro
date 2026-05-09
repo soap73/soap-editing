@@ -55,10 +55,10 @@ function aspectClass(ratio: string) {
 
 <section id="projects" class="relative z-10 w-full">
   <!-- Category filters -->
-  <div class="px-6 pb-6 flex flex-wrap gap-2 reveal-up" id="category-filters">
+  <div class="px-4 md:px-6 pb-4 md:pb-6 flex flex-nowrap overflow-x-auto gap-2 reveal-up" style="-ms-overflow-style:none;scrollbar-width:none" id="category-filters">
     {categories.map((cat) => (
       <button
-        class="cat-btn px-4 py-1.5 text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400"
+        class="cat-btn px-3 md:px-4 py-1.5 text-[10px] md:text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400 whitespace-nowrap shrink-0"
         data-category={cat.id}
         data-i18n={`categories.${cat.id === 'court-metrage' ? 'courtMetrage' : cat.id === 'reseaux-sociaux' ? 'reseauxSociaux' : cat.id}`}
       >
@@ -149,6 +149,13 @@ function aspectClass(ratio: string) {
     return 4;
   }
 
+  function getVertCols() {
+    const w = window.innerWidth;
+    if (w < 640) return 3;
+    if (w < 1024) return 5;
+    return 7;
+  }
+
   function layoutGrid() {
     const cards = grid.querySelectorAll('article');
     const visible: HTMLElement[] = [];
@@ -196,7 +203,7 @@ function aspectClass(ratio: string) {
       } else {
         // 9:16 row — flow left to right, tight
         if (i916 >= cards916.length) { rowIndex++; continue; }
-        const cardW = Math.floor(gridWidth / 7);
+        const cardW = Math.floor(gridWidth / getVertCols());
         const h = Math.round(cardW * 16 / 9);
         let x = 0;
 
