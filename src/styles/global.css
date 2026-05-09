@@ -1,8 +1,33 @@
 @import 'tailwindcss';
-@import '@fontsource/inter/latin-400.css';
-@import '@fontsource/inter/latin-700.css';
-@import '@fontsource/dm-serif-display/latin-400.css';
-@import '@fontsource/dm-serif-display/latin-400-italic.css';
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'DM Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/dm-serif-display-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'DM Serif Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/dm-serif-display-latin-400-italic.woff2') format('woff2');
+}
 
 @theme {
   --color-brand-black: #000000;
@@ -107,19 +132,12 @@
     transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
   }
 
-  .preloader.hidden {
+  .preloader.done {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
   }
 
-  /* Crossfade page entrance */
-  body {
-    transition: opacity 0.8s ease-out;
-  }
-  body.preloading {
-    opacity: 0;
-  }
 
   .preloader-content {
     display: flex;
@@ -283,6 +301,38 @@
     opacity: 0;
     transform: scale(0.95);
     pointer-events: none;
+  }
+
+  /* Blur-up image loading */
+  img.blur-up, video.blur-up {
+    filter: blur(12px);
+    transition: filter 0.5s ease-out;
+  }
+  img.blur-up.loaded, video.blur-up.loaded {
+    filter: blur(0);
+  }
+
+  /* Category filter scroll fades */
+  .filters-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .filters-fade-left {
+    left: 16px;
+    background: linear-gradient(to right, var(--color-brand-black), transparent);
+  }
+  .filters-fade-right {
+    right: 16px;
+    background: linear-gradient(to left, var(--color-brand-black), transparent);
+  }
+  @media (min-width: 768px) {
+    .filters-fade-left { left: 24px; }
+    .filters-fade-right { right: 24px; }
   }
 }
 

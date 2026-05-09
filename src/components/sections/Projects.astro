@@ -55,16 +55,25 @@ function aspectClass(ratio: string) {
 
 <section id="projects" class="relative z-10 w-full">
   <!-- Category filters -->
-  <div class="px-4 md:px-6 pb-4 md:pb-6 flex flex-nowrap overflow-x-auto gap-2 reveal-up" style="-ms-overflow-style:none;scrollbar-width:none" id="category-filters">
-    {categories.map((cat) => (
-      <button
-        class="cat-btn px-3 md:px-4 py-1.5 text-[10px] md:text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400 whitespace-nowrap shrink-0"
-        data-category={cat.id}
-        data-i18n={`categories.${cat.id === 'court-metrage' ? 'courtMetrage' : cat.id === 'reseaux-sociaux' ? 'reseauxSociaux' : cat.id}`}
-      >
-        {cat.label}
-      </button>
-    ))}
+  <div class="relative px-4 md:px-6 pb-4 md:pb-6 reveal-up" id="category-filters-wrapper">
+    <div class="filters-fade filters-fade-left"></div>
+    <div class="filters-fade filters-fade-right"></div>
+    <div class="flex flex-nowrap overflow-x-auto gap-2" style="-ms-overflow-style:none;scrollbar-width:none" id="category-filters">
+      {categories.map((cat) => (
+        <button
+          class="cat-btn px-3 md:px-4 py-1.5 text-[10px] md:text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400 whitespace-nowrap shrink-0"
+          data-category={cat.id}
+          data-i18n={`categories.${cat.id === 'court-metrage' ? 'courtMetrage' : cat.id === 'reseaux-sociaux' ? 'reseauxSociaux' : cat.id}`}
+        >
+          {cat.label}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="hidden text-center py-16 reveal-up" id="projects-empty">
+    <p class="text-brand-gray-400 text-sm" data-i18n="projects.empty">Aucun projet dans cette catégorie.</p>
   </div>
 
   <!-- Masonry container -->
@@ -89,18 +98,18 @@ function aspectClass(ratio: string) {
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
           <video src={project.preview} loop muted playsinline preload="none"
             poster={ids.youtubeId ? `https://img.youtube.com/vi/${ids.youtubeId}/hqdefault.jpg` : undefined}
-            class="w-full h-full object-cover lazy-video"
+            class="w-full h-full object-cover lazy-video blur-up"
           />
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover blur-up"
             loading="lazy"
           />
         ) : (
           <img
             src={thumbnailUrl(project)}
             alt={project.title}
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover blur-up"
             loading="lazy"
           />
         )}
@@ -245,8 +254,47 @@ function aspectClass(ratio: string) {
 
   document.querySelectorAll('.lazy-video').forEach(v => videoObserver.observe(v));
 
+  // Blur-up: mark images/videos as loaded when they appear or load
+  document.querySelectorAll('img.blur-up').forEach(img => {
+    if ((img as HTMLImageElement).complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+    }
+  });
+  // Videos get .loaded when they start playing via the lazy observer
+  const blurUpObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('loaded');
+        blurUpObserver.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '200px' });
+  document.querySelectorAll('video.blur-up').forEach(v => blurUpObserver.observe(v));
+
   // Category filtering
   let activeCat = 'all';
+
+  function updateScrollFade() {
+    const container = document.getElementById('category-filters')!;
+    const leftFade = document.querySelector('.filters-fade-left') as HTMLElement;
+    const rightFade = document.querySelector('.filters-fade-right') as HTMLElement;
+    if (!leftFade || !rightFade) return;
+    const canScroll = container.scrollWidth > container.clientWidth;
+    if (!canScroll) {
+      leftFade.style.opacity = '0';
+      rightFade.style.opacity = '0';
+      return;
+    }
+    leftFade.style.opacity = container.scrollLeft > 4 ? '1' : '0';
+    rightFade.style.opacity = container.scrollLeft < container.scrollWidth - container.clientWidth - 4 ? '1' : '0';
+  }
+
+  document.getElementById('category-filters')!.addEventListener('scroll', updateScrollFade, { passive: true });
+  window.addEventListener('resize', updateScrollFade, { passive: true });
+  // Init fade on load
+  setTimeout(updateScrollFade, 200);
 
   function updateFilters(cat: string) {
     activeCat = cat;
@@ -284,6 +332,19 @@ function aspectClass(ratio: string) {
         }, 350);
       }
     });
+
+    // Empty state
+    const emptyEl = document.getElementById('projects-empty')!;
+    const gridEl = document.getElementById('projects-grid')!;
+    if (visibleCount === 0) {
+      gridEl.style.display = 'none';
+      emptyEl.classList.remove('hidden');
+      emptyEl.classList.add('visible');
+    } else {
+      gridEl.style.display = '';
+      emptyEl.classList.add('hidden');
+      emptyEl.classList.remove('visible');
+    }
   }
 
   // Init: "All" active by default
@@ -371,6 +432,9 @@ function aspectClass(ratio: string) {
 
     modal.showModal();
     document.body.style.overflow = 'hidden';
+    // Focus the close button
+    const closeBtn = modal.querySelector('button') as HTMLButtonElement | null;
+    if (closeBtn) setTimeout(() => closeBtn.focus(), 100);
 
     requestAnimationFrame(() => {
       wrapper.style.opacity = '1';
@@ -396,6 +460,44 @@ function aspectClass(ratio: string) {
   };
 
   if (modal) {
+    // Focus trap
+    function getFocusableElements(): HTMLElement[] {
+      const els = modal!.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      return Array.from(els).filter(el => !!(el as HTMLElement).offsetParent);
+    }
+
+    function trapFocus(e: KeyboardEvent) {
+      if (e.key !== 'Tab' || !modal!.open) return;
+      const focusable = getFocusableElements();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    document.addEventListener('keydown', trapFocus);
+
+    // Swipe to close
+    let touchStartY = 0;
+    modal.addEventListener('touchstart', (e) => {
+      touchStartY = (e as TouchEvent).touches[0].clientY;
+    }, { passive: true });
+
+    modal.addEventListener('touchend', (e) => {
+      const deltaY = (e as TouchEvent).changedTouches[0].clientY - touchStartY;
+      // Only trigger if swipe down > 60px and target is the wrapper (not player)
+      const target = e.target as HTMLElement;
+      if (deltaY > 60 && (target === modal || target.closest('#modal-player') === null)) {
+        (window as any).closeModal();
+      }
+    });
+
     modal.addEventListener('click', (e) => {
       if (e.target === modal) (window as any).closeModal();
     });

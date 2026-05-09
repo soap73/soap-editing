@@ -1,16 +1,54 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../consts';
 
 import Hero from '../components/sections/Hero.astro';
 import Projects from '../components/sections/Projects.astro';
 import About from '../components/sections/About.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/Footer.astro';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: site.name,
+      url: 'https://soap-editing.pages.dev',
+      description: 'Monteur vidéo à Lyon spécialisé en montage, motion design et sound design.',
+      inLanguage: 'fr',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: 'https://soap-editing.pages.dev/?s={search_term_string}',
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'Person',
+      name: 'Anthony Vuillerot',
+      alternateName: 'Soap Edit',
+      email: site.email,
+      url: 'https://soap-editing.pages.dev',
+      jobTitle: 'Video Editor / Motion Designer / Sound Designer',
+      sameAs: [site.socials.instagram, site.socials.linkedin],
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Lyon',
+        addressCountry: 'FR',
+      },
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title="Soap Edit | Monteur Vidéo Lyon — Montage Vidéo, Motion Design & Sound Design"
   description="Soap Edit, monteur vidéo à Lyon. Montage vidéo professionnel, motion design et sound design sur Premiere Pro et After Effects. Storytelling visuel pour YouTube, réseaux sociaux et courts-métrages."
+  pageUrl="/"
+  schema={schema}
 >
   <div class="fixed inset-0 z-0">
     <video
@@ -18,6 +56,7 @@ import Footer from '../components/Footer.astro';
       loop
       muted
       playsinline
+      poster="/background-poster.jpg"
       class="absolute inset-0 h-full w-full object-cover"
     >
       <source src="/background-wave.mp4" type="video/mp4" />
