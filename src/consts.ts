@@ -8,17 +8,6 @@ export const site = {
   },
 } as const;
 
-export const about = {
-  intro:
-    "L'art de raconter des histoires par le montage. Mon approche combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, avec un rendu toujours professionnel.",
-  stack: [
-    'Adobe Premiere Pro',
-    'DaVinci Resolve',
-    'After Effects',
-  ],
-  clients: ['VZION', 'McSkyz', 'PROFESSION GANGSTER', 'WhenToCop?', 'La Folle Histoire', 'Affaires Criminelles'],
-} as const;
-
 export const categories = [
   { id: 'all', label: 'All' },
   { id: 'youtube', label: 'YouTube' },
