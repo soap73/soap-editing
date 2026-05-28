@@ -1,7 +1,7 @@
 ---
 title: WhenToCop? Ads
 category: reseaux-sociaux
-aspectRatio: 9:16
+aspectRatio: "9:16"
 order: 21
 preview: /projects/wtc-ads-preview.mp4
 videoUrl: https://youtube.com/shorts/MgNQNen7NCE

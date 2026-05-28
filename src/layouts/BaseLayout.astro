@@ -71,8 +71,8 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   </head>
   <body class="min-h-screen antialiased">
     <noscript>
-      <div style="position:fixed;inset:0;z-index:9999999;background:#000;display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;text-align:center;padding:2rem">
-        <p>JavaScript est requis pour ce site.</p>
+      <div class="fixed top-0 left-0 right-0 z-50 bg-brand-accent text-brand-black text-center text-xs py-1 px-4 font-medium">
+        Certaines fonctionnalités (animations, changement de langue) nécessitent JavaScript.
       </div>
     </noscript>
     <!-- Preloader -->
@@ -115,7 +115,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   // ── i18n ──────────────────────────────────────────────
   const t = {
     fr: {
-      tagline: 'Video Editor / Motion Designer / Sound Designer',
+      taglineBubbles: 'Monteur Vidéo,Motion Designer,Sound Designer',
       categories: { all: 'Tout', youtube: 'YouTube', courtMetrage: 'Courts-Métrages', reseauxSociaux: 'Réseaux Sociaux' },
       projects: { empty: 'Aucun projet dans cette catégorie.' },
       heroIntro: "L'art de raconter des histoires par le montage. Montage vidéo de haute qualité.",
@@ -157,10 +157,10 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
         },
         credits: { title: 'Crédits', design: 'Design & développement : Soap Edit' },
       },
-      footer: 'Tous droits réservés.',
+      footer: { legalLink: 'Mentions légales', rights: 'Tous droits réservés.' },
     },
     en: {
-      tagline: 'Video Editor / Motion Designer / Sound Designer',
+      taglineBubbles: 'Video Editor,Motion Designer,Sound Designer',
       categories: { all: 'All', youtube: 'YouTube', courtMetrage: 'Short Films', reseauxSociaux: 'Social Media' },
       projects: { empty: 'No projects in this category.' },
       heroIntro: 'The art of storytelling through editing. High-quality video editing.',
@@ -202,7 +202,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
         },
         credits: { title: 'Credits', design: 'Design & development: Soap Edit' },
       },
-      footer: 'All rights reserved.',
+      footer: { legalLink: 'Legal Notice', rights: 'All rights reserved.' },
     },
   };
 
@@ -230,6 +230,28 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       for (const k of keys) val = val?.[k];
       if (val) el.textContent = val;
     });
+
+    // Tagline bubble carousel
+    const bubble = document.getElementById('tagline-bubble');
+    if (bubble) {
+      const raw = bubble.textContent || '';
+      const words = raw.split(',').map((w: string) => w.trim()).filter(Boolean);
+      if (words.length > 1) {
+        let idx = 0;
+        bubble.textContent = words[0];
+        (window as any).__taglineInterval && clearInterval((window as any).__taglineInterval);
+        (window as any).__taglineInterval = setInterval(() => {
+          idx = (idx + 1) % words.length;
+          bubble.style.opacity = '0';
+          bubble.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            bubble.textContent = words[idx];
+            bubble.style.opacity = '1';
+            bubble.style.transform = 'scale(1)';
+          }, 200);
+        }, 2500);
+      }
+    }
 
     // Update placeholders
     document.querySelectorAll('[data-i18n-placeholder]').forEach((el: any) => {

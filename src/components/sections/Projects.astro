@@ -58,16 +58,18 @@ function aspectClass(ratio: string) {
   <div class="relative px-4 md:px-6 pb-4 md:pb-6 reveal-up" id="category-filters-wrapper">
     <div class="filters-fade filters-fade-left"></div>
     <div class="filters-fade filters-fade-right"></div>
-    <div class="flex flex-nowrap overflow-x-auto gap-2" style="-ms-overflow-style:none;scrollbar-width:none" id="category-filters">
+    <div class="overflow-x-auto py-3" style="-ms-overflow-style:none;scrollbar-width:none" id="category-filters">
+      <div class="flex flex-nowrap justify-start gap-3">
       {categories.map((cat) => (
         <button
-          class="cat-btn px-3 md:px-4 py-1.5 text-[10px] md:text-[11px] uppercase tracking-widest border rounded-full transition-colors border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400 whitespace-nowrap shrink-0"
+          class="cat-btn px-3 md:px-4 py-1.5 text-[10px] md:text-[11px] uppercase tracking-widest border rounded-full transition-all duration-300 border-brand-gray-800 text-brand-gray-400 hover:border-brand-gray-400 hover:scale-110 whitespace-nowrap shrink-0"
           data-category={cat.id}
           data-i18n={`categories.${cat.id === 'court-metrage' ? 'courtMetrage' : cat.id === 'reseaux-sociaux' ? 'reseauxSociaux' : cat.id}`}
         >
           {cat.label}
         </button>
       ))}
+      </div>
     </div>
   </div>
 
@@ -274,7 +276,6 @@ function aspectClass(ratio: string) {
   document.querySelectorAll('video.blur-up').forEach(v => blurUpObserver.observe(v));
 
   // Category filtering
-  let activeCat = 'all';
 
   function updateScrollFade() {
     const container = document.getElementById('category-filters')!;
@@ -297,7 +298,6 @@ function aspectClass(ratio: string) {
   setTimeout(updateScrollFade, 200);
 
   function updateFilters(cat: string) {
-    activeCat = cat;
     document.querySelectorAll('.cat-btn').forEach(b => {
       const isActive = b.getAttribute('data-category') === cat;
       b.classList.toggle('border-brand-white', isActive);
@@ -306,34 +306,27 @@ function aspectClass(ratio: string) {
       b.classList.toggle('border-brand-gray-800', !isActive);
       b.classList.toggle('text-brand-gray-400', !isActive);
     });
+
     let visibleCount = 0;
     const cards = document.querySelectorAll('#projects-grid > article');
+
     cards.forEach((card) => {
       const cardCat = card.getAttribute('data-category') || '';
       const visible = cat === 'all' || cardCat === cat;
       const el = card as HTMLElement;
+
       if (visible) {
         visibleCount++;
         el.style.display = '';
-        el.classList.add('filtered-out');
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            el.classList.remove('filtered-out');
-            layoutGrid();
-          });
-        });
+        el.classList.remove('filtered-out');
       } else {
         el.classList.add('filtered-out');
-        setTimeout(() => {
-          if (el.classList.contains('filtered-out')) {
-            el.style.display = 'none';
-            layoutGrid();
-          }
-        }, 350);
+        el.style.display = 'none';
       }
     });
 
-    // Empty state
+    layoutGrid();
+
     const emptyEl = document.getElementById('projects-empty')!;
     const gridEl = document.getElementById('projects-grid')!;
     if (visibleCount === 0) {

@@ -3,7 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2025-03-01"
 
 [vars]
-OAUTH_CLIENT_ID = "Ov23li9DWxynatBIScBt"       # Remplis avec ton Client ID GitHub
-OAUTH_CLIENT_SECRET = "b52d3726847ef051c7cfadbcd4682524e40f727a"   # Remplis avec ton Client Secret GitHub
+# À définir via `wrangler secret put OAUTH_CLIENT_ID` et `wrangler secret put OAUTH_CLIENT_SECRET`
+OAUTH_CLIENT_ID = ""
+OAUTH_CLIENT_SECRET = ""
 REDIRECT_URL = "https://soap-editing.pages.dev/admin/"
 ORIGIN = "https://soap-editing.pages.dev"
