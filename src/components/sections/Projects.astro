@@ -7,14 +7,35 @@ const sorted = projects
   .map((p) => ({ ...p.data, id: p.id }))
   .sort((a, b) => a.order - b.order);
 
+const firstProject = sorted[0];
+
+function ytThumb(id: string, size = 'hqdefault') {
+  if (import.meta.env.DEV) {
+    return `https://img.youtube.com/vi/${id}/${size}.jpg`;
+  }
+  return `/yt-thumb/${id}?size=${size}`;
+}
+
 function thumbnailUrl(project: typeof sorted[number]) {
   if (project.youtubeId) {
-    return `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+    return ytThumb(project.youtubeId);
   }
   if (project.vimeoId) {
     return project.thumbnail || '/placeholder-thumb.jpg';
   }
   return project.thumbnail || '/placeholder-thumb.jpg';
+}
+
+function thumbnailSrcset(youtubeId: string) {
+  return `${ytThumb(youtubeId, 'mqdefault')} 320w, ${ytThumb(youtubeId)} 480w, ${ytThumb(youtubeId, 'sddefault')} 640w`;
+}
+
+function firstProjectThumb() {
+  if (firstProject.preview && /\.(mp4|webm|mov)$/i.test(firstProject.preview)) {
+    const ids = resolveVideoIds(firstProject);
+    if (ids.youtubeId) return ytThumb(ids.youtubeId);
+  }
+  return thumbnailUrl(firstProject);
 }
 
 function extractYoutubeId(url: string): string | null {
@@ -53,6 +74,8 @@ function aspectClass(ratio: string) {
 
 ---
 
+<link rel="preload" as="image" href={firstProjectThumb()} fetchpriority="high" />
+
 <section id="projects" class="relative z-10 w-full">
   <!-- Category filters -->
   <div class="relative px-4 md:px-6 pb-4 md:pb-6 reveal-up" id="category-filters-wrapper">
@@ -85,6 +108,7 @@ function aspectClass(ratio: string) {
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
 
+      const isFirst = i === 0;
       return (
       <article
         class={`project-card group overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass}`}
@@ -99,20 +123,24 @@ function aspectClass(ratio: string) {
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
           <video src={project.preview} loop muted playsinline preload="none"
-            poster={ids.youtubeId ? `https://img.youtube.com/vi/${ids.youtubeId}/hqdefault.jpg` : undefined}
+            poster={ids.youtubeId ? ytThumb(ids.youtubeId) : undefined}
             class="w-full h-full object-cover lazy-video blur-up"
           />
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
             class="w-full h-full object-cover blur-up"
-            loading="lazy"
+            loading={isFirst ? undefined : 'lazy'}
+            fetchpriority={isFirst ? 'high' : undefined}
           />
         ) : (
           <img
             src={thumbnailUrl(project)}
             alt={project.title}
             class="w-full h-full object-cover blur-up"
-            loading="lazy"
+            loading={isFirst ? undefined : 'lazy'}
+            fetchpriority={isFirst ? 'high' : undefined}
+            srcset={ids.youtubeId ? thumbnailSrcset(ids.youtubeId) : undefined}
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         )}
         {hasVideo && (
@@ -242,7 +270,7 @@ function aspectClass(ratio: string) {
 
   window.addEventListener('resize', layoutGrid);
 
-  // Lazy-load preview videos — only play when visible (56 MB → ~2 MB)
+  // Lazy-load preview videos — play when visible
   const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const video = entry.target as HTMLVideoElement;
@@ -264,7 +292,7 @@ function aspectClass(ratio: string) {
       img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
     }
   });
-  // Videos get .loaded when they start playing via the lazy observer
+  // Videos get .loaded when they become visible (blur-up effect)
   const blurUpObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -380,12 +408,12 @@ function aspectClass(ratio: string) {
 
     if (ytId) {
       // YouTube facade — show thumbnail + play button
-      const thumbUrl = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+      const thumbUrl = `/yt-thumb/${ytId}?size=maxresdefault`;
       const facade = document.createElement('div');
       facade.className = 'absolute inset-0 cursor-pointer group/facade';
       facade.innerHTML = `
         <img src="${thumbUrl}" alt="" class="absolute inset-0 w-full h-full object-cover"
-          onerror="this.src='https://img.youtube.com/vi/${ytId}/hqdefault.jpg'" />
+          onerror="this.src='/yt-thumb/${ytId}?size=hqdefault'" />
         <div class="absolute inset-0 bg-black/30 group-hover/facade:bg-black/50 transition-colors duration-300 flex items-center justify-center">
           <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-brand-accent flex items-center justify-center group-hover/facade:scale-110 transition-transform duration-300 shadow-lg shadow-brand-accent/40">
             <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">

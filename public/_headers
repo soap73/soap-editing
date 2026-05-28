@@ -1,0 +1,21 @@
+# Long cache for static assets
+/projects/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/og-image.png
+  Cache-Control: public, max-age=31536000, immutable
+/background-poster.jpg
+  Cache-Control: public, max-age=31536000, immutable
+/background-wave.mp4
+  Cache-Control: public, max-age=31536000, immutable
+/favicon.*
+  Cache-Control: public, max-age=31536000, immutable
+/placeholder-thumb.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+# Short cache for HTML pages
+/*.html
+  Cache-Control: public, max-age=3600
+/
+  Cache-Control: public, max-age=3600
