@@ -11,12 +11,12 @@ export interface Props {
 
 const {
   title = 'Soap Edit | Montage Vidéo, Motion Design & Sound Design',
-  description = "Soap Edit - Montage vidéo professionnel, motion design et sound design. Storytelling visuel pour YouTube, réseaux sociaux et courts-métrages.",
+  description = "Anthony Vuillerot — Monteur vidéo à Lyon. Soap Edit : montage vidéo professionnel, motion design et sound design pour YouTube, réseaux sociaux et courts-métrages.",
   ogImage = '/og-image.png',
   pageUrl = '',
   schema,
 } = Astro.props;
-const siteUrl = 'https://soap-editing.pages.dev';
+const siteUrl = 'https://soap-edit.com';
 const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 ---
 
@@ -31,7 +31,17 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     <meta name="description" content={description} />
 
     <link rel="canonical" href={canonicalUrl} />
+    <meta name="google-site-verification" content="CWXbB_m4I58IAugewJFuTkfjDS4WPEmR0VtBOmDAA-I" />
     <meta name="robots" content="index, follow" />
+    <meta name="author" content="Anthony Vuillerot" />
+    <meta name="geo.region" content="FR-69" />
+    <meta name="geo.placename" content="Lyon" />
+    <meta name="geo.position" content="45.764043;4.835659" />
+    <meta name="ICBM" content="45.764043, 4.835659" />
+
+    <link rel="alternate" hreflang="fr" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -109,11 +119,12 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       categories: { all: 'Tout', youtube: 'YouTube', courtMetrage: 'Courts-Métrages', reseauxSociaux: 'Réseaux Sociaux' },
       projects: { empty: 'Aucun projet dans cette catégorie.' },
       heroIntro: "L'art de raconter des histoires par le montage. Montage vidéo de haute qualité.",
+
       modal: { close: 'Fermer' },
       about: {
         title: 'À propos',
         intro1: "L'art de raconter des histoires par le montage.",
-        intro2: "Mon approche combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, au rendu professionnel et mémorable.",
+        intro2: "Monteur vidéo basé à Lyon, je combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, au rendu professionnel et mémorable.",
         projectsCount: 'Projets livrés',
         yearsExp: "Années d'expérience",
         stack: 'Stack',
@@ -153,11 +164,12 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       categories: { all: 'All', youtube: 'YouTube', courtMetrage: 'Short Films', reseauxSociaux: 'Social Media' },
       projects: { empty: 'No projects in this category.' },
       heroIntro: 'The art of storytelling through editing. High-quality video editing.',
+
       modal: { close: 'Close' },
       about: {
         title: 'About',
         intro1: 'The art of storytelling through editing.',
-        intro2: 'My approach combines storytelling, motion design and sound design to transform your ideas into impactful, professional and memorable videos.',
+        intro2: 'Video editor based in Lyon, France. I combine storytelling, motion design and sound design to transform your ideas into impactful, professional and memorable videos.',
         projectsCount: 'Projects delivered',
         yearsExp: 'Years of experience',
         stack: 'Stack',

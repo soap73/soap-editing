@@ -13,15 +13,15 @@ const schema = {
   '@graph': [
     {
       '@type': 'WebSite',
-      name: site.name,
-      url: 'https://soap-editing.pages.dev',
-      description: 'Montage vidéo professionnel, motion design et sound design. Storytelling visuel pour YouTube, réseaux sociaux et courts-métrages.',
+      name: 'Soap Edit',
+      url: 'https://soap-edit.com',
+      description: 'Anthony Vuillerot — Monteur vidéo à Lyon. Montage vidéo professionnel, motion design et sound design. Storytelling visuel pour YouTube, réseaux sociaux et courts-métrages.',
       inLanguage: 'fr',
       potentialAction: {
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: 'https://soap-editing.pages.dev/?s={search_term_string}',
+          urlTemplate: 'https://soap-edit.com/?s={search_term_string}',
         },
         'query-input': 'required name=search_term_string',
       },
@@ -31,14 +31,65 @@ const schema = {
       name: 'Anthony Vuillerot',
       alternateName: 'Soap Edit',
       email: site.email,
-      url: 'https://soap-editing.pages.dev',
-      jobTitle: 'Video Editor / Motion Designer / Sound Designer',
+      url: 'https://soap-edit.com',
+      image: 'https://soap-edit.com/og-image.png',
+      jobTitle: 'Monteur Vidéo / Motion Designer / Sound Designer',
       sameAs: [site.socials.instagram, site.socials.linkedin],
+      knowsAbout: [
+        'montage vidéo',
+        'motion design',
+        'sound design',
+        'post-production',
+        'étalonnage',
+        'Adobe Premiere Pro',
+        'DaVinci Resolve',
+        'After Effects',
+        'YouTube',
+        'courts-métrages',
+      ],
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Lyon',
+        postalCode: '69003',
         addressCountry: 'FR',
       },
+    },
+    {
+      '@type': 'ProfessionalService',
+      name: 'Soap Edit',
+      url: 'https://soap-edit.com',
+      description: 'Monteur vidéo professionnel à Lyon. Services de montage vidéo, motion design et sound design pour YouTube, réseaux sociaux et courts-métrages.',
+      provider: { '@type': 'Person', name: 'Anthony Vuillerot' },
+      areaServed: {
+        '@type': 'City',
+        name: 'Lyon',
+      },
+      makesOffer: [
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Montage vidéo',
+            description: 'Montage vidéo professionnel pour YouTube et réseaux sociaux',
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Motion design',
+            description: 'Création d\'animations graphiques et motion design',
+          },
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Sound design',
+            description: 'Design sonore et mixage audio',
+          },
+        },
+      ],
     },
   ],
 };
@@ -46,7 +97,7 @@ const schema = {
 
 <BaseLayout
   title="Soap Edit | Montage Vidéo, Motion Design & Sound Design"
-  description="Soap Edit - Montage vidéo professionnel, motion design et sound design. Storytelling visuel pour YouTube, réseaux sociaux et courts-métrages."
+  description="Anthony Vuillerot — Monteur vidéo à Lyon. Soap Edit : montage vidéo professionnel, motion design et sound design pour YouTube, réseaux sociaux et courts-métrages."
   pageUrl="/"
   schema={schema}
 >
