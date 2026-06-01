@@ -119,7 +119,8 @@ function aspectClass(ratio: string) {
         data-title={project.title}
         data-video={project.videoUrl || ''}
         data-video-file={project.videoFile || ''}
-        onclick={hasVideo ? 'openVideo(this)' : undefined}
+        data-preview={project.preview || ''}
+        onclick={hasVideo || project.preview ? 'openVideo(this)' : undefined}
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
           <video src={project.preview} loop muted playsinline preload="none"
@@ -163,8 +164,7 @@ function aspectClass(ratio: string) {
 >
   <div class="flex h-full flex-col items-center justify-center p-4 md:p-6" style="cursor:auto;">
     <div class="w-full max-w-5xl" style="cursor:auto;">
-      <div class="flex items-center justify-between mb-3 md:mb-4">
-        <h2 class="font-heading text-base md:text-lg text-brand-white truncate pr-2"></h2>
+      <div class="flex items-center justify-end mb-3 md:mb-4">
         <button
           class="text-brand-gray-400 hover:text-brand-white transition-colors text-xs md:text-sm uppercase tracking-wider shrink-0"
           onclick="closeModal()"
@@ -393,6 +393,7 @@ function aspectClass(ratio: string) {
     const videoFile = el.dataset.videoFile || '';
     const videoUrl = el.dataset.video || '';
     const youtubeId = el.dataset.youtube || '';
+    const preview = el.dataset.preview || '';
     const title = el.dataset.title || '';
 
     // Instagram → new tab (can't embed)
@@ -438,13 +439,28 @@ function aspectClass(ratio: string) {
       video.autoplay = true;
       video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
       container.appendChild(video);
+    } else if (preview) {
+      // Preview file (video or image)
+      const isVideo = /\.(mp4|webm|mov)$/i.test(preview);
+      if (isVideo) {
+        const video = document.createElement('video');
+        video.src = preview;
+        video.controls = true;
+        video.autoplay = true;
+        video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
+        container.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = preview;
+        img.alt = title;
+        img.className = 'absolute inset-0 h-full w-full border-0 object-contain';
+        container.appendChild(img);
+      }
     } else {
       // Fallback: open in new tab
       window.open(videoUrl, '_blank', 'noopener,noreferrer');
       return;
     }
-
-    modal.querySelector('h2')!.textContent = title;
 
     const wrapper = modal.firstElementChild as HTMLElement;
     wrapper.style.opacity = '0';
