@@ -113,6 +113,23 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
 <script>
   // ── i18n ──────────────────────────────────────────────
+  const tagsDict: Record<string, {fr: string, en: string}> = {
+    'Drame': { fr: 'Drame', en: 'Drama' },
+    'Humour': { fr: 'Humour', en: 'Comedy' },
+    'Motion Design': { fr: 'Motion Design', en: 'Motion Design' },
+    'Map': { fr: 'Map', en: 'Map' },
+    'YouTube': { fr: 'YouTube', en: 'YouTube' },
+    'Sound Design': { fr: 'Sound Design', en: 'Sound Design' },
+    'court-métrage': { fr: 'Court-métrage', en: 'Short Film' },
+    'Zombies': { fr: 'Zombies', en: 'Zombies' },
+    "L'Amour": { fr: "L'Amour", en: 'Love' },
+    'Les Rêves': { fr: 'Les Rêves', en: 'Dreams' },
+    'La Beauté': { fr: 'La Beauté', en: 'Beauty' },
+    'Un Super Pouvoir': { fr: 'Un Super Pouvoir', en: 'A Superpower' },
+    'Amour': { fr: 'Amour', en: 'Love' },
+  };
+  (window as any).__tagsDict = tagsDict;
+
   const t = {
     fr: {
       taglineBubbles: 'Monteur Vidéo,Motion Designer,Sound Designer',

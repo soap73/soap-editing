@@ -9,7 +9,7 @@ tags: ["court-métrage", "Drame"]
 youtubeId: lZfb5oRCKoY
 aspectRatio: "16:9"
 videoUrl: "https://youtu.be/lZfb5oRCKoY"
-preview: "/projects/bts-thumbnail.mp4"
+preview: "/projects/bts-thumbnail.webm"
 ---
 
 

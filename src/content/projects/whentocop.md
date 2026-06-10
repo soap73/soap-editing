@@ -5,6 +5,6 @@ client: "WhenToCop?"
 category: reseaux-sociaux
 tags: ["reseaux sociaux"]
 aspectRatio: "9:16"
-preview: "/projects/wtc-review.mp4"
+preview: "/projects/wtc-review.webm"
 videoUrl: "https://www.instagram.com/reel/DX4ec0Ai-I6/"
 ---

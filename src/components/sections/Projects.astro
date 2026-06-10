@@ -133,7 +133,7 @@ function aspectClass(ratio: string) {
             poster={ids.youtubeId ? ytThumb(ids.youtubeId) : undefined}
             class="w-full h-full object-cover lazy-video blur-up"
           >
-            <source src={project.preview.replace(/\.(mp4|mov)$/i, '.webm')} type="video/webm" />
+            <source src={project.preview} type="video/webm" />
           </video>
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
@@ -481,9 +481,12 @@ function aspectClass(ratio: string) {
     if (tagsEl) {
       tagsEl.innerHTML = '';
       tags.forEach(t => {
+        const lang = document.documentElement.lang || 'fr';
+        const dict = (window as any).__tagsDict || {};
+        const translated = dict[t] ? dict[t][lang as 'fr' | 'en'] : t;
         const span = document.createElement('span');
         span.className = 'px-2.5 py-0.5 text-[9px] uppercase tracking-wider border rounded-full border-brand-white/10 text-brand-gray-400 bg-brand-white/5';
-        span.textContent = t;
+        span.textContent = translated;
         tagsEl.appendChild(span);
       });
     }

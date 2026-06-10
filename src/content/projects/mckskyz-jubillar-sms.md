@@ -5,7 +5,7 @@ client: "McSkyz"
 category: cache
 tags: ["Motion Design"]
 aspectRatio: "9:16"
-preview: "/projects/mckskyz-jubillar-sms.mp4"
+preview: "/projects/mckskyz-jubillar-sms.webm"
 ---
 
 

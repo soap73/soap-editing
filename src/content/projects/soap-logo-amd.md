@@ -5,7 +5,7 @@ client: "Soap"
 category: reseaux-sociaux
 tags: ["Motion Design"]
 aspectRatio: "9:16"
-preview: "/projects/soap-logo-amd-916.mp4"
+preview: "/projects/soap-logo-amd-916.webm"
 ---
 
 

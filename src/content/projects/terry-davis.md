@@ -7,7 +7,7 @@ tags: ["youtube"]
 youtubeId: -TdTjfoCO0o
 aspectRatio: "16:9"
 videoUrl: "https://youtu.be/-TdTjfoCO0o"
-preview: "/projects/terry-davis.mp4"
+preview: "/projects/terry-davis.webm"
 ---
 
 

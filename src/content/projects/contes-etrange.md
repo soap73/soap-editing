@@ -7,7 +7,7 @@ tags: ["youtube", "Sound Design"]
 youtubeId: zdvIOSkIokg
 aspectRatio: "16:9"
 videoUrl: "https://youtu.be/zdvIOSkIokg"
-preview: "/projects/contes-etrange-preview.mp4"
+preview: "/projects/contes-etrange-preview.webm"
 ---
 
 

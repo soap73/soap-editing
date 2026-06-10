@@ -9,7 +9,7 @@ tags: ["court-métrage", "Drame"]
 youtubeId: -NH-S3OIx7E
 aspectRatio: "16:9"
 videoUrl: "https://youtu.be/-NH-S3OIx7E"
-preview: "/projects/thumb-mononoawre.mp4"
+preview: "/projects/thumb-mononoawre.webm"
 ---
 
 

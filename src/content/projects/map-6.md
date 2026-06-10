@@ -5,5 +5,5 @@ client: "PROFESSION GANGSTER"
 category: youtube
 tags: ["Map", "YouTube"]
 aspectRatio: "16:9"
-preview: "/projects/MAP_6.mp4"
+preview: "/projects/MAP_6.webm"
 ---
