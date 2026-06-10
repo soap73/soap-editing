@@ -9,6 +9,5 @@ aspectRatio: "16:9"
 videoUrl: "https://youtu.be/23B9GVwbv0Y"
 preview: "/projects/experience-sociale-preview.mp4"
 ---
-order: 10
 
 

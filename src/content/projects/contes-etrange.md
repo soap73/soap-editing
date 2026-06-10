@@ -9,6 +9,5 @@ aspectRatio: "16:9"
 videoUrl: "https://youtu.be/zdvIOSkIokg"
 preview: "/projects/contes-etrange-preview.mp4"
 ---
-order: 11
 
 

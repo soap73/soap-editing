@@ -105,7 +105,7 @@ function aspectClass(ratio: string) {
 
   <!-- Masonry container -->
   <div class="relative w-full" id="projects-grid">
-    {sorted.map((project, i) => {
+    {sorted.filter(p => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
@@ -125,13 +125,16 @@ function aspectClass(ratio: string) {
         data-client={project.client || ''}
         data-description={project.description || ''}
         data-tags={(project.tags || []).join(',')}
+        data-aspect={project.aspectRatio || '16:9'}
         onclick={hasVideo || project.preview ? 'openVideo(this)' : undefined}
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
-          <video src={project.preview} loop muted playsinline preload="none"
+          <video loop muted playsinline preload="none"
             poster={ids.youtubeId ? ytThumb(ids.youtubeId) : undefined}
             class="w-full h-full object-cover lazy-video blur-up"
-          />
+          >
+            <source src={project.preview.replace(/\.(mp4|mov)$/i, '.webm')} type="video/webm" />
+          </video>
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
             class="w-full h-full object-cover blur-up"
@@ -180,7 +183,7 @@ function aspectClass(ratio: string) {
   </div>
   <!-- Content -->
   <div class="flex h-full flex-col items-center justify-center p-3 md:p-6" style="cursor:auto;">
-    <div class="w-full max-w-6xl" style="cursor:auto;">
+    <div class="w-full max-w-6xl" style="cursor:auto;" id="modal-content-wrapper">
       <!-- Glass card -->
       <div class="relative tilt-only bg-brand-dark/70 backdrop-blur-2xl border border-white/20 rounded-[40px] shadow-2xl shadow-brand-accent/10 shadow-[inset_0_0_30px_-8px_rgba(255,255,255,0.07)]" data-tilt-max="4">
         <!-- Close button -->
@@ -442,6 +445,21 @@ function aspectClass(ratio: string) {
     const description = el.dataset.description || '';
     const tags = (el.dataset.tags || '').split(',').filter(Boolean);
     const category = el.dataset.category || '';
+    const aspect = el.dataset.aspect || '16:9';
+
+    // Adjust modal layout for 9:16 videos
+    const contentWrapper = document.getElementById('modal-content-wrapper');
+    const playerDiv = document.getElementById('modal-player');
+    if (contentWrapper) {
+      contentWrapper.className = aspect === '9:16'
+        ? 'w-full max-w-[420px] mx-auto'
+        : 'w-full max-w-6xl';
+    }
+    if (playerDiv) {
+      playerDiv.className = aspect === '9:16'
+        ? 'relative aspect-[9/16] w-full bg-transparent'
+        : 'relative aspect-video w-full bg-transparent';
+    }
 
     // Instagram → new tab (can't embed)
     if (videoUrl && videoUrl.includes('instagram.com')) {
@@ -500,20 +518,26 @@ function aspectClass(ratio: string) {
     } else if (videoFile) {
       // Local video file
       const video = document.createElement('video');
-      video.src = videoFile;
       video.controls = true;
       video.autoplay = true;
       video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
+      const vSrc = document.createElement('source');
+      vSrc.src = videoFile.replace(/\.(mp4|mov)$/i, '.webm');
+      vSrc.type = 'video/webm';
+      video.appendChild(vSrc);
       container.appendChild(video);
     } else if (preview) {
       // Preview file (video or image)
       const isVideo = /\.(mp4|webm|mov)$/i.test(preview);
       if (isVideo) {
         const video = document.createElement('video');
-        video.src = preview;
         video.controls = true;
         video.autoplay = true;
         video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
+        const vSrc = document.createElement('source');
+        vSrc.src = preview.replace(/\.(mp4|mov)$/i, '.webm');
+        vSrc.type = 'video/webm';
+        video.appendChild(vSrc);
         container.appendChild(video);
       } else {
         const img = document.createElement('img');
@@ -606,6 +630,11 @@ function aspectClass(ratio: string) {
     modal.addEventListener('close', () => {
       const container = modal.querySelector('#modal-player');
       if (container) container.innerHTML = '';
+      // Reset modal layout to default (16:9)
+      const contentWrapper = document.getElementById('modal-content-wrapper');
+      const playerDiv = document.getElementById('modal-player');
+      if (contentWrapper) contentWrapper.className = 'w-full max-w-6xl';
+      if (playerDiv) playerDiv.className = 'relative aspect-video w-full bg-transparent';
       const titleEl = document.getElementById('modal-title');
       const descEl = document.getElementById('modal-description');
       const tagsEl = document.getElementById('modal-tags');

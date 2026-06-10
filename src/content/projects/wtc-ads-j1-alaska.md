@@ -8,4 +8,3 @@ aspectRatio: "9:16"
 preview: "/projects/wtc-ads-preview.mp4"
 videoUrl: "https://www.instagram.com/reel/DXhUDScCCRP/"
 ---
-order: 21

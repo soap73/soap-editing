@@ -7,6 +7,5 @@ tags: ["Map","YouTube"]
 aspectRatio: "16:9"
 preview: "/projects/MAP_2_V1.mp4"
 ---
-order: 14
 
 

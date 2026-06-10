@@ -9,6 +9,5 @@ aspectRatio: "16:9"
 videoUrl: "https://youtu.be/Ex1jWi8KN-s"
 preview: "/projects/achille-magic-preview.mp4"
 ---
-order: 6
 
 
