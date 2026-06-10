@@ -1,9 +1,11 @@
 ---
-title: Les Incidents les plus Sombres de la TV (ft. @Feldup)
+title: "Les Incidents les plus Sombres de la TV (ft. @Feldup)"
+client: "VZION"
 category: youtube
-aspectRatio: "16:9"
-order: 9
-preview: /projects/incidents-tv-preview.mp4
-videoUrl: https://youtu.be/wzMZG1oWrHY
+tags: ["youtube"]
 youtubeId: wzMZG1oWrHY
+aspectRatio: "16:9"
+videoUrl: "https://youtu.be/wzMZG1oWrHY"
+preview: "/projects/incidents-tv-preview.mp4"
 ---
+

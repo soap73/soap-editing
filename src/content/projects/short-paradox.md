@@ -1,9 +1,12 @@
 ---
-title: Short Paradox
+title: "Short Paradox"
+client: "Pardox"
 category: reseaux-sociaux
-aspectRatio: "9:16"
-order: 24
-preview: /projects/short-paradox-preview.mp4
-videoUrl: https://youtube.com/shorts/YVII7AXfebE
+tags: ["reseaux","sociaux"]
 youtubeId: YVII7AXfebE
+vimeoId: YVII7AXfebE
+aspectRatio: "9:16"
+videoUrl: "https://youtube.com/shorts/YVII7AXfebE"
+preview: "/projects/short-paradox-preview.mp4"
 ---
+

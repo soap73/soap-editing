@@ -1,7 +1,9 @@
 ---
-title: MAP 6
+title: "PROFESSION GANGSTER MAP CARTEL CALI"
+client: "PROFESSION GANGSTER"
 category: youtube
+tags: ["MAP"]
 aspectRatio: "16:9"
-order: 15
-preview: /projects/MAP_6.mp4
+preview: "/projects/MAP_6.mp4"
 ---
+

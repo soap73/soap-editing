@@ -1,8 +1,10 @@
 ---
-title: "L'Expérience Sociale la plus Sombre filmée en Direct …"
+title: "L'Expérience Sociale la plus Sombre filmée en Direct ..."
+client: "VZION"
 category: youtube
-aspectRatio: "16:9"
-order: 10
+tags: ["youtube"]
 youtubeId: 23B9GVwbv0Y
-preview: /projects/experience-sociale-preview.mp4
+aspectRatio: "16:9"
+preview: "/projects/experience-sociale-preview.mp4"
 ---
+

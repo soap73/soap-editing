@@ -1,9 +1,11 @@
 ---
-title: Créateurs Entrepreneurs Achille Magic
+title: "Achille Magic : Faire des millions de vues sur Tiktok avec la magie"
+client: "Créateurs Entrepreneurs"
 category: youtube
-aspectRatio: "16:9"
-order: 6
-preview: /projects/achille-magic-preview.mp4
-videoUrl: https://youtu.be/Ex1jWi8KN-s
+tags: ["youtube"]
 youtubeId: Ex1jWi8KN-s
+aspectRatio: "16:9"
+videoUrl: "https://youtu.be/Ex1jWi8KN-s"
+preview: "/projects/achille-magic-preview.mp4"
 ---
+

@@ -1,7 +1,9 @@
 ---
-title: Into The Wild
+title: "Into The Wild"
+client: "PROFESSION GANGSTER"
 category: youtube
+tags: ["MAP"]
 aspectRatio: "16:9"
-order: 18
-preview: /projects/ITW_MAP_1_V.1.mp4
+preview: "/projects/ITW_MAP_1_V.1.mp4"
 ---
+

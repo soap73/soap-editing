@@ -1,8 +1,11 @@
 ---
 title: "Les CONTES de l'ÉTRANGE : HORREUR sur YOUTUBE"
+client: "CNAWAK"
 category: youtube
-aspectRatio: "16:9"
-order: 11
+tags: ["youtube"]
 youtubeId: zdvIOSkIokg
-preview: /projects/contes-etrange-preview.mp4
+vimeoId: zdvIOSkIokg
+aspectRatio: "16:9"
+preview: "/projects/contes-etrange-preview.mp4"
 ---
+

@@ -1,8 +1,10 @@
 ---
-title: Affaires Criminelles
+title: "Affaires Criminelles"
+client: "Affaires Criminelles"
 category: reseaux-sociaux
+tags: ["reseaux","sociaux"]
 aspectRatio: "9:16"
-order: 22
-preview: /projects/ac6-preview.mp4
-videoUrl: https://www.instagram.com/reel/DVthm7Bgfg6/
+videoUrl: "https://www.instagram.com/reel/DVthm7Bgfg6/"
+preview: "/projects/ac6-preview.mp4"
 ---
+

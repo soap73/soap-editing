@@ -1,7 +1,9 @@
 ---
-title: MCSKYZ_MAP_RELIEF_V.1
+title: "MCSKYZ MAP RELIEF"
+client: "McSkyz"
 category: youtube
+tags: ["MAP"]
 aspectRatio: "16:9"
-order: 17
-preview: /projects/MCSKYZ_MAP_RELIEF_V.1.mp4
+preview: "/projects/MCSKYZ_MAP_RELIEF_V.1.mp4"
 ---
+

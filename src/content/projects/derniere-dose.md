@@ -1,8 +1,10 @@
 ---
-title: Dernière Dose
+title: "Derniere Dose"
+client: "Julien ROOSE"
 category: court-metrage
-aspectRatio: "16:9"
-order: 5
+tags: ["L’Amour"]
 youtubeId: he4F0EQszoI
-preview: /projects/derniere-dose-preview.mp4
+aspectRatio: "16:9"
+preview: "/projects/derniere-dose-preview.mp4"
 ---
+

@@ -1,9 +1,11 @@
 ---
 title: "La Descente aux Enfers d'un YouTubeur Schizophrène : Terry Davis"
+client: "VZION"
 category: youtube
+tags: ["youtube"]
+youtubeId: -TdTjfoCO0o
 aspectRatio: "16:9"
-order: 8
-preview: /projects/terry-davis.mp4
-videoUrl: https://youtu.be/-TdTjfoCO0o
-youtubeId: "-TdTjfoCO0o"
+videoUrl: "https://youtu.be/-TdTjfoCO0o"
+preview: "/projects/terry-davis.mp4"
 ---
+

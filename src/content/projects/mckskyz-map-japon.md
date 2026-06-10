@@ -1,7 +1,9 @@
 ---
-title: MCKSKYZ_MAP_JAPON
+title: "MCKSKYZ MAP JAPON"
+client: "McSkyz"
 category: youtube
+tags: ["MAP"]
 aspectRatio: "16:9"
-order: 16
-preview: /projects/MCKSKYZ_MAP_JAPON.mp4
+preview: "/projects/MCKSKYZ_MAP_JAPON.mp4"
 ---
+
