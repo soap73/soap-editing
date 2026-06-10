@@ -1,6 +1,6 @@
 ---
 order: 19
-title: "Review Jordan One Virgil Abloh Alaska"
+title: "Review Jordan 1 Alaska Virgil Abloh Archive"
 client: "WhenToCop?"
 category: reseaux-sociaux
 tags: ["reseaux sociaux"]
