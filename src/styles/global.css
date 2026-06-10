@@ -290,6 +290,14 @@
   }
 }
 
+/* ── Floating particles ────────────────────────────────── */
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.25; }
+  25% { transform: translateY(-5px) translateX(2px); opacity: 0.45; }
+  50% { transform: translateY(-8px) translateX(-2px); opacity: 0.55; }
+  75% { transform: translateY(-3px) translateX(3px); opacity: 0.35; }
+}
+
 @layer utilities {
   .reveal-up {
     opacity: 0;
