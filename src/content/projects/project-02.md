@@ -1,4 +1,5 @@
 ---
+order: 2
 title: "Mono no Aware"
 description: "Nikon Film Festival 2026
 Thème : La Beauté"
@@ -10,5 +11,6 @@ aspectRatio: "16:9"
 videoUrl: "https://youtu.be/-NH-S3OIx7E"
 preview: "/projects/thumb-mononoawre.mp4"
 ---
+order: 2
 
 

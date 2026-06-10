@@ -1,12 +1,11 @@
 ---
+order: 19
 title: "Review Jordan One Virgil Abloh Alaska"
 client: "WhenToCop?"
 category: reseaux-sociaux
 tags: ["reseaux sociaux"]
-youtubeId: ie7RGmuF5mU
 aspectRatio: "9:16"
-videoUrl: "https://youtube.com/shorts/ie7RGmuF5mU"
 preview: "/projects/wtc-review.mp4"
+videoUrl: "https://www.instagram.com/reel/DX4ec0Ai-I6/"
 ---
-
-
+order: 19

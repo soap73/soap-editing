@@ -1,12 +1,11 @@
 ---
+order: 21
 title: "Ad WhenToCop?"
 client: "WhenToCop?"
 category: reseaux-sociaux
 tags: ["reseaux sociaux"]
-youtubeId: MgNQNen7NCE
 aspectRatio: "9:16"
-videoUrl: "https://youtube.com/shorts/MgNQNen7NCE"
 preview: "/projects/wtc-ads-preview.mp4"
+videoUrl: "https://www.instagram.com/reel/DXhUDScCCRP/"
 ---
-
-
+order: 21

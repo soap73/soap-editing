@@ -1,4 +1,5 @@
 ---
+order: 3
 title: "Idole"
 client: "Julien ROOSE"
 category: court-metrage
@@ -8,5 +9,6 @@ aspectRatio: "16:9"
 videoUrl: "https://youtu.be/OfcED3UO1E0"
 preview: "/projects/idole-preview.mp4"
 ---
+order: 3
 
 
