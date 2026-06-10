@@ -7,6 +7,7 @@ import Projects from '../components/sections/Projects.astro';
 import About from '../components/sections/About.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/Footer.astro';
+import StackClients from '../components/sections/StackClients.astro';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -123,7 +124,8 @@ const schema = {
       <div class="mx-auto max-w-6xl">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 md:gap-6 items-start">
           <div class="lg:col-span-3"><About /></div>
-          <div class="lg:col-span-2"><Contact /></div>
+          <div class="lg:col-span-2"><StackClients /></div>
+          <div class="lg:col-span-5 pt-0 md:pt-2"><Contact /></div>
         </div>
       </div>
     </div>
