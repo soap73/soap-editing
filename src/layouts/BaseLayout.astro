@@ -120,7 +120,6 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       projects: { empty: 'Aucun projet dans cette catégorie.' },
       heroIntro: "L'art de raconter des histoires par le montage. Montage vidéo de haute qualité.",
 
-      modal: { close: 'Fermer' },
       about: {
         title: 'À propos',
         intro1: "L'art de raconter des histoires par le montage.",
@@ -345,4 +344,29 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
   document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
   document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
+
+  // ── Tilt + glow cards ────────────────────────────────
+  document.querySelectorAll('.tilt-card, .tilt-only').forEach((el) => {
+    const card = el as HTMLElement;
+    const maxAngle = parseFloat(card.dataset.tiltMax || '8');
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+
+    card.addEventListener('mousemove', (e: Event) => {
+      const me = e as MouseEvent;
+      const rect = card.getBoundingClientRect();
+      const x = (me.clientX - rect.left) / rect.width;
+      const y = (me.clientY - rect.top) / rect.height;
+
+      const rotateX = (y - 0.5) * maxAngle * 2;
+      const rotateY = (x - 0.5) * -maxAngle * 2;
+      card.style.transform =
+        `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      card.style.setProperty('--glow-x', `${x * 100}%`);
+      card.style.setProperty('--glow-y', `${y * 100}%`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    });
+  });
 </script>

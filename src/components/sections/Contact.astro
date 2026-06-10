@@ -3,55 +3,57 @@ import { site } from '../../consts';
 ---
 
 <section id="contact" class="relative z-10 pt-12 pb-24 px-6">
-  <div class="mx-auto max-w-md text-center px-2">
-    <h2 class="font-heading text-2xl md:text-3xl text-brand-white mb-2 reveal-up" data-i18n="contact.title">Contact</h2>
-    <p class="text-brand-gray-400 text-sm mb-10 reveal-up reveal-up-delay-1" data-i18n="contact.subtitle">Un projet ? Une collaboration ?</p>
+  <div class="mx-auto max-w-md">
+    <div class="tilt-card bg-brand-dark/60 backdrop-blur-2xl border border-white/20 rounded-[60px] shadow-2xl shadow-[inset_0_0_30px_-8px_rgba(255,255,255,0.07)] px-6 md:px-8 py-8 md:py-10 text-center relative overflow-hidden">
+      <h2 class="font-heading text-2xl md:text-3xl text-brand-white mb-2 reveal-up" data-i18n="contact.title">Contact</h2>
+      <p class="text-brand-gray-400 text-sm mb-8 reveal-up reveal-up-delay-1" data-i18n="contact.subtitle">Un projet ? Une collaboration ?</p>
 
-    <div class="flex flex-col gap-3 reveal-up reveal-up-delay-2">
-      <a
-        href={`mailto:${site.email}`}
-        class="group flex items-center rounded-full overflow-hidden border border-brand-gray-800 hover:border-brand-accent transition-all duration-300 hover:scale-[1.02]"
-      >
-        <span class="flex items-center justify-center w-14 h-full min-h-[52px] bg-brand-accent group-hover:bg-brand-accent-bright transition-colors duration-300">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        </span>
-        <span class="flex-1 flex items-center justify-center py-4 pr-4 text-sm text-brand-gray-400 group-hover:text-brand-white transition-colors duration-300" data-i18n="contact.email">Email</span>
-      </a>
+      <div class="flex flex-col gap-3 reveal-up reveal-up-delay-2">
+        <a
+          href={`mailto:${site.email}`}
+          class="group flex items-center rounded-full overflow-hidden border border-brand-white/10 hover:border-brand-accent transition-all duration-300 hover:scale-[1.02] bg-brand-black/20 hover:bg-brand-black/30"
+        >
+          <span class="flex items-center justify-center w-12 md:w-14 h-full min-h-[48px] bg-brand-accent group-hover:bg-brand-accent-bright transition-colors duration-300">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </span>
+          <span class="flex-1 flex items-center justify-center py-3.5 pr-4 text-sm text-brand-gray-400 group-hover:text-brand-white transition-colors duration-300" data-i18n="contact.email">Email</span>
+        </a>
 
-      <a
-        href={site.socials.instagram}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="group flex items-center rounded-full overflow-hidden border border-brand-gray-800 hover:border-brand-accent transition-all duration-300 hover:scale-[1.02]"
-      >
-        <span class="flex items-center justify-center w-14 h-full min-h-[52px] bg-brand-accent group-hover:bg-brand-accent-bright transition-colors duration-300">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <rect x="2" y="2" width="20" height="20" rx="5" stroke-width="1.5" />
-            <circle cx="12" cy="12" r="5" stroke-width="1.5" />
-            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-          </svg>
-        </span>
-        <span class="flex-1 flex items-center justify-center py-4 pr-4 text-sm text-brand-gray-400 group-hover:text-brand-white transition-colors duration-300" data-i18n="contact.instagram">Instagram</span>
-      </a>
+        <a
+          href={site.socials.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex items-center rounded-full overflow-hidden border border-brand-white/10 hover:border-brand-accent transition-all duration-300 hover:scale-[1.02] bg-brand-black/20 hover:bg-brand-black/30"
+        >
+          <span class="flex items-center justify-center w-12 md:w-14 h-full min-h-[48px] bg-brand-accent group-hover:bg-brand-accent-bright transition-colors duration-300">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="2" y="2" width="20" height="20" rx="5" stroke-width="1.5" />
+              <circle cx="12" cy="12" r="5" stroke-width="1.5" />
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+            </svg>
+          </span>
+          <span class="flex-1 flex items-center justify-center py-3.5 pr-4 text-sm text-brand-gray-400 group-hover:text-brand-white transition-colors duration-300" data-i18n="contact.instagram">Instagram</span>
+        </a>
 
-      <a
-        href={site.socials.linkedin}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="group flex items-center rounded-full overflow-hidden border border-brand-gray-800 hover:border-brand-accent transition-all duration-300 hover:scale-[1.02]"
-      >
-        <span class="flex items-center justify-center w-14 h-full min-h-[52px] bg-brand-accent group-hover:bg-brand-accent-bright transition-colors duration-300">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <rect x="2" y="2" width="20" height="20" rx="3" stroke-width="1.5" />
-            <path d="M7 10v7" stroke-width="1.5" stroke-linecap="round" />
-            <circle cx="7" cy="7" r="1.2" fill="currentColor" stroke="none" />
-            <path d="M11 17v-4.5a2 2 0 014 0V17" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-        </span>
-        <span class="flex-1 flex items-center justify-center py-4 pr-4 text-sm text-brand-gray-400 group-hover:text-brand-white transition-colors duration-300" data-i18n="contact.linkedin">LinkedIn</span>
-      </a>
+        <a
+          href={site.socials.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex items-center rounded-full overflow-hidden border border-brand-white/10 hover:border-brand-accent transition-all duration-300 hover:scale-[1.02] bg-brand-black/20 hover:bg-brand-black/30"
+        >
+          <span class="flex items-center justify-center w-12 md:w-14 h-full min-h-[48px] bg-brand-accent group-hover:bg-brand-accent-bright transition-colors duration-300">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="2" y="2" width="20" height="20" rx="3" stroke-width="1.5" />
+              <path d="M7 10v7" stroke-width="1.5" stroke-linecap="round" />
+              <circle cx="7" cy="7" r="1.2" fill="currentColor" stroke="none" />
+              <path d="M11 17v-4.5a2 2 0 014 0V17" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="flex-1 flex items-center justify-center py-3.5 pr-4 text-sm text-brand-gray-400 group-hover:text-brand-white transition-colors duration-300" data-i18n="contact.linkedin">LinkedIn</span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
