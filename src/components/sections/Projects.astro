@@ -438,6 +438,7 @@ function aspectClass(ratio: string) {
     const youtubeId = el.dataset.youtube || '';
     const preview = el.dataset.preview || '';
     const title = el.dataset.title || '';
+    const client = el.dataset.client || '';
     const description = el.dataset.description || '';
     const tags = (el.dataset.tags || '').split(',').filter(Boolean);
     const category = el.dataset.category || '';
@@ -457,7 +458,7 @@ function aspectClass(ratio: string) {
     const tagsEl = document.getElementById('modal-tags');
 
     if (titleEl) titleEl.textContent = title;
-    if (catEl) catEl.textContent = catLabel(category);
+    if (catEl) catEl.textContent = client || catLabel(category);
     if (descEl) descEl.textContent = description;
     if (tagsEl) {
       tagsEl.innerHTML = '';
