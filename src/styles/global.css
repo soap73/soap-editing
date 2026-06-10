@@ -204,23 +204,26 @@
   /* Back to top */
   .back-to-top {
     position: fixed;
-    bottom: 16px;
-    right: 16px;
+    bottom: 20px;
+    right: 20px;
     z-index: var(--z-nav);
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    border: 1px solid var(--color-brand-gray-700);
-    background: var(--color-brand-gray-950);
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(10,10,10,0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     color: var(--color-brand-gray-400);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-    transition: opacity 0.3s, visibility 0.3s, transform 0.3s, border-color 0.3s, color 0.3s;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   }
 
   .back-to-top.visible {
@@ -230,8 +233,9 @@
   }
 
   .back-to-top:hover {
-    border-color: var(--color-brand-white);
-    color: var(--color-brand-white);
+    border-color: var(--color-brand-accent);
+    color: var(--color-brand-accent);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.3);
   }
 
   /* Scroll progress bar */
