@@ -2,121 +2,47 @@
 import { site } from '../../consts';
 ---
 
-<section id="contact" class="relative z-10 pt-12 md:pt-16">
-  <div class="group/contact bg-brand-dark/70 backdrop-blur-xl border border-white/[0.07] rounded-[40px] shadow-xl shadow-[inset_0_0_1px_1px_rgba(255,255,255,0.04)] px-6 md:px-12 py-8 md:py-10 relative overflow-hidden text-center">
+<section id="contact" class="relative z-10 group/contact bg-brand-dark/70 backdrop-blur-xl border border-white/[0.07] rounded-[40px] shadow-xl shadow-[inset_0_0_1px_1px_rgba(255,255,255,0.04),inset_0_0_30px_-8px_rgba(255,255,255,0.06)] px-6 md:px-8 py-10 md:py-12 relative overflow-hidden text-center">
 
-    <!-- Magnet title -->
-    <h2 id="magnet-contact" class="font-heading text-4xl sm:text-5xl md:text-6xl leading-none text-brand-white inline-block cursor-default">
-      <span class="magnet-letter">C</span>
-      <span class="magnet-letter">o</span>
-      <span class="magnet-letter">n</span>
-      <span class="magnet-letter">t</span>
-      <span class="magnet-letter">a</span>
-      <span class="magnet-letter">c</span>
-      <span class="magnet-letter">t</span>
-    </h2>
+  <h2 id="magnet-contact" class="font-heading text-4xl sm:text-5xl md:text-5xl leading-none text-brand-white inline-block cursor-default">
+    <span class="magnet-letter">C</span>
+    <span class="magnet-letter">o</span>
+    <span class="magnet-letter">n</span>
+    <span class="magnet-letter">t</span>
+    <span class="magnet-letter">a</span>
+    <span class="magnet-letter">c</span>
+    <span class="magnet-letter">t</span>
+  </h2>
 
-    <!-- Separator + links — reveal on hover -->
-    <div class="contact-links-wrapper overflow-hidden transition-all duration-500 ease-in-out max-h-0 group-hover/contact:max-h-[300px] opacity-0 group-hover/contact:opacity-100 translate-y-3 group-hover/contact:translate-y-0 transition-all duration-500 ease-out">
-      <div class="w-12 h-px bg-brand-white/20 mx-auto my-5"></div>
+  <div class="contact-reveal overflow-hidden transition-all duration-500 ease-in-out max-h-0 group-hover/contact:max-h-[400px] opacity-0 group-hover/contact:opacity-100 translate-y-3 group-hover/contact:translate-y-0">
+    <div class="w-12 h-px bg-brand-white/20 mx-auto my-5"></div>
 
-      <div class="flex flex-col items-center gap-4">
-        <a href="mailto:${site.email}" class="group/link flex items-center gap-3 text-brand-gray-400 hover:text-brand-white transition-all duration-300 hover:translate-x-2">
-          <svg class="w-5 h-5 shrink-0 text-brand-gray-400 group-hover/link:text-brand-accent transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-          </svg>
-          <span class="text-sm tracking-wider">{site.email}</span>
-        </a>
+    <div class="flex flex-col items-center gap-4">
+      <a href="mailto:${site.email}" class="group/link flex items-center gap-3 text-brand-gray-400 hover:text-brand-white transition-all duration-300 hover:translate-x-2">
+        <svg class="w-5 h-5 shrink-0 text-brand-gray-400 group-hover/link:text-brand-accent transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+        <span class="text-sm tracking-wider">{site.email}</span>
+      </a>
 
-        <a href={site.socials.instagram} target="_blank" rel="noopener" class="group/link flex items-center gap-3 text-brand-gray-400 hover:text-brand-white transition-all duration-300 hover:translate-x-2">
-          <svg class="w-5 h-5 shrink-0 text-brand-gray-400 group-hover/link:text-brand-accent transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <rect x="2" y="2" width="20" height="20" rx="5" />
-            <circle cx="12" cy="12" r="5" />
-            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-          </svg>
-          <span class="text-sm tracking-wider">{site.socials.instagram.replace('https://www.instagram.com/', '@')}</span>
-        </a>
+      <a href={site.socials.instagram} target="_blank" rel="noopener" class="group/link flex items-center gap-3 text-brand-gray-400 hover:text-brand-white transition-all duration-300 hover:translate-x-2">
+        <svg class="w-5 h-5 shrink-0 text-brand-gray-400 group-hover/link:text-brand-accent transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <rect x="2" y="2" width="20" height="20" rx="5" />
+          <circle cx="12" cy="12" r="5" />
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+        </svg>
+        <span class="text-sm tracking-wider">{site.socials.instagram.replace('https://www.instagram.com/', '@')}</span>
+      </a>
 
-        <a href={site.socials.linkedin} target="_blank" rel="noopener" class="group/link flex items-center gap-3 text-brand-gray-400 hover:text-brand-white transition-all duration-300 hover:translate-x-2">
-          <svg class="w-5 h-5 shrink-0 text-brand-gray-400 group-hover/link:text-brand-accent transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <rect x="2" y="2" width="20" height="20" rx="3" />
-            <path d="M7 10v7" stroke-linecap="round" />
-            <circle cx="7" cy="7" r="1.2" fill="currentColor" stroke="none" />
-            <path d="M11 17v-4.5a2 2 0 014 0V17" stroke-linecap="round" />
-          </svg>
-          <span class="text-sm tracking-wider">Anthony Vuillerot</span>
-        </a>
-      </div>
+      <a href={site.socials.linkedin} target="_blank" rel="noopener" class="group/link flex items-center gap-3 text-brand-gray-400 hover:text-brand-white transition-all duration-300 hover:translate-x-2">
+        <svg class="w-5 h-5 shrink-0 text-brand-gray-400 group-hover/link:text-brand-accent transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <rect x="2" y="2" width="20" height="20" rx="3" />
+          <path d="M7 10v7" stroke-linecap="round" />
+          <circle cx="7" cy="7" r="1.2" fill="currentColor" stroke="none" />
+          <path d="M11 17v-4.5a2 2 0 014 0V17" stroke-linecap="round" />
+        </svg>
+        <span class="text-sm tracking-wider">Anthony Vuillerot</span>
+      </a>
     </div>
   </div>
 </section>
-
-<script>
-  // ── Magnet effect for Contact title ─────────────────
-  const contactTitle = document.getElementById('magnet-contact') as HTMLElement | null;
-  if (contactTitle) {
-    const letters = contactTitle.querySelectorAll<HTMLElement>('.magnet-letter');
-    const strength = 15;
-
-    // Bounce entrance
-    letters.forEach((l, i) => {
-      l.style.animation = 'letter-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both';
-      l.style.animationDelay = `${i * 0.08}s`;
-    });
-
-    const lastDelay = (letters.length - 1) * 0.08;
-    const magnetDelay = (lastDelay + 0.5) * 1000 + 500;
-
-    setTimeout(() => {
-      letters.forEach((l) => { l.style.animation = 'none'; });
-
-      // Magnet mousemove
-      contactTitle.addEventListener('mousemove', (e: Event) => {
-        const me = e as MouseEvent;
-        const rect = contactTitle.getBoundingClientRect();
-        const cx = me.clientX - rect.left;
-        const cy = me.clientY - rect.top;
-
-        letters.forEach((letter) => {
-          const lr = letter.getBoundingClientRect();
-          const lx = lr.left + lr.width / 2 - rect.left;
-          const ly = lr.top + lr.height / 2 - rect.top;
-          const dx = cx - lx;
-          const dy = cy - ly;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const radius = 150;
-
-          if (dist < radius) {
-            const force = (1 - dist / radius) * strength;
-            const tx = (dx / dist) * -force;
-            const ty = (dy / dist) * -force * 0.5;
-            const rot = (dx / dist) * force * 0.15;
-            letter.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
-            letter.style.transition = 'transform 0.12s ease-out';
-          } else {
-            letter.style.transform = 'translate(0, 0) rotate(0deg)';
-            letter.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-          }
-        });
-      });
-
-      contactTitle.addEventListener('mouseleave', () => {
-        letters.forEach((letter) => {
-          letter.style.transform = 'translate(0, 0) rotate(0deg)';
-          letter.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        });
-      });
-    }, magnetDelay);
-  }
-</script>
-
-<style>
-  .magnet-contact-title .magnet-letter {
-    display: inline-block;
-  }
-  .contact-links-wrapper {
-    transition: max-height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                opacity 0.4s ease-out 0.05s,
-                transform 0.4s ease-out 0.05s !important;
-  }
-</style>
