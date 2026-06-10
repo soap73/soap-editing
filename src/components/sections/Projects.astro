@@ -170,7 +170,7 @@ function aspectClass(ratio: string) {
   <div class="fixed inset-0 z-0 pointer-events-none">
     <video
       autoplay loop muted playsinline preload="auto"
-      class="absolute inset-0 h-full w-full object-cover blur-[2px] scale-105"
+      class="absolute inset-0 h-full w-full object-cover"
       id="modal-bg-video"
     >
       <source src="/background-wave.webm" type="video/webm" />
@@ -217,16 +217,16 @@ function aspectClass(ratio: string) {
 
   function getCols() {
     const w = window.innerWidth;
-    if (w < 768) return 2;
+    if (w < 640) return 2;
     if (w < 1024) return 3;
-    return 4;
+    return 5;
   }
 
   function getVertCols() {
     const w = window.innerWidth;
     if (w < 640) return 3;
     if (w < 1024) return 5;
-    return 7;
+    return 8;
   }
 
   function layoutGrid() {
