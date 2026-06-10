@@ -260,7 +260,7 @@
   .tilt-card, .tilt-only {
     transform-style: preserve-3d;
     will-change: transform;
-    transition: transform 0.08s ease-out;
+    transition: transform 0.3s ease-out;
   }
   .tilt-card::before,
   .glow-card::before {
