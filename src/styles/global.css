@@ -298,14 +298,6 @@
   75% { transform: translateY(-3px) translateX(3px); opacity: 0.35; }
 }
 
-/* ── Card reveal (hidden by default, shown on hover) ──── */
-.contact-reveal {
-  opacity: 0 !important;
-}
-.group\\/contact:hover .contact-reveal {
-  opacity: 1 !important;
-}
-
 @layer utilities {
   .reveal-up {
     opacity: 0;

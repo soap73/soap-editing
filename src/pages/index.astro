@@ -121,14 +121,19 @@ const schema = {
   <main class="relative z-10 min-h-screen">
     <Hero />
     <Projects />
-    <div class="relative z-10 px-4 md:px-6 pt-24 md:pt-32 pb-28">
+    <div class="relative z-10 px-4 md:px-6 pt-24 md:pt-32 pb-32">
       <div class="mx-auto max-w-6xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          <div class="lg:row-span-2"><About /></div>
-          <Stack />
-          <Clients />
-          <div class="lg:col-span-2"><Contact /></div>
+        <!-- Row 1: About + (Stack + Clients) -->
+        <div class="flex flex-col lg:flex-row gap-8 items-stretch">
+          <div class="flex-1"><About /></div>
+          <div class="flex flex-col gap-8 flex-1">
+            <Stack />
+            <div class="flex-1 min-h-[24px] hidden lg:block"></div>
+            <Clients />
+          </div>
         </div>
+        <!-- Row 2: Contact -->
+        <div class="mt-8"><Contact /></div>
       </div>
     </div>
   </main>
