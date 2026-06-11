@@ -104,7 +104,7 @@ function aspectClass(ratio: string) {
   </div>
 
   <!-- Masonry container -->
-  <div class="relative w-full" id="projects-grid">
+  <div class="relative w-full px-4 md:px-6" id="projects-grid">
     {sorted.filter(p => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
@@ -160,6 +160,37 @@ function aspectClass(ratio: string) {
       </article>
       );
     })}
+    <!-- Portfolio fillers (hidden by default, used to fill last-row gaps) -->
+    {Array.from({ length: 5 }).map(() => (
+      <article
+        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-video"
+        data-filler="16:9"
+        data-youtube="dQw4w9WgXcQ"
+        data-title=""
+        data-client=""
+        data-description=""
+        data-tags=""
+        data-aspect="16:9"
+        onclick="openVideo(this)"
+      >
+        <video src="/projects/portfolio-16x9.webm" autoplay loop muted playsinline class="w-full h-full object-cover lazy-video blur-up"></video>
+      </article>
+    ))}
+    {Array.from({ length: 8 }).map(() => (
+      <article
+        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-[9/16]"
+        data-filler="9:16"
+        data-youtube="dQw4w9WgXcQ"
+        data-title=""
+        data-client=""
+        data-description=""
+        data-tags=""
+        data-aspect="9:16"
+        onclick="openVideo(this)"
+      >
+        <video src="/projects/portfolio-9x16.webm" autoplay loop muted playsinline class="w-full h-full object-cover lazy-video blur-up"></video>
+      </article>
+    ))}
   </div>
 </section>
 
@@ -177,7 +208,6 @@ function aspectClass(ratio: string) {
       id="modal-bg-video"
     >
       <source src="/background-wave.webm" type="video/webm" />
-      <source src="/background-wave.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-brand-black/60"></div>
   </div>
@@ -185,7 +215,7 @@ function aspectClass(ratio: string) {
   <div class="flex h-full flex-col items-center justify-center p-3 md:p-6" style="cursor:auto;">
     <div class="w-full max-w-6xl" style="cursor:auto;" id="modal-content-wrapper">
       <!-- Glass card -->
-      <div class="relative tilt-only bg-brand-dark/70 backdrop-blur-2xl border border-white/20 rounded-[40px] shadow-2xl shadow-brand-accent/10 shadow-[inset_0_0_30px_-8px_rgba(255,255,255,0.07)]" data-tilt-max="4">
+      <div class="relative tilt-only bg-brand-dark/90 md:bg-brand-dark/70 md:backdrop-blur-2xl border border-white/20 rounded-[40px] shadow-2xl shadow-brand-accent/10 shadow-[inset_0_0_30px_-8px_rgba(255,255,255,0.07)]" data-tilt-max="4">
         <!-- Close button -->
         <div class="flex justify-end pt-3 pr-3 md:pt-4 md:pr-4 pb-3 md:pb-4">
           <button
@@ -215,96 +245,135 @@ function aspectClass(ratio: string) {
 </dialog>
 
 <script>
-  // Masonry layout
-  const grid = document.getElementById('projects-grid') as HTMLElement;
+  const gridEl = document.getElementById('projects-grid')! as HTMLElement;
 
-  function getCols() {
+  // Save filler templates once (preserve across DOM rebuilds)
+  const filler169HTML = document.querySelector('.portfolio-filler[data-filler="16:9"]')?.outerHTML;
+  const filler916HTML = document.querySelector('.portfolio-filler[data-filler="9:16"]')?.outerHTML;
+
+  // Grid constants
+  function rowCols169() {
     const w = window.innerWidth;
     if (w < 640) return 2;
     if (w < 1024) return 3;
     return 5;
   }
-
-  function getVertCols() {
+  function rowCols916() {
     const w = window.innerWidth;
     if (w < 640) return 3;
     if (w < 1024) return 5;
     return 8;
   }
 
-  function layoutGrid() {
-    const cards = grid.querySelectorAll('article');
-    const visible: HTMLElement[] = [];
-    cards.forEach(c => {
-      const el = c as HTMLElement;
-      if (el.style.display !== 'none') visible.push(el);
-    });
-    if (!visible.length) { grid.style.height = '0px'; return; }
+  function layoutRows() {
+    // Collect fillers BEFORE clearing grid (they live inside #projects-grid)
+    // Collect all visible non-filler articles
+    const articles = [...gridEl.querySelectorAll('article')].filter(c =>
+      !c.classList.contains('portfolio-filler') && (c as HTMLElement).style.display !== 'none'
+    );
 
-    const cols = getCols();
-    const gridWidth = grid.clientWidth;
-    const colW = Math.floor(gridWidth / cols);
+    const cards169 = articles.filter(c =>
+      !c.classList.contains('aspect-[9/16]') && !c.classList.contains('aspect-square')
+    );
+    const cards916 = articles.filter(c =>
+      c.classList.contains('aspect-[9/16]') || c.classList.contains('aspect-square')
+    );
 
-    // Separate by aspect ratio
-    const cards169: HTMLElement[] = [];
-    const cards916: HTMLElement[] = [];
-    visible.forEach(el => {
-      if (el.classList.contains('aspect-[9/16]') || el.classList.contains('aspect-square')) {
-        cards916.push(el);
-      } else {
-        cards169.push(el);
-      }
-    });
+    const cols169 = rowCols169();
+    const cols916 = rowCols916();
 
-    let y = 0;
-    let i169 = 0, i916 = 0;
-    let rowIndex = 0;
+    // Clear grid
+    while (gridEl.firstChild) gridEl.firstChild.remove();
+
+    let i169 = 0, i916 = 0, rowIndex = 0;
 
     while (i169 < cards169.length || i916 < cards916.length) {
+      const row = document.createElement('div');
+      let placed = 0;
+
       if (rowIndex % 2 === 0) {
         // 16:9 row
-        if (i169 >= cards169.length) { rowIndex++; continue; }
-        const cardW = colW;
-        const h = Math.round(cardW * 9 / 16);
-        for (let i = 0; i < cols && i169 < cards169.length; i++, i169++) {
-          const el = cards169[i169];
-          el.style.position = 'absolute';
-          el.style.width = cardW + 'px';
-          el.style.left = (i * colW) + 'px';
-          el.style.top = y + 'px';
-          el.style.transform = 'none';
-          el.style.opacity = '1';
+        const take = Math.min(cols169, cards169.length - i169);
+        row.className = 'grid-row';
+        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols169},1fr);gap:0`;
+        for (let i = 0; i < take; i++) {
+          row.appendChild(cards169[i169 + i]);
+          placed++;
         }
-        y += h;
+        i169 += take;
+        // Fill remaining slots with 169 fillers
+        if (placed > 0 && placed < cols169 && filler169HTML) {
+          for (let f = 0; f < cols169 - placed; f++) {
+            const temp = document.createElement('div');
+            temp.innerHTML = filler169HTML;
+            const filler = temp.firstElementChild as HTMLElement;
+            filler.style.display = '';
+            filler.classList.remove('hidden', 'reveal-up');
+            filler.classList.add('visible');
+            filler.querySelector('.blur-up')?.classList.add('loaded');
+            const vid = filler.querySelector('video');
+            if (vid) vid.play().catch(() => {});
+            row.appendChild(filler);
+          }
+        }
       } else {
-        // 9:16 row — flow left to right, tight
-        if (i916 >= cards916.length) { rowIndex++; continue; }
-        const cardW = Math.floor(gridWidth / getVertCols());
-        const h = Math.round(cardW * 16 / 9);
-        let x = 0;
-
-        while (i916 < cards916.length) {
-          if (x + cardW > gridWidth) break;
-          const el = cards916[i916];
-          el.style.position = 'absolute';
-          el.style.width = cardW + 'px';
-          el.style.left = x + 'px';
-          el.style.top = y + 'px';
-          el.style.transform = 'none';
-          el.style.opacity = '1';
-          x += cardW;
-          i916++;
+        // 9:16 row
+        const take = Math.min(cols916, cards916.length - i916);
+        row.className = 'grid-row';
+        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols916},1fr);gap:0`;
+        for (let i = 0; i < take; i++) {
+          row.appendChild(cards916[i916 + i]);
+          placed++;
         }
-        y += h;
+        i916 += take;
+        // Fill remaining slots with 916 fillers
+        if (placed > 0 && placed < cols916 && filler916HTML) {
+          for (let f = 0; f < cols916 - placed; f++) {
+            const temp = document.createElement('div');
+            temp.innerHTML = filler916HTML;
+            const filler = temp.firstElementChild as HTMLElement;
+            filler.style.display = '';
+            filler.classList.remove('hidden', 'reveal-up');
+            filler.classList.add('visible');
+            filler.querySelector('.blur-up')?.classList.add('loaded');
+            const vid = filler.querySelector('video');
+            if (vid) vid.play().catch(() => {});
+            row.appendChild(filler);
+          }
+        }
       }
+
+      if (row.children.length > 0) gridEl.appendChild(row);
       rowIndex++;
     }
 
-    grid.style.position = 'relative';
-    grid.style.height = y + 'px';
+    // Re-observe lazy videos after DOM rebuild
+    document.querySelectorAll('.lazy-video').forEach(v => {
+      if (!videoObserver) return;
+      videoObserver.observe(v);
+    });
+    document.querySelectorAll('video.blur-up').forEach(v => {
+      if (!blurUpObserver) return;
+      blurUpObserver.observe(v);
+    });
+    document.querySelectorAll('img.blur-up').forEach(img => {
+      if ((img as HTMLImageElement).complete) {
+        img.classList.add('loaded');
+      } else {
+        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+      }
+    });
   }
 
-  window.addEventListener('resize', layoutGrid);
+  // Debounced resize
+  let resizeTimer: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      layoutRows();
+      updateScrollFade();
+    }, 200);
+  });
 
   // Lazy-load preview videos — play when visible
   const videoObserver = new IntersectionObserver((entries) => {
@@ -328,7 +397,6 @@ function aspectClass(ratio: string) {
       img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
     }
   });
-  // Videos get .loaded when they become visible (blur-up effect)
   const blurUpObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -340,7 +408,6 @@ function aspectClass(ratio: string) {
   document.querySelectorAll('video.blur-up').forEach(v => blurUpObserver.observe(v));
 
   // Category filtering
-
   function updateScrollFade() {
     const container = document.getElementById('category-filters')!;
     const leftFade = document.querySelector('.filters-fade-left') as HTMLElement;
@@ -357,8 +424,6 @@ function aspectClass(ratio: string) {
   }
 
   document.getElementById('category-filters')!.addEventListener('scroll', updateScrollFade, { passive: true });
-  window.addEventListener('resize', updateScrollFade, { passive: true });
-  // Init fade on load
   setTimeout(updateScrollFade, 200);
 
   function updateFilters(cat: string) {
@@ -373,9 +438,10 @@ function aspectClass(ratio: string) {
     });
 
     let visibleCount = 0;
-    const cards = document.querySelectorAll('#projects-grid > article');
+    const cards = document.querySelectorAll('#projects-grid > article, #projects-grid .grid-row > article');
 
     cards.forEach((card) => {
+      if (card.classList.contains('portfolio-filler')) return;
       const cardCat = card.getAttribute('data-category') || '';
       const visible = cat === 'all' || cardCat === cat;
       const el = card as HTMLElement;
@@ -390,10 +456,9 @@ function aspectClass(ratio: string) {
       }
     });
 
-    layoutGrid();
+    layoutRows();
 
     const emptyEl = document.getElementById('projects-empty')!;
-    const gridEl = document.getElementById('projects-grid')!;
     if (visibleCount === 0) {
       gridEl.style.display = 'none';
       emptyEl.classList.remove('hidden');
@@ -405,11 +470,11 @@ function aspectClass(ratio: string) {
     }
   }
 
-  // Init: "All" active by default
+  // Init
   updateFilters('all');
-  // Layout after fonts/images load
-  setTimeout(layoutGrid, 100);
-  setTimeout(layoutGrid, 500);
+  setTimeout(() => layoutRows(), 50);
+  setTimeout(() => layoutRows(), 150);
+  window.addEventListener('load', () => { layoutRows(); updateScrollFade(); });
 
   document.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -622,7 +687,7 @@ function aspectClass(ratio: string) {
     modal.addEventListener('touchend', (e) => {
       const deltaY = (e as TouchEvent).changedTouches[0].clientY - touchStartY;
       const target = e.target as HTMLElement;
-      if (deltaY > 60 && (target === modal || target.closest('#modal-player') === null)) {
+      if (deltaY > 60 && !target.closest('button, a, input')) {
         (window as any).closeModal();
       }
     });
@@ -650,3 +715,14 @@ function aspectClass(ratio: string) {
     });
   }
 </script>
+
+<style>
+  #projects-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  #projects-grid > article {
+    position: relative;
+    width: 100%;
+  }
+</style>

@@ -34,10 +34,6 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     <meta name="google-site-verification" content="CWXbB_m4I58IAugewJFuTkfjDS4WPEmR0VtBOmDAA-I" />
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Anthony Vuillerot" />
-    <meta name="geo.region" content="FR-69" />
-    <meta name="geo.placename" content="Lyon" />
-    <meta name="geo.position" content="45.764043;4.835659" />
-    <meta name="ICBM" content="45.764043, 4.835659" />
 
     <link rel="alternate" hreflang="fr" href={canonicalUrl} />
     <link rel="alternate" hreflang="en" href={canonicalUrl} />
@@ -90,11 +86,11 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     <!-- Lang switcher -->
     <div
       id="lang-switcher"
-      class="fixed top-4 right-4 md:top-5 md:right-5 z-50 flex text-xs md:text-sm uppercase tracking-widest bg-brand-dark/60 backdrop-blur-2xl border border-white/20 rounded-full overflow-hidden shadow-xl"
+      class="fixed top-3 right-3 md:top-5 md:right-5 z-50 flex text-[10px] md:text-sm uppercase tracking-widest bg-brand-dark/60 backdrop-blur-2xl border border-white/20 rounded-full overflow-hidden shadow-xl"
       aria-label="Switch language"
     >
-      <button class="lang-option px-4 py-2 md:px-5 md:py-2.5 transition-all duration-300 text-brand-gray-400 hover:text-brand-white" data-lang="fr">FR</button>
-      <button class="lang-option px-4 py-2 md:px-5 md:py-2.5 transition-all duration-300 text-brand-gray-400 hover:text-brand-white" data-lang="en">EN</button>
+      <button class="lang-option px-3 py-1.5 md:px-5 md:py-2.5 transition-all duration-300 text-brand-gray-400 hover:text-brand-white" data-lang="fr">FR</button>
+      <button class="lang-option px-3 py-1.5 md:px-5 md:py-2.5 transition-all duration-300 text-brand-gray-400 hover:text-brand-white" data-lang="en">EN</button>
     </div>
 
     <slot />
@@ -295,6 +291,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   });
 
   // Scroll reveal — observe all .reveal-up elements
+  const isMobile = window.innerWidth < 640;
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -302,7 +299,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
         revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  }, { threshold: 0.1, rootMargin: isMobile ? '0px 0px -10px 0px' : '0px 0px -40px 0px' });
 
   function observeReveal() {
     document.querySelectorAll('.reveal-up:not(.visible)').forEach(el => revealObserver.observe(el));
@@ -315,11 +312,18 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     setLang(document.documentElement.lang || 'fr');
   });
 
-  // Scroll progress
+  // Scroll progress (throttled via requestAnimationFrame)
   const progress = document.getElementById('scroll-progress')!;
+  let scrollTicking = false;
   window.addEventListener('scroll', () => {
-    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-    progress.style.width = Math.min(scrollPercent, 100) + '%';
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        progress.style.width = Math.min(scrollPercent, 100) + '%';
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
   }, { passive: true });
 
   // Custom cursor

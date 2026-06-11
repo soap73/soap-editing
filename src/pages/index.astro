@@ -103,17 +103,18 @@ const schema = {
   schema={schema}
 >
   <div class="fixed inset-0 z-0">
-    <video
-      autoplay
-      loop
-      muted
-      playsinline
-      poster="/background-poster.jpg"
-      class="absolute inset-0 h-full w-full object-cover blur-[2px] scale-105"
-    >
+    <div class="absolute inset-0 overflow-hidden">
+      <video
+        autoplay
+        loop
+        muted
+        playsinline
+        poster="/background-poster.jpg"
+        class="absolute inset-0 h-full w-full object-cover blur-[2px] scale-105"
+      >
       <source src="/background-wave.webm" type="video/webm" />
-      <source src="/background-wave.mp4" type="video/mp4" />
-    </video>
+      </video>
+    </div>
     <div class="absolute inset-0 bg-brand-black/60"></div>
   </div>
 
