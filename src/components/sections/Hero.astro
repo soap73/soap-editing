@@ -17,7 +17,9 @@
 </header>
 
 <script>
-  const title = document.getElementById('magnet-title') as HTMLElement | null;
+  // Skip magnetic letters on touch devices
+  if (!('ontouchstart' in window)) {
+    const title = document.getElementById('magnet-title') as HTMLElement | null;
   if (title) {
     const letters = title.querySelectorAll<HTMLElement>('.magnet-letter');
     const strength = 20;
@@ -96,5 +98,6 @@
     } else {
       startBounce();
     }
+  }
   }
 </script>

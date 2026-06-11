@@ -99,6 +99,10 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 </html>
 
 <script>
+  // ── Device detection ───────────────────────────────────
+  const isTouchDevice = 'ontouchstart' in window || matchMedia('(pointer: coarse)').matches;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) && !isTouchDevice;
+
   // ── i18n ──────────────────────────────────────────────
   const tagsDict: Record<string, {fr: string, en: string}> = {
     'Drame': { fr: 'Drame', en: 'Drama' },
@@ -326,12 +330,14 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     }
   }, { passive: true });
 
-  // Custom cursor
+  // Custom cursor (desktop only)
   const dot = document.getElementById('cursor-dot')!;
-  document.addEventListener('mousemove', (e) => {
-    dot.style.left = e.clientX + 'px';
-    dot.style.top = e.clientY + 'px';
-  });
+  if (!isTouchDevice) {
+    document.addEventListener('mousemove', (e) => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top = e.clientY + 'px';
+    });
+  }
 
   function isClickable(el: Element) {
     const tag = el.tagName.toLowerCase();
@@ -349,6 +355,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   }
 
   document.addEventListener('mouseover', (e) => {
+    if (isTouchDevice) return;
     const target = e.target as Element | null;
     dot.classList.toggle('on-link', target ? isClickable(target) : false);
   });
@@ -356,8 +363,9 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
   document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
 
-  // ── Magnetic buttons ─────────────────────────────────
-  document.querySelectorAll('.magnetic-btn').forEach((el) => {
+  // ── Magnetic buttons (desktop only) ───────────────────
+  if (!isTouchDevice) {
+    document.querySelectorAll('.magnetic-btn').forEach((el) => {
     const btn = el as HTMLElement;
     const strength = 0.3;
 
@@ -374,6 +382,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       btn.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
     });
   });
+  }
 
   // ── Animated counters ────────────────────────────────
   const counterObserver = new IntersectionObserver((entries) => {
@@ -404,42 +413,47 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
   document.querySelectorAll('[data-count-to]').forEach(el => counterObserver.observe(el));
 
-  // ── Tilt + glow cards ────────────────────────────────
-  document.querySelectorAll('.tilt-card, .tilt-only').forEach((el) => {
-    const card = el as HTMLElement;
-    const maxAngle = parseFloat(card.dataset.tiltMax || '8');
-    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+  // ── Tilt + glow cards (desktop only, Safari gets glow only) ──
+  if (!isTouchDevice) {
+    document.querySelectorAll('.tilt-card, .tilt-only').forEach((el) => {
+      const card = el as HTMLElement;
+      const maxAngle = parseFloat(card.dataset.tiltMax || '8');
 
-    card.addEventListener('mousemove', (e: Event) => {
-      const me = e as MouseEvent;
-      const rect = card.getBoundingClientRect();
-      const x = (me.clientX - rect.left) / rect.width;
-      const y = (me.clientY - rect.top) / rect.height;
+      card.addEventListener('mousemove', (e: Event) => {
+        const me = e as MouseEvent;
+        const rect = card.getBoundingClientRect();
+        const x = (me.clientX - rect.left) / rect.width;
+        const y = (me.clientY - rect.top) / rect.height;
+        card.style.setProperty('--glow-x', `${x * 100}%`);
+        card.style.setProperty('--glow-y', `${y * 100}%`);
+        if (isSafari) return; // Skip 3D tilt on Safari, keep glow
+        const rotateX = (y - 0.5) * maxAngle * 2;
+        const rotateY = (x - 0.5) * -maxAngle * 2;
+        card.style.transform =
+          `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
 
-      const rotateX = (y - 0.5) * maxAngle * 2;
-      const rotateY = (x - 0.5) * -maxAngle * 2;
-      card.style.transform =
-        `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      card.style.setProperty('--glow-x', `${x * 100}%`);
-      card.style.setProperty('--glow-y', `${y * 100}%`);
+      card.addEventListener('mouseleave', () => {
+        if (!isSafari) {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        }
+      });
     });
+  }
 
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+  // ── Glow-only cards (desktop only) ────────────────────
+  if (!isTouchDevice) {
+    document.querySelectorAll('.glow-card').forEach((el) => {
+      const card = el as HTMLElement;
+
+      card.addEventListener('mousemove', (e: Event) => {
+        const me = e as MouseEvent;
+        const rect = card.getBoundingClientRect();
+        const x = (me.clientX - rect.left) / rect.width;
+        const y = (me.clientY - rect.top) / rect.height;
+        card.style.setProperty('--glow-x', `${x * 100}%`);
+        card.style.setProperty('--glow-y', `${y * 100}%`);
+      });
     });
-  });
-
-  // ── Glow-only cards (no tilt, cursor-following glow) ──
-  document.querySelectorAll('.glow-card').forEach((el) => {
-    const card = el as HTMLElement;
-
-    card.addEventListener('mousemove', (e: Event) => {
-      const me = e as MouseEvent;
-      const rect = card.getBoundingClientRect();
-      const x = (me.clientX - rect.left) / rect.width;
-      const y = (me.clientY - rect.top) / rect.height;
-      card.style.setProperty('--glow-x', `${x * 100}%`);
-      card.style.setProperty('--glow-y', `${y * 100}%`);
-    });
-  });
+  }
 </script>

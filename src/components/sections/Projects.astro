@@ -192,6 +192,9 @@ function aspectClass(ratio: string) {
       </article>
     ))}
   </div>
+
+  <!-- Hidden card storage for filtered-out cards -->
+  <div id="hidden-cards" style="display:none" aria-hidden="true"></div>
 </section>
 
 <dialog
@@ -427,6 +430,8 @@ function aspectClass(ratio: string) {
   setTimeout(updateScrollFade, 200);
 
   function updateFilters(cat: string) {
+    const hiddenEl = document.getElementById('hidden-cards')!;
+
     document.querySelectorAll('.cat-btn').forEach(b => {
       const isActive = b.getAttribute('data-category') === cat;
       b.classList.toggle('border-brand-accent', isActive);
@@ -438,7 +443,7 @@ function aspectClass(ratio: string) {
     });
 
     let visibleCount = 0;
-    const cards = document.querySelectorAll('#projects-grid > article, #projects-grid .grid-row > article');
+    const cards = document.querySelectorAll('#projects-grid article, #projects-grid .grid-row > article, #hidden-cards article');
 
     cards.forEach((card) => {
       if (card.classList.contains('portfolio-filler')) return;
@@ -450,9 +455,17 @@ function aspectClass(ratio: string) {
         visibleCount++;
         el.style.display = '';
         el.classList.remove('filtered-out');
+        // Move to grid from hidden container
+        if (el.parentElement?.id === 'hidden-cards') {
+          gridEl.appendChild(el);
+        }
       } else {
         el.classList.add('filtered-out');
         el.style.display = 'none';
+        // Move to hidden container from grid
+        if (el.parentElement?.id !== 'hidden-cards') {
+          hiddenEl.appendChild(el);
+        }
       }
     });
 
