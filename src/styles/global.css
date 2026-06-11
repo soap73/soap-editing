@@ -300,7 +300,7 @@
 
 /* ── Card title letter spacing ──────────────────────────── */
 [id^="magnet-"] {
-  letter-spacing: -0.04em;
+  letter-spacing: 0em;
 }
 [id^="magnet-"] .magnet-letter {
   display: inline-block;
