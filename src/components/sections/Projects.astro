@@ -21,9 +21,9 @@ function thumbnailUrl(project: typeof sorted[number]) {
     return ytThumb(project.youtubeId);
   }
   if (project.vimeoId) {
-    return project.thumbnail || '/placeholder-thumb.jpg';
+    return project.thumbnail || '/placeholder-thumb.webp';
   }
-  return project.thumbnail || '/placeholder-thumb.jpg';
+  return project.thumbnail || '/placeholder-thumb.webp';
 }
 
 function thumbnailSrcset(youtubeId: string) {
