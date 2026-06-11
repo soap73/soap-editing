@@ -306,34 +306,6 @@
   display: inline-block;
 }
 
-/* ── Edge light sweep ───────────────────────────────────── */
-.glass-edge {
-  position: relative;
-}
-.glass-edge::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    transparent 0deg,
-    rgba(124, 58, 237, 0.08) 90deg,
-    transparent 180deg,
-    rgba(124, 58, 237, 0.12) 270deg,
-    transparent 360deg
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: edge-shimmer 8s linear infinite;
-  pointer-events: none;
-}
-@keyframes edge-shimmer {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 @layer utilities {
   .reveal-up {
     opacity: 0;
