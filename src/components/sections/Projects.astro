@@ -126,6 +126,7 @@ function aspectClass(ratio: string) {
         data-description={project.description || ''}
         data-tags={(project.tags || []).join(',')}
         data-aspect={project.aspectRatio || '16:9'}
+        data-order={project.order}
         onclick={hasVideo || project.preview ? 'openVideo(this)' : undefined}
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
@@ -455,9 +456,24 @@ function aspectClass(ratio: string) {
         visibleCount++;
         el.style.display = '';
         el.classList.remove('filtered-out');
-        // Move to grid from hidden container
+        // Move to grid from hidden container, maintaining order
         if (el.parentElement?.id === 'hidden-cards') {
-          gridEl.appendChild(el);
+          const order = parseInt(el.getAttribute('data-order') || '0', 10);
+          const existing = [...gridEl.querySelectorAll('article')].filter(a =>
+            !a.classList.contains('portfolio-filler')
+          );
+          let insertBefore: Element | null = null;
+          for (const ex of existing) {
+            if (parseInt(ex.getAttribute('data-order') || '0', 10) > order) {
+              insertBefore = ex;
+              break;
+            }
+          }
+          if (insertBefore) {
+            gridEl.insertBefore(el, insertBefore);
+          } else {
+            gridEl.appendChild(el);
+          }
         }
       } else {
         el.classList.add('filtered-out');
