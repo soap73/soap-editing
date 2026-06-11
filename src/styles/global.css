@@ -299,16 +299,10 @@
 }
 
 /* ── Card reveal (hidden by default, shown on hover) ──── */
-.about-reveal,
-.stack-reveal,
-.clients-reveal,
 .contact-reveal {
   opacity: 0 !important;
 }
-.group\/about:hover .about-reveal,
-.group\/stack:hover .stack-reveal,
-.group\/clients:hover .clients-reveal,
-.group\/contact:hover .contact-reveal {
+.group\\/contact:hover .contact-reveal {
   opacity: 1 !important;
 }
 
