@@ -1,0 +1,16 @@
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/lZfb5oRCKoY?size=hqdefault:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/-NH-S3OIx7E?size=hqdefault:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/OfcED3UO1E0?size=hqdefault:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/21UWwfHygZA?size=hqdefault:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/he4F0EQszoI?size=hqdefault:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/Ex1jWi8KN-s?size=hqdefault:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/vVLwAZ5LhPY?size=hqdefault:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/-TdTjfoCO0o?size=hqdefault:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/wzMZG1oWrHY?size=hqdefault:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/23B9GVwbv0Y?size=hqdefault:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/zdvIOSkIokg?size=hqdefault:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/yt-thumb/YVII7AXfebE?size=hqdefault:0
+[    3145ms] [WARNING] The resource http://localhost:4321/fonts/dm-serif-display-latin-400-normal.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:4321/:0
+[    3146ms] [WARNING] The resource http://localhost:4321/fonts/inter-latin-400-normal.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:4321/:0
+[    3146ms] [WARNING] The resource http://localhost:4321/fonts/inter-latin-700-normal.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:4321/:0
+[    3146ms] [WARNING] The resource http://localhost:4321/fonts/dm-serif-display-latin-400-italic.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:4321/:0

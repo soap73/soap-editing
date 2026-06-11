@@ -1,0 +1,15 @@
+[     349ms] [LOG] 
+%cStop ! font-family:helvetica; font-size:20px; font-size:50px; font-weight:bold; color:red; -webkit-text-stroke:1px black; @ https://static.cdninstagram.com/rsrc.php/v4/yO/r/_o1F093C5v0.js:245
+[     349ms] [LOG] 
+%cIl s’agit d’une fonctionnalité de navigateur conçue pour les développeurs. Si quelqu’un vous a invité(e) à copier-coller quelque chose ici pour activer une fonctionnalité Instagram ou soi-disant pirater le compte d’un tiers, sachez que c’est une arnaque permettant à cette personne d’accéder à votre compte Instagram. font-family:helvetica; font-size:20px;  @ https://static.cdninstagram.com/rsrc.php/v4/yO/r/_o1F093C5v0.js:245
+[     349ms] [LOG] 
+%cConsultez https://www.facebook.com/selfxss pour plus d’informations. font-family:helvetica; font-size:20px;  @ https://static.cdninstagram.com/rsrc.php/v4/yO/r/_o1F093C5v0.js:245
+[     349ms] [LOG] 
+%c  @ https://static.cdninstagram.com/rsrc.php/v4/yO/r/_o1F093C5v0.js:245
+[     355ms] [INFO] Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner. @ https://www.instagram.com/soap731:0
+[    1464ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://www.instagram.com/graphql/query/?doc_id=18113378221181848&variables=%7B%22include_chaining%22%3Afalse%2C%22include_highlight_reels%22%3Atrue%2C%22include_live_status%22%3Afalse%2C%22include_logged_out_extras%22%3Atrue%2C%22include_reel%22%3Afalse%2C%22include_suggested_users%22%3Afalse%2C%22user_id%22%3A%222311011115%22%7D:0
+[    1466ms] [ERROR] ErrorUtils caught an error:
+
+ [Caught in: unexpected]
+
+Subsequent non-fatal errors won't be logged; see https://fburl.com/debugjs. {clientTime: 1781191465, extra: Object, guardList: Array(0), hash: 3zeinz, isNormalizedError: true} @ https://static.cdninstagram.com/rsrc.php/v4/yO/r/_o1F093C5v0.js:79

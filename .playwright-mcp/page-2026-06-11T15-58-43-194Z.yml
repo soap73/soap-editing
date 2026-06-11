@@ -1,0 +1,232 @@
+- generic [active] [ref=e1]:
+  - generic "Switch language" [ref=e6]:
+    - button "FR" [ref=e7]
+    - button "EN" [ref=e8]
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - heading "S o a p E d i t" [level=1] [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: S
+          - generic [ref=e17]: o
+          - generic [ref=e18]: a
+          - generic [ref=e19]: p
+        - generic [ref=e20]:
+          - generic [ref=e21]: E
+          - generic [ref=e22]: d
+          - generic [ref=e23]: i
+          - generic [ref=e24]: t
+      - paragraph [ref=e25]:
+        - generic [ref=e26]: Sound Designer
+    - generic [ref=e27]:
+      - generic [ref=e31]:
+        - button "Tout" [ref=e32]
+        - button "YouTube" [ref=e33]
+        - button "Courts-Métrages" [ref=e34]
+        - button "Réseaux Sociaux" [ref=e35]
+      - generic [ref=e36]:
+        - article [ref=e37]:
+          - generic [ref=e40]: Behind The Screen
+        - article [ref=e41]:
+          - generic [ref=e44]: Mono no Aware
+        - article [ref=e45]:
+          - generic [ref=e48]: Idole
+        - article [ref=e49]:
+          - generic [ref=e52]: Dead Memories
+        - article [ref=e53]:
+          - generic [ref=e56]: Derniere Dose
+        - article [ref=e57]:
+          - generic [ref=e60]: "Achille Magic : Faire des millions de vues sur Tiktok avec la magie"
+        - article [ref=e61]:
+          - generic [ref=e64]: "la Canción de Alicia : Le Lost Media qui hante Internet."
+        - article [ref=e65]:
+          - generic [ref=e68]: "La Descente aux Enfers d'un YouTubeur Schizophrène : Terry Davis"
+        - article [ref=e69]:
+          - generic [ref=e72]: Les Incidents les plus Sombres de la TV (ft. @Feldup)
+        - article [ref=e73]:
+          - generic [ref=e76]: L'Expérience Sociale la plus Sombre filmée en Direct ...
+        - article [ref=e77]:
+          - generic [ref=e80]: "Les CONTES de l'ÉTRANGE : HORREUR sur YOUTUBE"
+        - article [ref=e81]
+        - article [ref=e83]
+        - article [ref=e85]
+        - article [ref=e87]
+        - article [ref=e89]
+        - article [ref=e91]
+        - article [ref=e93]
+        - article [ref=e95]:
+          - generic [ref=e98]: Review Jordan 1 Alaska Virgil Abloh Archive
+        - article [ref=e99]
+        - article [ref=e101]:
+          - generic [ref=e104]: Ad WhenToCop?
+        - article [ref=e105]:
+          - generic [ref=e108]: Affaires Criminelles
+        - article [ref=e109]
+        - article [ref=e111]
+        - article [ref=e113]:
+          - generic [ref=e116]: Short Paradox
+        - article [ref=e117]:
+          - generic [ref=e120]: Affaires Criminelles
+        - article [ref=e121]
+    - generic [ref=e126]:
+      - link "VZION" [ref=e127]:
+        - /url: https://youtube.com/@vzion
+        - img [ref=e128]
+        - generic [ref=e130]: VZION
+      - link "McSkyz" [ref=e131]:
+        - /url: https://youtube.com/@McSkyz
+        - img [ref=e132]
+        - generic [ref=e134]: McSkyz
+      - link "PROFESSION GANGSTER" [ref=e135]:
+        - /url: https://youtube.com/@PROFESSIONGANGSTER
+        - img [ref=e136]
+        - generic [ref=e138]: PROFESSION GANGSTER
+      - link "WhenToCop?" [ref=e139]:
+        - /url: https://www.instagram.com/whentocop.app/
+        - img [ref=e140]
+        - generic [ref=e142]: WhenToCop?
+      - link "La Folle Histoire" [ref=e143]:
+        - /url: https://youtube.com/@lafollehistoire
+        - img [ref=e144]
+        - generic [ref=e146]: La Folle Histoire
+      - link "Affaires Criminelles" [ref=e147]:
+        - /url: https://www.instagram.com/affaires_criminelles_by_mcskyz/
+        - img [ref=e148]
+        - generic [ref=e150]: Affaires Criminelles
+      - link "VZION" [ref=e151]:
+        - /url: https://youtube.com/@vzion
+        - img [ref=e152]
+        - generic [ref=e154]: VZION
+      - link "McSkyz" [ref=e155]:
+        - /url: https://youtube.com/@McSkyz
+        - img [ref=e156]
+        - generic [ref=e158]: McSkyz
+      - link "PROFESSION GANGSTER" [ref=e159]:
+        - /url: https://youtube.com/@PROFESSIONGANGSTER
+        - img [ref=e160]
+        - generic [ref=e162]: PROFESSION GANGSTER
+      - link "WhenToCop?" [ref=e163]:
+        - /url: https://www.instagram.com/whentocop.app/
+        - img [ref=e164]
+        - generic [ref=e166]: WhenToCop?
+      - link "La Folle Histoire" [ref=e167]:
+        - /url: https://youtube.com/@lafollehistoire
+        - img [ref=e168]
+        - generic [ref=e170]: La Folle Histoire
+      - link "Affaires Criminelles" [ref=e171]:
+        - /url: https://www.instagram.com/affaires_criminelles_by_mcskyz/
+        - img [ref=e172]
+        - generic [ref=e174]: Affaires Criminelles
+      - link "VZION" [ref=e175]:
+        - /url: https://youtube.com/@vzion
+        - img [ref=e176]
+        - generic [ref=e178]: VZION
+      - link "McSkyz" [ref=e179]:
+        - /url: https://youtube.com/@McSkyz
+        - img [ref=e180]
+        - generic [ref=e182]: McSkyz
+      - link "PROFESSION GANGSTER" [ref=e183]:
+        - /url: https://youtube.com/@PROFESSIONGANGSTER
+        - img [ref=e184]
+        - generic [ref=e186]: PROFESSION GANGSTER
+      - link "WhenToCop?" [ref=e187]:
+        - /url: https://www.instagram.com/whentocop.app/
+        - img [ref=e188]
+        - generic [ref=e190]: WhenToCop?
+      - link "La Folle Histoire" [ref=e191]:
+        - /url: https://youtube.com/@lafollehistoire
+        - img [ref=e192]
+        - generic [ref=e194]: La Folle Histoire
+      - link "Affaires Criminelles" [ref=e195]:
+        - /url: https://www.instagram.com/affaires_criminelles_by_mcskyz/
+        - img [ref=e196]
+        - generic [ref=e198]: Affaires Criminelles
+      - link "VZION" [ref=e199]:
+        - /url: https://youtube.com/@vzion
+        - img [ref=e200]
+        - generic [ref=e202]: VZION
+      - link "McSkyz" [ref=e203]:
+        - /url: https://youtube.com/@McSkyz
+        - img [ref=e204]
+        - generic [ref=e206]: McSkyz
+      - link "PROFESSION GANGSTER" [ref=e207]:
+        - /url: https://youtube.com/@PROFESSIONGANGSTER
+        - img [ref=e208]
+        - generic [ref=e210]: PROFESSION GANGSTER
+      - link "WhenToCop?" [ref=e211]:
+        - /url: https://www.instagram.com/whentocop.app/
+        - img [ref=e212]
+        - generic [ref=e214]: WhenToCop?
+      - link "La Folle Histoire" [ref=e215]:
+        - /url: https://youtube.com/@lafollehistoire
+        - img [ref=e216]
+        - generic [ref=e218]: La Folle Histoire
+      - link "Affaires Criminelles" [ref=e219]:
+        - /url: https://www.instagram.com/affaires_criminelles_by_mcskyz/
+        - img [ref=e220]
+        - generic [ref=e222]: Affaires Criminelles
+    - generic [ref=e225]:
+      - generic [ref=e226]:
+        - generic: ✦
+        - generic: ✧
+        - generic: ★
+        - generic: ✧
+        - generic: ✦
+        - heading "À propos" [level=2] [ref=e227]
+        - paragraph [ref=e229]: L'art de raconter des histoires par le montage. Monteur vidéo basé à Lyon, je combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, au rendu professionnel et mémorable.
+        - generic [ref=e230]:
+          - generic [ref=e231]:
+            - generic [ref=e232]: "+50"
+            - paragraph [ref=e233]: Projets livrés
+          - generic [ref=e234]:
+            - generic [ref=e235]: "+3"
+            - paragraph [ref=e236]: Années d'expérience
+        - generic [ref=e237]:
+          - heading "Stack" [level=3] [ref=e238]
+          - generic [ref=e240]:
+            - generic [ref=e241]: Adobe Premiere
+            - generic [ref=e242]: Adobe After Effects
+            - generic [ref=e243]: DaVinci Resolve
+      - generic [ref=e244]:
+        - generic: ✦
+        - generic: ✧
+        - generic: ★
+        - generic: ✦
+        - heading "Contact" [level=2] [ref=e245]
+        - paragraph [ref=e247]: Un projet, une collaboration ? Discutons-en !
+        - generic [ref=e248]:
+          - generic [ref=e249]: 🎬 Montage
+          - generic [ref=e250]: ✨ Motion
+          - generic [ref=e251]: 🎧 Sound
+          - generic [ref=e252]: 🎨 Color
+        - generic [ref=e253]:
+          - link "Email" [ref=e254]:
+            - /url: mailto:anthony.vuillerot@gmail.com
+            - img [ref=e255]
+            - generic [ref=e257]: Email
+          - link "Instagram" [ref=e258]:
+            - /url: https://instagram.com/soap731
+            - img [ref=e259]
+            - generic [ref=e263]: Instagram
+          - link "LinkedIn" [ref=e264]:
+            - /url: https://www.linkedin.com/in/anthony-vuillerot/
+            - img [ref=e265]
+            - generic [ref=e269]: LinkedIn
+        - generic [ref=e271]:
+          - link "anthony.vuillerot@gmail.com" [ref=e272]:
+            - /url: mailto:anthony.vuillerot@gmail.com
+          - generic [ref=e273]: ·
+          - generic [ref=e274]: 📍 Lyon, France
+        - paragraph [ref=e275]: Réponse sous 24h (sauf si je monte)
+  - contentinfo [ref=e276]:
+    - generic [ref=e279]:
+      - generic [ref=e280]:
+        - generic [ref=e281]: SoapEdit
+        - generic [ref=e282]:
+          - link "Mentions légales" [ref=e283]:
+            - /url: /mentions-legales
+          - generic [ref=e285]: © 2026 Soap Edit
+      - generic [ref=e286]:
+        - generic [ref=e287]: 📍 Lyon, France
+        - generic [ref=e291]: Disponible
+      - button "Back to top" [ref=e292]:
+        - img [ref=e293]

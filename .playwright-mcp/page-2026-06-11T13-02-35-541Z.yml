@@ -1,0 +1,158 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]: SoapEdit
+  - generic "Switch language" [ref=e7]:
+    - button "FR" [ref=e8]
+    - button "EN" [ref=e9]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "S o a p E d i t" [level=1] [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: S
+          - generic [ref=e18]: o
+          - generic [ref=e19]: a
+          - generic [ref=e20]: p
+        - generic [ref=e21]:
+          - generic [ref=e22]: E
+          - generic [ref=e23]: d
+          - generic [ref=e24]: i
+          - generic [ref=e25]: t
+      - paragraph [ref=e26]:
+        - generic [ref=e27]: Monteur Vidéo
+    - generic [ref=e28]:
+      - generic [ref=e32]:
+        - button "Tout" [ref=e33]
+        - button "YouTube" [ref=e34]
+        - button "Courts-Métrages" [ref=e35]
+        - button "Réseaux Sociaux" [ref=e36]
+      - generic [ref=e37]:
+        - article [ref=e38]:
+          - generic [ref=e41]: Behind The Screen
+        - article [ref=e42]:
+          - generic [ref=e45]: Mono no Aware
+        - article [ref=e46]:
+          - generic [ref=e49]: Idole
+        - article [ref=e50]:
+          - generic [ref=e53]: Dead Memories
+        - article [ref=e54]:
+          - generic [ref=e57]: Derniere Dose
+        - article [ref=e58]:
+          - generic [ref=e61]: "Achille Magic : Faire des millions de vues sur Tiktok avec la magie"
+        - article [ref=e62]:
+          - generic [ref=e65]: "la Canción de Alicia : Le Lost Media qui hante Internet."
+        - article [ref=e66]:
+          - generic [ref=e69]: "La Descente aux Enfers d'un YouTubeur Schizophrène : Terry Davis"
+        - article [ref=e70]:
+          - generic [ref=e73]: Les Incidents les plus Sombres de la TV (ft. @Feldup)
+        - article [ref=e74]:
+          - generic [ref=e77]: L'Expérience Sociale la plus Sombre filmée en Direct ...
+        - article [ref=e78]:
+          - generic [ref=e81]: "Les CONTES de l'ÉTRANGE : HORREUR sur YOUTUBE"
+        - article [ref=e82]
+        - article [ref=e84]
+        - article [ref=e86]
+        - article [ref=e88]
+        - article [ref=e90]
+        - article [ref=e92]
+        - article [ref=e94]
+        - article [ref=e96]:
+          - generic [ref=e99]: Review Jordan 1 Alaska Virgil Abloh Archive
+        - article [ref=e100]
+        - article [ref=e102]:
+          - generic [ref=e105]: Ad WhenToCop?
+        - article [ref=e106]:
+          - generic [ref=e109]: Affaires Criminelles
+        - article [ref=e110]
+        - article [ref=e112]
+        - article [ref=e114]:
+          - generic [ref=e117]: Short Paradox
+        - article [ref=e118]:
+          - generic [ref=e121]: Affaires Criminelles
+        - article [ref=e122]
+    - generic [ref=e126]:
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - heading "À propos" [level=2] [ref=e129]
+          - paragraph [ref=e131]: L'art de raconter des histoires par le montage. Monteur vidéo basé à Lyon, je combine storytelling, motion design et sound design pour transformer vos idées en vidéos percutantes, au rendu professionnel et mémorable.
+          - generic [ref=e132]:
+            - generic [ref=e133]:
+              - generic [ref=e134]: "+50"
+              - paragraph [ref=e135]: Projets livrés
+            - generic [ref=e136]:
+              - generic [ref=e137]: "+3"
+              - paragraph [ref=e138]: Années d'expérience
+        - generic [ref=e139]:
+          - generic [ref=e140]: 📍 Lyon, France
+          - generic [ref=e142]: Disponible
+      - generic [ref=e143]:
+        - generic [ref=e144]:
+          - heading "Stack" [level=2] [ref=e145]
+          - generic [ref=e147]:
+            - generic [ref=e148]: Adobe Premiere
+            - generic [ref=e149]: Adobe After Effects
+            - generic [ref=e150]: DaVinci Resolve
+        - generic [ref=e151]:
+          - heading "Clients" [level=2] [ref=e152]
+          - generic [ref=e154]:
+            - link "VZION" [ref=e155]:
+              - /url: https://youtube.com/@vzion
+              - img [ref=e156]
+              - text: VZION
+            - link "McSkyz" [ref=e158]:
+              - /url: https://youtube.com/@McSkyz
+              - img [ref=e159]
+              - text: McSkyz
+            - link "PROFESSION GANGSTER" [ref=e161]:
+              - /url: https://youtube.com/@PROFESSIONGANGSTER
+              - img [ref=e162]
+              - text: PROFESSION GANGSTER
+            - link "WhenToCop?" [ref=e164]:
+              - /url: https://www.instagram.com/whentocop.app/
+              - img [ref=e165]
+              - text: WhenToCop?
+            - link "La Folle Histoire" [ref=e167]:
+              - /url: https://youtube.com/@lafollehistoire
+              - img [ref=e168]
+              - text: La Folle Histoire
+            - link "Affaires Criminelles" [ref=e170]:
+              - /url: https://www.instagram.com/affaires_criminelles_by_mcskyz/
+              - img [ref=e171]
+              - text: Affaires Criminelles
+        - generic [ref=e173]:
+          - heading "Contact" [level=2] [ref=e174]
+          - generic [ref=e176]:
+            - link "Email" [ref=e177]:
+              - /url: mailto:anthony.vuillerot@gmail.com
+              - img [ref=e178]
+              - generic [ref=e180]: Email
+            - link "Instagram" [ref=e181]:
+              - /url: https://instagram.com/soap731
+              - img [ref=e182]
+              - generic [ref=e186]: Instagram
+            - link "LinkedIn" [ref=e187]:
+              - /url: https://www.linkedin.com/in/anthony-vuillerot/
+              - img [ref=e188]
+              - generic [ref=e192]: LinkedIn
+  - contentinfo [ref=e193]:
+    - generic [ref=e197]:
+      - generic [ref=e198]:
+        - generic [ref=e199]: SoapEdit
+        - generic [ref=e200]:
+          - link "Mentions légales" [ref=e201]:
+            - /url: /mentions-legales
+          - generic [ref=e203]: Lyon, France
+      - paragraph [ref=e204]: © 2026 Soap Edit
+      - button "Back to top" [ref=e205]:
+        - img [ref=e206]
+  - generic [ref=e210]:
+    - button "Menu" [ref=e211]:
+      - img [ref=e213]
+      - generic: Menu
+    - button "Inspect" [ref=e217]:
+      - img [ref=e219]
+      - generic: Inspect
+    - button "Audit" [ref=e221]:
+      - img [ref=e223]
+      - generic: Audit
+    - button "Settings" [ref=e226]:
+      - img [ref=e228]
+      - generic: Settings

@@ -99,15 +99,6 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
     <slot />
 
-    <!-- Back to top -->
-    <button
-      class="back-to-top"
-      id="back-to-top"
-      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-      aria-label="Back to top"
-    >
-      &uarr;
-    </button>
   </body>
 </html>
 
@@ -148,7 +139,9 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       },
       contact: {
         title: 'Contact',
-        subtitle: 'Un projet ? Une collaboration ?',
+        subtitle: 'Un projet, une collaboration ? Discutons-en !',
+        responseTime: "Réponse sous 24h",
+        responseTimeSuffix: "(sauf si je monte)",
         email: 'Email',
         instagram: 'Instagram',
         linkedin: 'LinkedIn',
@@ -174,6 +167,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
         credits: { title: 'Crédits', design: 'Design & développement : Soap Edit' },
       },
       footer: { legalLink: 'Mentions légales', rights: 'Tous droits réservés.' },
+      available: 'Disponible',
     },
     en: {
       taglineBubbles: 'Video Editor,Motion Designer,Sound Designer',
@@ -193,7 +187,9 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       },
       contact: {
         title: 'Contact',
-        subtitle: 'A project? A collaboration?',
+        subtitle: 'A project, a collaboration? Let\'s talk!',
+        responseTime: 'Response within 24h',
+        responseTimeSuffix: '(unless I\'m editing)',
         email: 'Email',
         instagram: 'Instagram',
         linkedin: 'LinkedIn',
@@ -219,6 +215,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
         credits: { title: 'Credits', design: 'Design & development: Soap Edit' },
       },
       footer: { legalLink: 'Legal Notice', rights: 'All rights reserved.' },
+      available: 'Available',
     },
   };
 
@@ -318,25 +315,18 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     setLang(document.documentElement.lang || 'fr');
   });
 
-  // Back to top + scroll progress
-  const backBtn = document.getElementById('back-to-top')!;
+  // Scroll progress
+  const progress = document.getElementById('scroll-progress')!;
   window.addEventListener('scroll', () => {
-    backBtn.classList.toggle('visible', window.scrollY > 400);
-    const progress = document.getElementById('scroll-progress')!;
     const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
     progress.style.width = Math.min(scrollPercent, 100) + '%';
   }, { passive: true });
 
   // Custom cursor
   const dot = document.getElementById('cursor-dot')!;
-  let mouseX = 0;
-  let mouseY = 0;
-
   document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    dot.style.left = mouseX + 'px';
-    dot.style.top = mouseY + 'px';
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
   });
 
   function isClickable(el: Element) {
@@ -362,6 +352,53 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
   document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
 
+  // ── Magnetic buttons ─────────────────────────────────
+  document.querySelectorAll('.magnetic-btn').forEach((el) => {
+    const btn = el as HTMLElement;
+    const strength = 0.3;
+
+    btn.addEventListener('mousemove', (e: Event) => {
+      const me = e as MouseEvent;
+      const rect = btn.getBoundingClientRect();
+      const dx = me.clientX - (rect.left + rect.width / 2);
+      const dy = me.clientY - (rect.top + rect.height / 2);
+      btn.style.transform = `translate(${dx * strength}px, ${dy * strength}px) scale(1.05)`;
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translate(0, 0) scale(1)';
+      btn.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    });
+  });
+
+  // ── Animated counters ────────────────────────────────
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target as HTMLElement;
+        const target = parseInt(el.dataset.countTo || '0', 10);
+        const prefix = el.dataset.countPrefix || '';
+        if (!target) return;
+
+        let current = 0;
+        const duration = 1200;
+        const increment = Math.ceil(target / (duration / 16));
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          el.textContent = prefix + current;
+        }, 16);
+
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count-to]').forEach(el => counterObserver.observe(el));
 
   // ── Tilt + glow cards ────────────────────────────────
   document.querySelectorAll('.tilt-card, .tilt-only').forEach((el) => {
@@ -385,6 +422,20 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
     card.addEventListener('mouseleave', () => {
       card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    });
+  });
+
+  // ── Glow-only cards (no tilt, cursor-following glow) ──
+  document.querySelectorAll('.glow-card').forEach((el) => {
+    const card = el as HTMLElement;
+
+    card.addEventListener('mousemove', (e: Event) => {
+      const me = e as MouseEvent;
+      const rect = card.getBoundingClientRect();
+      const x = (me.clientX - rect.left) / rect.width;
+      const y = (me.clientY - rect.top) / rect.height;
+      card.style.setProperty('--glow-x', `${x * 100}%`);
+      card.style.setProperty('--glow-y', `${y * 100}%`);
     });
   });
 </script>

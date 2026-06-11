@@ -1,6 +1,45 @@
-<footer class="relative z-10 border-t border-brand-gray-900 bg-brand-black px-6 py-6">
-  <div class="mx-auto max-w-5xl flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
-    <a href="/mentions-legales" class="text-brand-gray-700 text-xs hover:text-brand-gray-400 transition-colors"><span data-i18n="footer.legalLink">Mentions légales</span></a>
-    <p class="text-brand-gray-700 text-xs">Lyon, France &mdash; &copy; {new Date().getFullYear()} Soap Edit</p>
-  </div>
+<!--
+  Footer glass avec back-to-top intégré
+  Même style tilt-card que les sections au-dessus
+-->
+<footer class="relative z-10">
+  <div class="px-4 md:px-6 pb-6 md:pb-8">
+
+    <!-- Glass card -20% width -->
+    <div class="glow-card bg-brand-dark/70 backdrop-blur-xl border border-white/[0.07] rounded-[40px] shadow-xl shadow-[inset_0_0_1px_1px_rgba(255,255,255,0.04),inset_0_0_30px_-8px_rgba(255,255,255,0.06)] px-6 md:px-8 py-5 md:py-6 relative overflow-hidden max-w-[80vw] mx-auto">
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 sm:gap-3">
+          <!-- Left: Logo + legal + copyright -->
+          <div class="flex flex-col items-center sm:items-start gap-1 justify-self-center sm:justify-self-start">
+            <span class="font-heading text-lg italic text-brand-white/90">Soap<span class="font-heading font-bold not-italic text-brand-accent">Edit</span></span>
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-xs text-brand-gray-500">
+              <a href="/mentions-legales" class="hover:text-brand-gray-300 transition-colors" data-i18n="footer.legalLink">Mentions légales</a>
+              <span class="w-px h-3 bg-brand-gray-800"></span>
+              <span>&copy; {new Date().getFullYear()} Soap Edit</span>
+            </div>
+          </div>
+
+          <!-- Center: Lyon + Disponible — parfaitement centré -->
+          <div class="flex items-center justify-center gap-3 text-xs text-brand-gray-500 justify-self-center">
+            <span>📍 Lyon, France</span>
+            <span class="w-px h-3 bg-brand-gray-800 hidden sm:block"></span>
+            <span class="flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+              <span data-i18n="available">Disponible</span>
+            </span>
+          </div>
+
+          <!-- Right: Back to top -->
+          <button
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            class="footer-back-to-top group flex items-center justify-center w-12 h-12 rounded-full border border-brand-gray-700/40 bg-brand-dark/40 backdrop-blur-sm text-brand-gray-500 hover:text-brand-accent hover:border-brand-accent hover:shadow-lg hover:shadow-brand-accent/20 transition-all duration-300 justify-self-center sm:justify-self-end"
+            aria-label="Back to top"
+          >
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>  <!-- /grid content -->
+    </div>  <!-- /glow-card -->
+  </div>  <!-- /outer padding -->
 </footer>

@@ -1,0 +1,35 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]: SoapEdit
+  - generic "Switch language" [ref=e5]:
+    - button "FR" [ref=e6]
+    - button "EN" [ref=e7]
+  - main [ref=e8]:
+    - link "← Retour" [ref=e9]:
+      - /url: /
+    - heading "Mentions Légales" [level=1] [ref=e10]
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - heading "Éditeur du site" [level=2] [ref=e13]
+        - paragraph [ref=e14]: Vuillerot Anthony
+        - paragraph [ref=e15]: "Statut : Entreprise individuelle"
+        - paragraph [ref=e16]: LYON 69003
+        - paragraph [ref=e17]: "SIRET : 920 974 813"
+        - paragraph [ref=e18]: "Email : anthony.vuillerot@gmail.com"
+      - generic [ref=e19]:
+        - heading "Hébergement" [level=2] [ref=e20]
+        - paragraph [ref=e21]: Cloudflare, Inc.
+        - paragraph [ref=e22]: 101 Townsend St, San Francisco, CA 94107, États-Unis
+        - paragraph [ref=e23]: "Site web : cloudflare.com"
+      - generic [ref=e24]:
+        - heading "Propriété intellectuelle" [level=2] [ref=e25]
+        - paragraph [ref=e26]: L'ensemble du contenu de ce site (textes, vidéos, images, logo) est la propriété exclusive de Soap Edit, sauf mention contraire. Toute reproduction, distribution, modification ou utilisation sans autorisation préalable est interdite et constitue une violation du Code de la propriété intellectuelle.
+      - generic [ref=e27]:
+        - heading "Données personnelles" [level=2] [ref=e28]
+        - paragraph [ref=e29]: Ce site ne collecte aucune donnée personnelle sans votre consentement. Il n'utilise pas de cookies de tracking. Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant. Pour exercer ce droit, contactez-nous à l'adresse email ci-dessus.
+      - generic [ref=e30]:
+        - heading "Cookies" [level=2] [ref=e31]
+        - paragraph [ref=e32]: Ce site n'utilise pas de cookies tiers à des fins de tracking ou de publicité. Seuls des cookies techniques strictement nécessaires au fonctionnement du site peuvent être déposés.
+      - generic [ref=e33]:
+        - heading "Crédits" [level=2] [ref=e34]
+        - paragraph [ref=e35]: "Design & développement : Soap Edit"
+        - paragraph [ref=e36]: "Framework : Astro"
