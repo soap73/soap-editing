@@ -482,24 +482,9 @@ function aspectClass(ratio: string) {
         visibleCount++;
         el.style.display = '';
         el.classList.remove('filtered-out');
-        // Move to grid from hidden container, maintaining order
+        // Move back to grid (layoutRows re-orders by aspect ratio)
         if (el.parentElement?.id === 'hidden-cards') {
-          const order = parseInt(el.getAttribute('data-order') || '0', 10);
-          const existing = [...gridEl.querySelectorAll('article')].filter(a =>
-            !a.classList.contains('portfolio-filler')
-          );
-          let insertBefore: Element | null = null;
-          for (const ex of existing) {
-            if (parseInt(ex.getAttribute('data-order') || '0', 10) > order) {
-              insertBefore = ex;
-              break;
-            }
-          }
-          if (insertBefore) {
-            gridEl.insertBefore(el, insertBefore);
-          } else {
-            gridEl.appendChild(el);
-          }
+          gridEl.appendChild(el);
         }
       } else {
         el.classList.add('filtered-out');
