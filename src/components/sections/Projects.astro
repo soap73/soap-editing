@@ -104,7 +104,7 @@ function aspectClass(ratio: string) {
   </div>
 
   <!-- Masonry container -->
-  <div class="relative w-full px-4 md:px-6" id="projects-grid">
+   <div class="relative w-full" id="projects-grid">
     {sorted.filter(p => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
@@ -132,13 +132,13 @@ function aspectClass(ratio: string) {
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
           <video loop muted playsinline preload="none"
             poster={ids.youtubeId ? ytThumb(ids.youtubeId) : undefined}
-            class="w-full h-full object-cover lazy-video blur-up"
+            class="block w-full h-full object-cover lazy-video blur-up"
           >
             <source src={project.preview} type="video/webm" />
           </video>
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
-            class="w-full h-full object-cover blur-up"
+            class="block w-full h-full object-cover blur-up"
             loading={isFirst ? undefined : 'lazy'}
             fetchpriority={isFirst ? 'high' : undefined}
           />
@@ -146,7 +146,7 @@ function aspectClass(ratio: string) {
           <img
             src={thumbnailUrl(project)}
             alt={project.title}
-            class="w-full h-full object-cover blur-up"
+            class="block w-full h-full object-cover blur-up"
             loading={isFirst ? undefined : 'lazy'}
             fetchpriority={isFirst ? 'high' : undefined}
             srcset={ids.youtubeId ? thumbnailSrcset(ids.youtubeId) : undefined}
@@ -174,7 +174,7 @@ function aspectClass(ratio: string) {
         data-aspect="16:9"
         onclick="openVideo(this)"
       >
-        <video src="/projects/portfolio-16x9.webm" autoplay loop muted playsinline class="w-full h-full object-cover lazy-video blur-up"></video>
+        <video src="/projects/portfolio-16x9.webm" autoplay loop muted playsinline class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
     ))}
     {Array.from({ length: 8 }).map(() => (
@@ -189,7 +189,7 @@ function aspectClass(ratio: string) {
         data-aspect="9:16"
         onclick="openVideo(this)"
       >
-        <video src="/projects/portfolio-9x16.webm" autoplay loop muted playsinline class="w-full h-full object-cover lazy-video blur-up"></video>
+        <video src="/projects/portfolio-9x16.webm" autoplay loop muted playsinline class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
     ))}
   </div>
