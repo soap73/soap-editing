@@ -1,0 +1,4 @@
+Contact: mailto:anthony.vuillerot@gmail.com
+Expires: 2027-06-12T17:00:00.000Z
+Preferred-Languages: fr, en
+Canonical: https://soap-edit.com/.well-known/security.txt
