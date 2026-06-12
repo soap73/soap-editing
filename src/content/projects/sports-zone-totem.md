@@ -1,6 +1,6 @@
 ---
 order: 24
-title: "Sports Zone Totem"
+title: "Lyon Aéroport Sports Zone"
 client: "Lyon Aéroport"
 category: reseaux-sociaux
 tags: ["Motion Design"]

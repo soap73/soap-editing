@@ -30,10 +30,13 @@ function thumbnailSrcset(youtubeId: string) {
   return `${ytThumb(youtubeId, 'mqdefault')} 320w, ${ytThumb(youtubeId)} 480w, ${ytThumb(youtubeId, 'sddefault')} 640w`;
 }
 
+function posterUrl(preview: string) {
+  return preview.replace(/\.(webm|mp4|mov)$/i, '-poster.webp');
+}
+
 function firstProjectThumb() {
   if (firstProject.preview && /\.(mp4|webm|mov)$/i.test(firstProject.preview)) {
-    const ids = resolveVideoIds(firstProject);
-    if (ids.youtubeId) return ytThumb(ids.youtubeId);
+    return posterUrl(firstProject.preview);
   }
   return thumbnailUrl(firstProject);
 }
@@ -107,7 +110,7 @@ function aspectClass(ratio: string) {
    <div class="relative w-full" id="projects-grid">
     {sorted.filter(p => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
-      const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId);
+      const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId || (project.preview && /\.(mp4|webm|mov)$/i.test(project.preview)));
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
 
       const isFirst = i === 0;
@@ -131,7 +134,7 @@ function aspectClass(ratio: string) {
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
           <video loop muted playsinline preload="none"
-            poster={ids.youtubeId ? ytThumb(ids.youtubeId) : undefined}
+            poster={posterUrl(project.preview)}
             class="block w-full h-full object-cover lazy-video blur-up"
           >
             <source src={project.preview} type="video/webm" />
@@ -167,14 +170,12 @@ function aspectClass(ratio: string) {
         class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-video"
         data-filler="16:9"
         data-youtube="dQw4w9WgXcQ"
-        data-title=""
-        data-client=""
-        data-description=""
-        data-tags=""
+        data-title="🤓🤓🤓"
+        data-client="🤓 Rick Astley"
         data-aspect="16:9"
         onclick="openVideo(this)"
       >
-        <video src="/projects/portfolio-16x9.webm" autoplay loop muted playsinline class="block w-full h-full object-cover lazy-video blur-up"></video>
+        <video src="/projects/portfolio-16x9.webm" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
     ))}
     {Array.from({ length: 8 }).map(() => (
@@ -182,14 +183,12 @@ function aspectClass(ratio: string) {
         class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-[9/16]"
         data-filler="9:16"
         data-youtube="dQw4w9WgXcQ"
-        data-title=""
-        data-client=""
-        data-description=""
-        data-tags=""
+        data-title="🤓🤓🤓"
+        data-client="🤓 Rick Astley"
         data-aspect="9:16"
         onclick="openVideo(this)"
       >
-        <video src="/projects/portfolio-9x16.webm" autoplay loop muted playsinline class="block w-full h-full object-cover lazy-video blur-up"></video>
+        <video src="/projects/portfolio-9x16.webm" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
     ))}
   </div>
@@ -314,9 +313,6 @@ function aspectClass(ratio: string) {
             filler.style.display = '';
             filler.classList.remove('hidden', 'reveal-up');
             filler.classList.add('visible');
-            filler.querySelector('.blur-up')?.classList.add('loaded');
-            const vid = filler.querySelector('video');
-            if (vid) vid.play().catch(() => {});
             row.appendChild(filler);
           }
         }
@@ -339,9 +335,6 @@ function aspectClass(ratio: string) {
             filler.style.display = '';
             filler.classList.remove('hidden', 'reveal-up');
             filler.classList.add('visible');
-            filler.querySelector('.blur-up')?.classList.add('loaded');
-            const vid = filler.querySelector('video');
-            if (vid) vid.play().catch(() => {});
             row.appendChild(filler);
           }
         }
@@ -356,17 +349,8 @@ function aspectClass(ratio: string) {
       if (!videoObserver) return;
       videoObserver.observe(v);
     });
-    document.querySelectorAll('video.blur-up').forEach(v => {
-      if (!blurUpObserver) return;
-      blurUpObserver.observe(v);
-    });
-    document.querySelectorAll('img.blur-up').forEach(img => {
-      if ((img as HTMLImageElement).complete) {
-        img.classList.add('loaded');
-      } else {
-        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-      }
-    });
+    // Re-observe video blurs (handled by play() promise in processPlayQueue)
+    document.querySelectorAll('img.blur-up').forEach(resolveBlurUp);
   }
 
   // Debounced resize
@@ -379,37 +363,79 @@ function aspectClass(ratio: string) {
     }, 200);
   });
 
-  // Lazy-load preview videos — play when visible
+  // ── Lazy-load preview videos — staggered, visual order ──
+  // Only trigger play() when videos are truly in viewport (rootMargin: 0)
+  // Queue is sorted by DOM document position (left→right, top→bottom)
+  // Controls cadence to avoid main-thread jank from parallel media init
+  const videoPlayQueue: HTMLVideoElement[] = [];
+  let videoPlaying = false;
+
+  function processPlayQueue() {
+    if (videoPlaying || videoPlayQueue.length === 0) return;
+    videoPlaying = true;
+
+    // Sort queue by visual DOM order (left→right, top→bottom)
+    videoPlayQueue.sort((a, b) => {
+      const aArt = a.closest('article');
+      const bArt = b.closest('article');
+      if (!aArt || !bArt) return 0;
+      const pos = aArt.compareDocumentPosition(bArt);
+      if (pos & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+      if (pos & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+      return 0;
+    });
+
+    const video = videoPlayQueue.shift()!;
+
+    // Start loading + playback (browser handles media init)
+    video.play()
+      .then(() => {
+        // Remove blur when content actually renders
+        if (video.classList.contains('blur-up')) video.classList.add('loaded');
+      })
+      .catch(() => {
+        // Even if play fails (network error, autoplay policy), remove blur
+        if (video.classList.contains('blur-up')) video.classList.add('loaded');
+      });
+
+    // Process next after stagger delay — prevents burst of media pipeline inits
+    setTimeout(() => {
+      videoPlaying = false;
+      processPlayQueue();
+    }, 400);
+  }
+
+  const lazyMargin = '0px';
   const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const video = entry.target as HTMLVideoElement;
       if (entry.isIntersecting) {
-        video.play().catch(() => {});
+        if (!videoPlayQueue.includes(video) && video.paused) {
+          videoPlayQueue.push(video);
+          processPlayQueue();
+        }
       } else {
         video.pause();
+        // Remove from queue
+        const idx = videoPlayQueue.indexOf(video);
+        if (idx !== -1) videoPlayQueue.splice(idx, 1);
       }
     });
-  }, { rootMargin: '200px' });
+  }, { rootMargin: lazyMargin });
 
   document.querySelectorAll('.lazy-video').forEach(v => videoObserver.observe(v));
 
-  // Blur-up: mark images/videos as loaded when they appear or load
-  document.querySelectorAll('img.blur-up').forEach(img => {
-    if ((img as HTMLImageElement).complete) {
+  // Blur-up: images — remove blur on load OR error (broken image)
+  function resolveBlurUp(el: Element) {
+    const img = el as HTMLImageElement;
+    if (img.complete) {
       img.classList.add('loaded');
     } else {
       img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+      img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
     }
-  });
-  const blurUpObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('loaded');
-        blurUpObserver.unobserve(entry.target);
-      }
-    });
-  }, { rootMargin: '200px' });
-  document.querySelectorAll('video.blur-up').forEach(v => blurUpObserver.observe(v));
+  }
+  document.querySelectorAll('img.blur-up').forEach(resolveBlurUp);
 
   // Category filtering
   function updateScrollFade() {
@@ -588,30 +614,40 @@ function aspectClass(ratio: string) {
     const ytId = youtubeId || extractYtId(videoUrl);
     const container = modal.querySelector('#modal-player')!;
 
+    const isFiller = el.dataset.filler !== undefined;
     if (ytId) {
-      // YouTube facade — show thumbnail + play button
       const thumbUrl = `/yt-thumb/${ytId}?size=maxresdefault`;
-      const facade = document.createElement('div');
-      facade.className = 'absolute inset-0 cursor-pointer group/facade';
-      facade.innerHTML = `
-        <img src="${thumbUrl}" alt="" class="absolute inset-0 w-full h-full object-cover"
-          onerror="this.src='/yt-thumb/${ytId}?size=hqdefault'" />
-        <div class="absolute inset-0 bg-black/30 group-hover/facade:bg-black/50 transition-colors duration-300 flex items-center justify-center">
-          <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-brand-accent flex items-center justify-center group-hover/facade:scale-110 transition-transform duration-300 shadow-lg shadow-brand-accent/40">
-            <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>`;
-      facade.addEventListener('click', () => {
+      // Fillers auto-play immediately; other projects show a click-to-play facade
+      if (isFiller) {
         const iframe = document.createElement('iframe');
         iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`;
         iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
         iframe.allowFullscreen = true;
         iframe.className = 'absolute inset-0 w-full h-full border-0';
-        facade.replaceWith(iframe);
-      });
-      container.appendChild(facade);
+        container.appendChild(iframe);
+      } else {
+        const facade = document.createElement('div');
+        facade.className = 'absolute inset-0 cursor-pointer group/facade';
+        facade.innerHTML = `
+          <img src="${thumbUrl}" alt="" class="absolute inset-0 w-full h-full object-cover"
+            onerror="this.src='/yt-thumb/${ytId}?size=hqdefault'" />
+          <div class="absolute inset-0 bg-black/30 group-hover/facade:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+            <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-brand-accent flex items-center justify-center group-hover/facade:scale-110 transition-transform duration-300 shadow-lg shadow-brand-accent/40">
+              <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>`;
+        facade.addEventListener('click', () => {
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`;
+          iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+          iframe.allowFullscreen = true;
+          iframe.className = 'absolute inset-0 w-full h-full border-0';
+          facade.replaceWith(iframe);
+        });
+        container.appendChild(facade);
+      }
     } else if (videoFile) {
       // Local video file
       const video = document.createElement('video');

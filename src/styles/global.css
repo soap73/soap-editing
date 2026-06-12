@@ -131,16 +131,18 @@
     html, body, *, a, button, [role="button"], [onclick], input, textarea { cursor: auto !important; }
   }
 
-  /* Custom cursor */
+  /* Custom cursor — GPU composited via transform */
   .cursor-dot {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 10px;
     height: 10px;
     border-radius: 50%;
     background: var(--color-brand-accent);
     pointer-events: none;
     z-index: var(--z-cursor);
-    transform: translate(-50%, -50%);
+    will-change: transform;
     transition: width 0.2s, height 0.2s, background 0.2s, box-shadow 0.2s;
   }
 
@@ -240,10 +242,12 @@
     transform: scale(1.1);
   }
 
-  /* Magnetic buttons default */
+  /* Magnetic buttons default — GPU layer */
   .magnetic-btn {
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, background 0.3s, color 0.3s;
     will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
 
   /* Platform client links pulse on hover */
@@ -263,6 +267,7 @@
     background: var(--color-brand-accent);
     z-index: 99999;
     width: 0%;
+    will-change: width;
     transition: width 0.15s linear;
   }
 
@@ -276,10 +281,11 @@
 }
 
 @layer components {
-  /* ── Tilt cards (glass tilt + glow) ─────────────────────── */
+  /* ── Tilt cards (glass tilt + glow) — GPU layer ─────── */
   .tilt-card, .tilt-only {
     transform-style: preserve-3d;
     will-change: transform;
+    backface-visibility: hidden;
     transition: transform 0.3s ease-out;
   }
   .tilt-card::before,
@@ -319,6 +325,7 @@
   animation: particle-float ease-in-out infinite;
   line-height: 1;
   user-select: none;
+  will-change: transform, opacity;
 }
 
 /* ── Card title letter spacing ──────────────────────────── */
@@ -327,6 +334,7 @@
 }
 [id^="magnet-"] .magnet-letter {
   display: inline-block;
+  will-change: transform;
 }
 
 @layer utilities {
@@ -334,6 +342,7 @@
     opacity: 0;
     transform: translateY(30px) scale(0.96);
     filter: blur(3px);
+    will-change: transform, opacity, filter;
     transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 filter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -342,6 +351,7 @@
     opacity: 1;
     transform: translateY(0) scale(1);
     filter: blur(0);
+    will-change: auto;
   }
 
   .reveal-up-delay-1 { transition-delay: 0.15s; }
@@ -354,6 +364,7 @@
   .text-glow-white { text-shadow: 0 0 20px rgba(255,255,255,0.3), 0 0 40px rgba(255,255,255,0.15); }
   .stat-number {
     cursor: none;
+    will-change: transform;
     transition: transform 0.5s ease-out, color 0.5s ease-out, text-shadow 0.5s ease-out;
   }
   @media (max-width: 640px) {
@@ -392,6 +403,7 @@
   /* Blur-up image loading */
   img.blur-up, video.blur-up {
     filter: blur(12px);
+    will-change: filter;
     transition: filter 0.5s ease-out;
   }
   img.blur-up.loaded, video.blur-up.loaded {

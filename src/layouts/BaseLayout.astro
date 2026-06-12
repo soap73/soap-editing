@@ -346,12 +346,20 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     }
   }, { passive: true });
 
-  // Custom cursor (desktop only)
+  // ── Custom cursor (desktop only) — GPU composited + rAF throttled ──
   const dot = document.getElementById('cursor-dot')!;
   if (!isTouchDevice) {
+    let cursorX = -100, cursorY = -100, cursorTick = false;
     document.addEventListener('mousemove', (e) => {
-      dot.style.left = e.clientX + 'px';
-      dot.style.top = e.clientY + 'px';
+      cursorX = e.clientX;
+      cursorY = e.clientY;
+      if (!cursorTick) {
+        cursorTick = true;
+        requestAnimationFrame(() => {
+          dot.style.transform = `translate(calc(${cursorX}px - 50%), calc(${cursorY}px - 50%))`;
+          cursorTick = false;
+        });
+      }
     });
   }
 
@@ -379,23 +387,36 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
   document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
   document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
 
-  // ── Magnetic buttons (desktop only) ───────────────────
+  // ── Magnetic buttons (desktop only) — rAF throttled ──
   if (!isTouchDevice) {
     document.querySelectorAll('.magnetic-btn').forEach((el) => {
     const btn = el as HTMLElement;
     const strength = 0.3;
+    let btnTick = false;
+    let btnEvt: MouseEvent | null = null;
+    let btnRect: DOMRect | null = null;
 
     btn.addEventListener('mousemove', (e: Event) => {
-      const me = e as MouseEvent;
-      const rect = btn.getBoundingClientRect();
-      const dx = me.clientX - (rect.left + rect.width / 2);
-      const dy = me.clientY - (rect.top + rect.height / 2);
-      btn.style.transform = `translate(${dx * strength}px, ${dy * strength}px) scale(1.05)`;
+      btnEvt = e as MouseEvent;
+      if (!btnTick) {
+        btnTick = true;
+        requestAnimationFrame(() => {
+          if (!btnEvt) { btnTick = false; return; }
+          // Cache rect per frame to avoid layout thrash
+          btnRect = btn.getBoundingClientRect();
+          const dx = btnEvt.clientX - (btnRect.left + btnRect.width / 2);
+          const dy = btnEvt.clientY - (btnRect.top + btnRect.height / 2);
+          btn.style.transform = `translate3d(${dx * strength}px, ${dy * strength}px, 0) scale(1.05)`;
+          btnTick = false;
+          btnEvt = null;
+        });
+      }
     });
 
     btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'translate(0, 0) scale(1)';
+      btn.style.transform = 'translate3d(0, 0, 0) scale(1)';
       btn.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      btnRect = null;
     });
   });
   }
@@ -429,46 +450,70 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
   document.querySelectorAll('[data-count-to]').forEach(el => counterObserver.observe(el));
 
-  // ── Tilt + glow cards (desktop only, Safari gets glow only) ──
+  // ── Tilt + glow cards (desktop only, Safari gets glow only) — rAF throttled ──
   if (!isTouchDevice) {
     document.querySelectorAll('.tilt-card, .tilt-only').forEach((el) => {
       const card = el as HTMLElement;
       const maxAngle = parseFloat(card.dataset.tiltMax || '8');
+      let tiltTick = false;
+      let tiltEvt: MouseEvent | null = null;
+      let tiltRect: DOMRect | null = null;
 
       card.addEventListener('mousemove', (e: Event) => {
-        const me = e as MouseEvent;
-        const rect = card.getBoundingClientRect();
-        const x = (me.clientX - rect.left) / rect.width;
-        const y = (me.clientY - rect.top) / rect.height;
-        card.style.setProperty('--glow-x', `${x * 100}%`);
-        card.style.setProperty('--glow-y', `${y * 100}%`);
-        if (isSafari) return; // Skip 3D tilt on Safari, keep glow
-        const rotateX = (y - 0.5) * maxAngle * 2;
-        const rotateY = (x - 0.5) * -maxAngle * 2;
-        card.style.transform =
-          `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        tiltEvt = e as MouseEvent;
+        if (!tiltTick) {
+          tiltTick = true;
+          requestAnimationFrame(() => {
+            if (!tiltEvt) { tiltTick = false; return; }
+            tiltRect = card.getBoundingClientRect();
+            const x = (tiltEvt.clientX - tiltRect.left) / tiltRect.width;
+            const y = (tiltEvt.clientY - tiltRect.top) / tiltRect.height;
+            card.style.setProperty('--glow-x', `${x * 100}%`);
+            card.style.setProperty('--glow-y', `${y * 100}%`);
+            if (!isSafari) {
+              const rotateX = (y - 0.5) * maxAngle * 2;
+              const rotateY = (x - 0.5) * -maxAngle * 2;
+              card.style.transform =
+                `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            }
+            tiltTick = false;
+            tiltEvt = null;
+          });
+        }
       });
 
       card.addEventListener('mouseleave', () => {
         if (!isSafari) {
           card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
         }
+        tiltRect = null;
       });
     });
   }
 
-  // ── Glow-only cards (desktop only) ────────────────────
+  // ── Glow-only cards (desktop only) — rAF throttled ──
   if (!isTouchDevice) {
     document.querySelectorAll('.glow-card').forEach((el) => {
       const card = el as HTMLElement;
+      let glowTick = false;
+      let glowEvt: MouseEvent | null = null;
+      let glowRect: DOMRect | null = null;
 
       card.addEventListener('mousemove', (e: Event) => {
-        const me = e as MouseEvent;
-        const rect = card.getBoundingClientRect();
-        const x = (me.clientX - rect.left) / rect.width;
-        const y = (me.clientY - rect.top) / rect.height;
-        card.style.setProperty('--glow-x', `${x * 100}%`);
-        card.style.setProperty('--glow-y', `${y * 100}%`);
+        glowEvt = e as MouseEvent;
+        if (!glowTick) {
+          glowTick = true;
+          requestAnimationFrame(() => {
+            if (!glowEvt) { glowTick = false; return; }
+            glowRect = card.getBoundingClientRect();
+            const x = (glowEvt.clientX - glowRect.left) / glowRect.width;
+            const y = (glowEvt.clientY - glowRect.top) / glowRect.height;
+            card.style.setProperty('--glow-x', `${x * 100}%`);
+            card.style.setProperty('--glow-y', `${y * 100}%`);
+            glowTick = false;
+            glowEvt = null;
+          });
+        }
       });
     });
   }

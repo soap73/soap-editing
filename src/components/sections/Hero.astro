@@ -38,40 +38,54 @@
       setTimeout(() => {
         letters.forEach((l) => { l.style.animation = 'none'; });
 
+        let magnetTick = false;
+        let magnetEvt: MouseEvent | null = null;
+        let magnetRect: DOMRect | null = null;
+
         title.addEventListener('mousemove', (e) => {
-          const rect = title.getBoundingClientRect();
-          const cx = e.clientX - rect.left;
-          const cy = e.clientY - rect.top;
+          magnetEvt = e;
+          if (!magnetTick) {
+            magnetTick = true;
+            requestAnimationFrame(() => {
+              if (!magnetEvt) { magnetTick = false; return; }
+              magnetRect = title.getBoundingClientRect();
+              const cx = magnetEvt.clientX - magnetRect.left;
+              const cy = magnetEvt.clientY - magnetRect.top;
 
-          letters.forEach((letter) => {
-            const lr = letter.getBoundingClientRect();
-            const lx = lr.left + lr.width / 2 - rect.left;
-            const ly = lr.top + lr.height / 2 - rect.top;
+              letters.forEach((letter) => {
+                const lr = letter.getBoundingClientRect();
+                const lx = lr.left + lr.width / 2 - magnetRect!.left;
+                const ly = lr.top + lr.height / 2 - magnetRect!.top;
 
-            const dx = cx - lx;
-            const dy = cy - ly;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const radius = 120;
+                const dx = cx - lx;
+                const dy = cy - ly;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const radius = 120;
 
-            if (dist < radius) {
-              const force = (1 - dist / radius) * strength;
-              const tx = (dx / dist) * -force;
-              const ty = (dy / dist) * -force * 0.5;
-              const rot = (dx / dist) * force * 0.15;
-              letter.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`;
-              letter.style.transition = 'transform 0.12s ease-out';
-            } else {
-              letter.style.transform = 'translate(0, 0) rotate(0deg)';
-              letter.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            }
-          });
+                if (dist < radius) {
+                  const force = (1 - dist / radius) * strength;
+                  const tx = (dx / dist) * -force;
+                  const ty = (dy / dist) * -force * 0.5;
+                  const rot = (dx / dist) * force * 0.15;
+                  letter.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
+                  letter.style.transition = 'transform 0.12s ease-out';
+                } else {
+                  letter.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+                  letter.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                }
+              });
+              magnetTick = false;
+              magnetEvt = null;
+            });
+          }
         });
 
         title.addEventListener('mouseleave', () => {
           letters.forEach((letter) => {
-            letter.style.transform = 'translate(0, 0) rotate(0deg)';
+            letter.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
             letter.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
           });
+          magnetRect = null;
         });
       }, magnetDelay);
     };
