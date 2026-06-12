@@ -175,7 +175,7 @@ function aspectClass(ratio: string) {
         data-aspect="16:9"
         onclick="openVideo(this)"
       >
-        <video src="/projects/portfolio-16x9.webm" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
+        <video src="/projects/portfolio-16x9.webm" poster="/projects/portfolio-16x9-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
     ))}
     {Array.from({ length: 8 }).map(() => (
@@ -188,7 +188,7 @@ function aspectClass(ratio: string) {
         data-aspect="9:16"
         onclick="openVideo(this)"
       >
-        <video src="/projects/portfolio-9x16.webm" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
+        <video src="/projects/portfolio-9x16.webm" poster="/projects/portfolio-9x16-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
     ))}
   </div>
@@ -270,10 +270,14 @@ function aspectClass(ratio: string) {
 
   function layoutRows() {
     // Collect fillers BEFORE clearing grid (they live inside #projects-grid)
-    // Collect all visible non-filler articles
+    // Collect all visible non-filler articles, sorted by data-order
     const articles = [...gridEl.querySelectorAll('article')].filter(c =>
       !c.classList.contains('portfolio-filler') && (c as HTMLElement).style.display !== 'none'
-    );
+    ).sort((a, b) => {
+      const oa = parseInt((a as HTMLElement).getAttribute('data-order') || '9999', 10);
+      const ob = parseInt((b as HTMLElement).getAttribute('data-order') || '9999', 10);
+      return oa - ob;
+    });
 
     const cards169 = articles.filter(c =>
       !c.classList.contains('aspect-[9/16]') && !c.classList.contains('aspect-square')
