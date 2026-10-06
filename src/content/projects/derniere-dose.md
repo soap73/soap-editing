@@ -1,8 +1,7 @@
 ---
 order: 5
 title: "Derniere Dose"
-description: "Festival Rushes Hour 2022
-Prix du Meilleur Film"
+description: "Festival Rushes Hour 2022 — Prix du Meilleur Film"
 client: "Julien ROOSE"
 category: court-metrage
 tags: ["court-métrage", "Drame"]

@@ -1,8 +1,7 @@
 ---
 order: 2
 title: "Mono no Aware"
-description: "Nikon Film Festival 2026
-Thème : La Beauté"
+description: "Nikon Film Festival 2026 — Thème : La Beauté"
 client: "Julien ROOSE"
 category: court-metrage
 tags: ["court-métrage", "Drame"]
