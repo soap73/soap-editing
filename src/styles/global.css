@@ -628,15 +628,6 @@
     align-content: start;
   }
 
-  /* Mobile : libellés permanents, pas de hover */
-  @media (hover: none) {
-    .tile-overlay { opacity: 1; }
-    .tile-scrim { background: linear-gradient(to top, rgba(0, 0, 0, .82), rgba(0, 0, 0, 0) 52%); }
-    .tile-title { font-size: 11px; }
-    .tile-client { display: none; }
-    .tile-cat { font-size: 8px; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .project-card,
     .tile-overlay { transition: none !important; }

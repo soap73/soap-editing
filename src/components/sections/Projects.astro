@@ -306,7 +306,7 @@ function aspectClass(ratio: string) {
     let iv = 0;
 
     // ── Rangées bento : 3 × [1 vertical | 2 horizontaux empilés] ──
-    const groupsPerRow = window.innerWidth >= 1024 ? 3 : 0;
+    const groupsPerRow = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1;
     const bentoRows = groupsPerRow
       ? Math.min(Math.floor(vs.length / groupsPerRow), Math.floor(hs.length / (groupsPerRow * 2)))
       : 0;
@@ -355,6 +355,7 @@ function aspectClass(ratio: string) {
 
     // Rangées verticales + vignette "work in progress" en fin de mur
     const vRest = vs.slice(iv);
+    let lastVRow: HTMLElement | null = null;
     if (vRest.length) {
       let i = 0;
       while (i < vRest.length) {
@@ -365,9 +366,15 @@ function aspectClass(ratio: string) {
           row.style.gridTemplateColumns = `repeat(${cols + 1}, 1fr)`;
           wipTile.classList.remove('hidden');
           row.appendChild(wipTile);
+          lastVRow = row;
         }
       }
-    } else if (wipTile) {
+    }
+    // Pas de rangée verticale (bento a tout consommé) → la WIP a sa propre rangée en fin de mur
+    if (wipTile && !lastVRow && gridEl.lastElementChild) {
+      wipTile.classList.remove('hidden');
+      pushRow([wipTile as HTMLElement], rowCols916());
+    } else if (wipTile && !gridEl.lastElementChild) {
       wipTile.classList.add('hidden');
     }
 
