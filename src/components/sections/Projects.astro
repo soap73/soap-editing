@@ -365,8 +365,47 @@ function aspectClass(ratio: string) {
   const videoPlayQueue: HTMLVideoElement[] = [];
   let videoPlaying = false;
 
+  // ── Fluidité : plafond de lectures simultanées + gel pendant le scroll ──
+  const MAX_PLAYING = 8;
+  const playingSet = new Set<HTMLVideoElement>();
+  let isScrolling = false;
+  let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function vidCenterDist(v: HTMLVideoElement) {
+    const r = v.getBoundingClientRect();
+    return Math.abs(r.top + r.height / 2 - innerHeight / 2);
+  }
+
+  function pauseWall() {
+    gridEl.querySelectorAll('video').forEach(v => { (v as HTMLVideoElement).pause(); });
+    playingSet.clear();
+    videoPlayQueue.length = 0;
+  }
+
+  // Relance en priorité les tuiles visibles les plus proches du centre
+  function queueVisibleByProximity() {
+    const vids = ([...gridEl.querySelectorAll('video')] as HTMLVideoElement[])
+      .filter(v => {
+        const r = v.getBoundingClientRect();
+        return r.bottom > 0 && r.top < innerHeight && v.paused;
+      })
+      .sort((a, b) => vidCenterDist(a) - vidCenterDist(b));
+    vids.forEach(v => { if (!videoPlayQueue.includes(v)) videoPlayQueue.push(v); });
+    processPlayQueue();
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!isScrolling) { isScrolling = true; pauseWall(); }
+    if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
+    scrollIdleTimer = setTimeout(() => {
+      isScrolling = false;
+      queueVisibleByProximity();
+    }, 180);
+  }, { passive: true });
+
   function processPlayQueue() {
     if (videoPlaying || videoPlayQueue.length === 0) return;
+    if (playingSet.size >= MAX_PLAYING) return;
     videoPlaying = true;
 
     // Sort queue by visual DOM order (left→right, top→bottom)
@@ -385,6 +424,7 @@ function aspectClass(ratio: string) {
     // Start loading + playback (browser handles media init)
     video.play()
       .then(() => {
+        playingSet.add(video);
         // Remove blur when content actually renders
         if (video.classList.contains('blur-up')) video.classList.add('loaded');
       })
@@ -405,15 +445,17 @@ function aspectClass(ratio: string) {
     entries.forEach(entry => {
       const video = entry.target as HTMLVideoElement;
       if (entry.isIntersecting) {
-        if (!videoPlayQueue.includes(video) && video.paused) {
+        if (!isScrolling && !videoPlayQueue.includes(video) && video.paused) {
           videoPlayQueue.push(video);
           processPlayQueue();
         }
       } else {
         video.pause();
+        playingSet.delete(video);
         // Remove from queue
         const idx = videoPlayQueue.indexOf(video);
         if (idx !== -1) videoPlayQueue.splice(idx, 1);
+        processPlayQueue();
       }
     });
   }, { rootMargin: lazyMargin });
@@ -677,6 +719,7 @@ function aspectClass(ratio: string) {
     wrapper.style.transform = 'scale(0.92)';
     wrapper.style.transition = 'opacity 0.35s ease-out, transform 0.35s ease-out';
 
+    pauseWall();
     modal.showModal();
     // Start modal background video
     const bgVideo = document.getElementById('modal-bg-video') as HTMLVideoElement | null;
@@ -701,6 +744,7 @@ function aspectClass(ratio: string) {
 
     modal.close();
     document.body.style.overflow = '';
+    queueVisibleByProximity();
     const dot = document.getElementById('cursor-dot');
     if (dot) dot.style.display = '';
     modalAnimating = false;
