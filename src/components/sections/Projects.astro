@@ -121,6 +121,10 @@ function aspectClass(ratio: string) {
 
   <!-- Masonry container -->
    <div class="relative w-full" id="projects-grid">
+    <!-- Vignette "work in progress" finale (non cliquable) -->
+    <article id="wip-tile" class="project-card group overflow-hidden bg-brand-gray-900 border-0 rounded-[14px] aspect-[9/16] hidden" aria-hidden="true">
+      <video src="/projects/portfolio-9x16.webm" poster="/projects/portfolio-9x16-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video"></video>
+    </article>
     {sorted.filter((p) => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId || (project.preview && /\.(mp4|webm|mov)$/i.test(project.preview)));
@@ -174,9 +178,6 @@ function aspectClass(ratio: string) {
         )}
         <div class="tile-overlay" aria-hidden="true">
           <span class="tile-scrim"></span>
-          <span class="tile-play">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </span>
           <div class="tile-meta">
             <span class="tile-cat" data-i18n={catI18n[project.category || 'youtube']}>{catLabels[project.category || 'youtube']}</span>
             <h3 class="tile-title">{project.title}</h3>
@@ -244,6 +245,7 @@ function aspectClass(ratio: string) {
 
 <script>
   const gridEl = document.getElementById('projects-grid')! as HTMLElement;
+  const wipTile = document.getElementById('wip-tile');
   let activeCat = 'all';
 
   // Grid constants
@@ -274,7 +276,7 @@ function aspectClass(ratio: string) {
   function layoutRows() {
     // Cartes visibles, triées par ordre
     const articles = ([...gridEl.querySelectorAll('article')] as HTMLElement[])
-      .filter(c => c.style.display !== 'none')
+      .filter(c => c.id !== 'wip-tile' && c.style.display !== 'none')
       .sort((a, b) => {
         const oa = parseInt(a.getAttribute('data-order') || '9999', 10);
         const ob = parseInt(b.getAttribute('data-order') || '9999', 10);
@@ -328,6 +330,7 @@ function aspectClass(ratio: string) {
       row.style.cssText = `display:grid;grid-template-columns:repeat(${cols},1fr);gap:6px`;
       cards.forEach(c => row.appendChild(c));
       gridEl.appendChild(row);
+      return row;
     };
     const pushAspectRows = (cards: HTMLElement[], maxCols: number) => {
       let i = 0;
@@ -338,7 +341,24 @@ function aspectClass(ratio: string) {
       }
     };
     pushAspectRows(hs.slice(ih), rowCols169());
-    pushAspectRows(vs.slice(iv), rowCols916());
+
+    // Rangées verticales + vignette "work in progress" en fin de mur
+    const vRest = vs.slice(iv);
+    if (vRest.length) {
+      let i = 0;
+      while (i < vRest.length) {
+        const cols = bestCols(vRest.length - i, rowCols916());
+        const row = pushRow(vRest.slice(i, i + cols), cols);
+        i += cols;
+        if (i >= vRest.length && wipTile) {
+          row.style.gridTemplateColumns = `repeat(${cols + 1}, 1fr)`;
+          wipTile.classList.remove('hidden');
+          row.appendChild(wipTile);
+        }
+      }
+    } else if (wipTile) {
+      wipTile.classList.add('hidden');
+    }
 
     // Réobserver les vidéos lazy après reconstruction
     document.querySelectorAll('.lazy-video').forEach(v => {
@@ -365,12 +385,7 @@ function aspectClass(ratio: string) {
   const videoPlayQueue: HTMLVideoElement[] = [];
   let videoPlaying = false;
 
-  // ── Fluidité : plafond de lectures simultanées + gel pendant le scroll ──
-  const MAX_PLAYING = 8;
-  const playingSet = new Set<HTMLVideoElement>();
-  let isScrolling = false;
-  let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
-
+  // ── Fluidité : ne jouent que les tuiles réellement visibles (ratio ≥ 60%) ──
   function vidCenterDist(v: HTMLVideoElement) {
     const r = v.getBoundingClientRect();
     return Math.abs(r.top + r.height / 2 - innerHeight / 2);
@@ -378,11 +393,10 @@ function aspectClass(ratio: string) {
 
   function pauseWall() {
     gridEl.querySelectorAll('video').forEach(v => { (v as HTMLVideoElement).pause(); });
-    playingSet.clear();
     videoPlayQueue.length = 0;
   }
 
-  // Relance en priorité les tuiles visibles les plus proches du centre
+  // Relance en priorité les tuiles visibles les plus proches du centre (ex. fermeture du modal)
   function queueVisibleByProximity() {
     const vids = ([...gridEl.querySelectorAll('video')] as HTMLVideoElement[])
       .filter(v => {
@@ -394,18 +408,8 @@ function aspectClass(ratio: string) {
     processPlayQueue();
   }
 
-  window.addEventListener('scroll', () => {
-    if (!isScrolling) { isScrolling = true; pauseWall(); }
-    if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
-    scrollIdleTimer = setTimeout(() => {
-      isScrolling = false;
-      queueVisibleByProximity();
-    }, 180);
-  }, { passive: true });
-
   function processPlayQueue() {
     if (videoPlaying || videoPlayQueue.length === 0) return;
-    if (playingSet.size >= MAX_PLAYING) return;
     videoPlaying = true;
 
     // Sort queue by visual DOM order (left→right, top→bottom)
@@ -424,7 +428,6 @@ function aspectClass(ratio: string) {
     // Start loading + playback (browser handles media init)
     video.play()
       .then(() => {
-        playingSet.add(video);
         // Remove blur when content actually renders
         if (video.classList.contains('blur-up')) video.classList.add('loaded');
       })
@@ -437,28 +440,27 @@ function aspectClass(ratio: string) {
     setTimeout(() => {
       videoPlaying = false;
       processPlayQueue();
-    }, 400);
+    }, 120);
   }
 
   const lazyMargin = '0px';
   const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting) {
-        if (!isScrolling && !videoPlayQueue.includes(video) && video.paused) {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+        if (!videoPlayQueue.includes(video) && video.paused) {
           videoPlayQueue.push(video);
           processPlayQueue();
         }
       } else {
         video.pause();
-        playingSet.delete(video);
         // Remove from queue
         const idx = videoPlayQueue.indexOf(video);
         if (idx !== -1) videoPlayQueue.splice(idx, 1);
         processPlayQueue();
       }
     });
-  }, { rootMargin: lazyMargin });
+  }, { rootMargin: lazyMargin, threshold: [0, 0.6] });
 
   document.querySelectorAll('.lazy-video').forEach(v => videoObserver.observe(v));
 
@@ -501,7 +503,7 @@ function aspectClass(ratio: string) {
     const cards = document.querySelectorAll('#projects-grid article, #projects-grid .grid-row > article, #hidden-cards article');
 
     cards.forEach((card) => {
-      if (card.classList.contains('portfolio-filler')) return;
+      if (card.id === 'wip-tile' || card.classList.contains('portfolio-filler')) return;
       const cardCat = card.getAttribute('data-category') || '';
       const visible = cat === 'all' || cardCat === cat;
       const el = card as HTMLElement;

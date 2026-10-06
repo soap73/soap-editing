@@ -1,5 +1,5 @@
 ---
-order: 24
+order: 25
 title: "Centre-Val de Loire"
 description: "Reel — carte animée sur la région"
 client: "Centre-Val de Loire"
