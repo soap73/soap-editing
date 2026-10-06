@@ -284,6 +284,11 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       }
     }
 
+    // Libellés personnalisés des tuiles (label / labelEn)
+    document.querySelectorAll('[data-label-fr]').forEach((el: any) => {
+      el.textContent = lang === 'en' ? el.dataset.labelEn : el.dataset.labelFr;
+    });
+
     // Update placeholders
     document.querySelectorAll('[data-i18n-placeholder]').forEach((el: any) => {
       const key = el.dataset.i18nPlaceholder;

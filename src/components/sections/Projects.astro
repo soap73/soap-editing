@@ -179,7 +179,11 @@ function aspectClass(ratio: string) {
         <div class="tile-overlay" aria-hidden="true">
           <span class="tile-scrim"></span>
           <div class="tile-meta">
-            <span class="tile-cat" data-i18n={catI18n[project.category || 'youtube']}>{catLabels[project.category || 'youtube']}</span>
+            {project.label ? (
+              <span class="tile-cat" data-label-fr={project.label} data-label-en={project.labelEn || project.label}>{project.label}</span>
+            ) : (
+              <span class="tile-cat" data-i18n={catI18n[project.category || 'youtube']}>{catLabels[project.category || 'youtube']}</span>
+            )}
             <h3 class="tile-title">{project.title}</h3>
             {project.client && <p class="tile-client">{project.client}</p>}
           </div>

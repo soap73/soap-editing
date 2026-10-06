@@ -6,4 +6,6 @@ category: reseaux-sociaux
 tags: ["Motion Design"]
 aspectRatio: "9:16"
 preview: "/projects/sports-zone-totem.webm"
+label: "Totem digital"
+labelEn: "Digital totem"
 ---

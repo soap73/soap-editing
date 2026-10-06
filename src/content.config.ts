@@ -20,6 +20,8 @@ const projectsCollection = defineCollection({
     youtubeId: z.string().optional(),
     aspectRatio: z.enum(['16:9', '9:16', '1:1']).optional().default('16:9'),
     preview: z.string().optional(),
+    label: z.string().optional(),
+    labelEn: z.string().optional(),
   }),
 });
 

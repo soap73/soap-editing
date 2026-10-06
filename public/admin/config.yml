@@ -44,3 +44,5 @@ collections:
           - { label: "1:1 (Carré)", value: "1:1" }
         default: "16:9"
       - { label: "Miniature", name: "thumbnail", widget: "image", required: false }
+      - { label: "Libellé personnalisé (remplace la catégorie sur la tuile)", name: "label", widget: "string", required: false, hint: "Ex : Totem digital — la catégorie reste celle du filtre" }
+      - { label: "Custom label (EN)", name: "labelEn", widget: "string", required: false }
