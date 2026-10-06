@@ -24,7 +24,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 <html lang="fr" class="bg-brand-black text-brand-white">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <title>{title}</title>
@@ -367,7 +367,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     if (!scrollTicking) {
       requestAnimationFrame(() => {
         const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-        progress.style.width = Math.min(scrollPercent, 100) + '%';
+        progress.style.transform = `scaleX(${Math.min(scrollPercent, 100) / 100})`;
         scrollTicking = false;
       });
       scrollTicking = true;
@@ -443,7 +443,7 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
 
     btn.addEventListener('mouseleave', () => {
       btn.style.transform = 'translate3d(0, 0, 0) scale(1)';
-      btn.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
       btnRect = null;
     });
   });

@@ -109,8 +109,8 @@ const schema = {
         loop
         muted
         playsinline
-        poster="/background-poster.webp"
-        class="absolute inset-0 h-full w-full object-cover scale-105"
+        poster="/background-poster-blur.webp"
+        class="bg-wave-video absolute inset-0 h-full w-full object-cover scale-105"
       >
       <source src="/background-wave-blur.webm" type="video/webm" />
       <source src="/background-wave-blur.mp4" type="video/mp4" />
@@ -118,6 +118,18 @@ const schema = {
     </div>
     <div class="absolute inset-0 bg-brand-black/60"></div>
   </div>
+
+  <script>
+    // Mobile : fond en image fixe (économise un décodage plein écran + la batterie)
+    if (matchMedia('(max-width: 767px)').matches) {
+      const bg = document.querySelector('.bg-wave-video') as HTMLVideoElement | null;
+      if (bg) {
+        bg.pause();
+        bg.querySelectorAll('source').forEach(s => s.remove());
+        bg.load();
+      }
+    }
+  </script>
 
   <main class="relative z-10 min-h-screen">
     <Hero />

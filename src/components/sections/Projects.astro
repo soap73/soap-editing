@@ -231,7 +231,7 @@ function aspectClass(ratio: string) {
           <button
             onclick="closeModal()"
             aria-label="Fermer"
-            class="group flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-brand-accent/90 hover:bg-brand-accent hover:scale-110 active:scale-95 transition-all duration-300 shadow-lg shadow-brand-accent/30"
+            class="group flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-full bg-brand-accent/90 hover:bg-brand-accent hover:scale-110 active:scale-95 transition-all duration-300 shadow-lg shadow-brand-accent/30"
           >
             <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round">
               <path d="M6 6l12 12M18 6l-12 12" />
@@ -419,8 +419,15 @@ function aspectClass(ratio: string) {
     processPlayQueue();
   }
 
+  // Mobile : plafond de lectures simultanées (les plus proches du centre d'abord)
+  const isSmallScreen = () => matchMedia('(max-width: 767px)').matches;
+  const MAX_MOBILE_PLAYING = 6;
+  const gridPlayingCount = () =>
+    ([...gridEl.querySelectorAll('video')] as HTMLVideoElement[]).filter(v => !v.paused).length;
+
   function processPlayQueue() {
     if (videoPlaying || videoPlayQueue.length === 0) return;
+    if (isSmallScreen() && gridPlayingCount() >= MAX_MOBILE_PLAYING) return;
     videoPlaying = true;
 
     // Sort queue by visual DOM order (left→right, top→bottom)

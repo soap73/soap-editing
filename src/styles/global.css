@@ -304,7 +304,7 @@
 
   /* Footer back to top */
   .footer-back-to-top {
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, color 0.3s;
   }
   .footer-back-to-top:hover {
     transform: scale(1.1);
@@ -312,7 +312,7 @@
 
   /* Magnetic buttons default — GPU layer */
   .magnetic-btn {
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, background 0.3s, color 0.3s;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, background 0.3s, color 0.3s;
     will-change: transform;
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
@@ -332,11 +332,13 @@
     top: 0;
     left: 0;
     height: 2px;
+    width: 100%;
     background: var(--color-brand-accent);
     z-index: 99999;
-    width: 0%;
-    will-change: width;
-    transition: width 0.15s linear;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+    transition: transform 0.15s linear;
   }
 
   /* Video modal */
@@ -646,4 +648,46 @@
 @keyframes letter-bounce {
   0% { opacity: 0; transform: translateY(30px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Adaptations mobiles / tactiles ───────────────────────
+   (hors @layer : ces règles priment sur les utilitaires Tailwind) */
+
+/* Évite l'inflation de texte iOS en paysage */
+html { -webkit-text-size-adjust: 100%; }
+
+/* Cibles tactiles ≥ 44px + feedback au tap */
+@media (pointer: coarse) {
+  .lang-option { min-height: 44px; padding-left: 18px; padding-right: 18px; }
+  .cat-btn { min-height: 44px; padding-left: 16px; padding-right: 16px; font-size: 11px; }
+  .hero-cta { min-height: 44px; }
+  button, a, [role="button"] { touch-action: manipulation; }
+
+  .project-card:active { transform: scale(.985); }
+  button:active, a:active, .cat-btn:active, .lang-option:active { opacity: .72; }
+}
+
+/* Safe areas (encoche / barre home iOS) */
+@supports (padding: env(safe-area-inset-top)) {
+  @media (max-width: 767px) {
+    #lang-switcher {
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+    }
+    .scroll-progress { top: env(safe-area-inset-top); }
+    footer > div { padding-bottom: max(24px, calc(env(safe-area-inset-bottom) + 8px)); }
+  }
+}
+
+/* Mobile : glass allégé (backdrop-filter = coût GPU élevé) */
+@media (max-width: 767px) {
+  .glow-card, .tilt-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background-color: rgba(12, 12, 12, .93) !important;
+  }
+  /* Le lecteur du modal tient dans l'écran (portrait 9:16 et paysage) */
+  #modal-player { max-height: 62vh; max-height: 62dvh; }
+  #modal-player video, #modal-player img, #modal-player iframe { object-fit: contain; }
+  .tile-cat { font-size: 9px; }
 }
