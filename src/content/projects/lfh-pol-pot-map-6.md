@@ -1,6 +1,6 @@
 ---
 order: 21
-title: "Pol Pot"
+title: "La Chute du dictateur le plus sanguinaire d'Asie : Pol Pot"
 description: "Map — La Folle Histoire"
 client: "La Folle Histoire"
 category: youtube

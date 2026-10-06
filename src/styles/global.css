@@ -516,6 +516,10 @@
     font-size: 15px;
     line-height: 1.2;
     color: var(--color-brand-white);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .tile-client {
     font-size: 10px;

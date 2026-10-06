@@ -2,7 +2,7 @@
 order: 25
 title: "Centre-Val de Loire"
 description: "Reel — carte animée sur la région"
-client: "Centre-Val de Loire"
+client: "Bruno Maltor"
 category: reseaux-sociaux
 tags: ["Motion Design"]
 aspectRatio: "9:16"
