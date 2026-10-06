@@ -834,6 +834,14 @@ function aspectClass(ratio: string) {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media (min-width: 768px) {
+    #projects-grid {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
   }
   #projects-grid > article,
   #projects-grid .grid-row > article {
