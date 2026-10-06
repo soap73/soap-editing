@@ -73,10 +73,15 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
     </noscript>
     <!-- Preloader -->
     <div class="preloader" id="preloader" aria-hidden="true">
-      <div class="preloader-content">
-        <span class="preloader-line preloader-line-top"></span>
+      <div class="preloader-stage">
         <span class="preloader-text">Soap<span class="preloader-accent">Edit</span></span>
-        <span class="preloader-line preloader-line-bottom"></span>
+        <div class="preloader-timeline">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="preloader-progress">
+          <span class="preloader-playhead"></span>
+        </div>
+        <span class="preloader-tc" id="preloader-tc">00:00:00:00</span>
       </div>
     </div>
 
@@ -316,6 +321,20 @@ const canonicalUrl = pageUrl ? `${siteUrl}${pageUrl}` : siteUrl;
       preloader.classList.add('done');
     }, 800);
   });
+
+  // Timecode façon NLE pendant le préchargement
+  const preloaderTc = document.getElementById('preloader-tc');
+  if (preloaderTc) {
+    const t0 = performance.now();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const tick = (t: number) => {
+      if (preloader.classList.contains('done')) return;
+      const s = (t - t0) / 1000;
+      preloaderTc.textContent = `00:00:${pad(Math.floor(s) % 60)}:${pad(Math.floor((s % 1) * 25))}`;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
 
   // Scroll reveal — observe all .reveal-up elements
   const isMobile = window.innerWidth < 640;
