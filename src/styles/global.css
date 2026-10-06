@@ -456,8 +456,6 @@
   }
   #projects-grid:hover .project-card.visible:not(:hover):not(:focus-visible) {
     opacity: .5;
-    /* Instantané : sinon 40 transitions d'opacité relancées en boucle au scroll */
-    transition-duration: 0s;
   }
 
   .tile-overlay {

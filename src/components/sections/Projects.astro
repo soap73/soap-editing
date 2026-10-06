@@ -151,7 +151,7 @@ function aspectClass(ratio: string) {
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
           <video loop muted playsinline preload="none"
             poster={posterUrl(project.preview)}
-            class="block w-full h-full object-cover lazy-video blur-up"
+            class="block w-full h-full object-cover lazy-video"
           >
             <source src={project.preview} type="video/webm" />
           </video>
