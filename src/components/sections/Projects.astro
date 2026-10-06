@@ -7,7 +7,28 @@ const sorted = projects
   .map((p) => ({ ...p.data, id: p.id }))
   .sort((a, b) => a.order - b.order);
 
+const visibleSorted = sorted.filter((p) => p.category !== 'cache');
+const featured = visibleSorted[0];
+const rest = visibleSorted.slice(1);
+
 const firstProject = sorted[0];
+
+// Libellés de catégorie pour les tuiles (i18n via setLang)
+const catLabels: Record<string, string> = {
+  youtube: 'YouTube',
+  'court-metrage': 'Courts-Métrages',
+  'reseaux-sociaux': 'Réseaux Sociaux',
+};
+const catI18n: Record<string, string> = {
+  youtube: 'categories.youtube',
+  'court-metrage': 'categories.courtMetrage',
+  'reseaux-sociaux': 'categories.reseauxSociaux',
+};
+
+const featuredIds = featured ? resolveVideoIds(featured) : { youtubeId: '', vimeoId: '' };
+const featuredHasVideo = featured
+  ? !!(featured.videoUrl || featured.videoFile || featuredIds.youtubeId || featuredIds.vimeoId || (featured.preview && /\.(mp4|webm|mov)$/i.test(featured.preview)))
+  : false;
 
 function ytThumb(id: string, size = 'hqdefault') {
   if (import.meta.env.DEV) {
@@ -80,8 +101,76 @@ function aspectClass(ratio: string) {
 <link rel="preload" as="image" href={firstProjectThumb()} fetchpriority="high" />
 
 <section id="projects" class="relative z-10 w-full">
-  <!-- Category filters -->
-  <div class="flex justify-start px-4 md:px-6 pb-6 md:pb-8 reveal-up" id="category-filters-wrapper">
+  <!-- À la une — bento d'ouverture -->
+  {featured && (
+  <div id="hero-band" class="relative z-10 px-4 md:px-6 pb-5 md:pb-6 reveal-up">
+    <div class="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+      <div id="hero-slot" class="lg:col-span-2 min-w-0">
+      <article
+        id="hero-featured"
+        class={`project-card group overflow-hidden bg-brand-gray-900 border-0 rounded-[14px] w-full ${aspectClass(featured.aspectRatio || '16:9')}`}
+        data-category={featured.category || 'youtube'}
+        data-youtube={featuredIds.youtubeId}
+        data-vimeo={featuredIds.vimeoId}
+        data-title={featured.title}
+        data-video={featured.videoUrl || ''}
+        data-video-file={featured.videoFile || ''}
+        data-preview={featured.preview || ''}
+        data-client={featured.client || ''}
+        data-description={featured.description || ''}
+        data-tags={(featured.tags || []).join(',')}
+        data-aspect={featured.aspectRatio || '16:9'}
+        data-order={featured.order}
+        tabindex="0" role="button" aria-label={featured.title}
+        onclick={featuredHasVideo || featured.preview ? 'openVideo(this)' : undefined}
+      >
+        {featured.preview && /\.(mp4|webm|mov)$/i.test(featured.preview) ? (
+          <video loop muted playsinline preload="none"
+            poster={posterUrl(featured.preview)}
+            class="block w-full h-full object-cover lazy-video blur-up"
+          >
+            <source src={featured.preview} type="video/webm" />
+          </video>
+        ) : featured.preview ? (
+          <img src={featured.preview} alt={featured.title} class="block w-full h-full object-cover blur-up" />
+        ) : (
+          <img src={thumbnailUrl(featured)} alt={featured.title} class="block w-full h-full object-cover blur-up"
+            srcset={featuredIds.youtubeId ? thumbnailSrcset(featuredIds.youtubeId) : undefined}
+            sizes="(max-width: 1024px) 100vw, 66vw" />
+        )}
+        <div class="tile-overlay" aria-hidden="true">
+          <span class="tile-scrim"></span>
+          <span class="tile-badge" data-i18n="hero.badge">À la une</span>
+          <span class="tile-play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+          <div class="tile-meta">
+            <span class="tile-cat" data-i18n={catI18n[featured.category || 'youtube']}>{catLabels[featured.category || 'youtube']}</span>
+            <h3 class="tile-title">{featured.title}</h3>
+            {featured.client && <p class="tile-client">{featured.client}</p>}
+          </div>
+        </div>
+      </article>
+      </div>
+
+      <aside class="hero-editorial">
+        <span class="hero-available">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+          <span data-i18n="available">Disponible</span>
+        </span>
+        <p class="hero-line">Le montage, c'est de l'écriture.</p>
+        <p class="hero-sub" data-i18n="hero.fresh">4 nouveaux projets viennent d'arriver.</p>
+        <a href="#contact" class="hero-cta magnetic-btn">
+          <span data-i18n="hero.cta">Discutons-en</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </aside>
+    </div>
+  </div>
+  )}
+
+  <!-- Category filters + bascule Mur / Scène -->
+  <div class="flex items-center justify-between gap-4 px-4 md:px-6 pb-6 md:pb-8 reveal-up" id="category-filters-wrapper">
     <div class="glow-card bg-brand-dark/60 backdrop-blur-2xl border border-white/20 rounded-[100px] shadow-2xl shadow-[inset_0_0_30px_-8px_rgba(255,255,255,0.07)] px-5 md:px-6 py-2 relative overflow-hidden">
       <div class="filters-fade filters-fade-left"></div>
       <div class="filters-fade filters-fade-right"></div>
@@ -99,6 +188,11 @@ function aspectClass(ratio: string) {
         </div>
       </div>
     </div>
+
+    <div id="view-toggle" class="hidden md:flex items-center text-[10px] md:text-[11px] uppercase tracking-widest bg-brand-dark/60 backdrop-blur-2xl border border-white/20 rounded-full overflow-hidden shadow-xl shrink-0" role="group" aria-label="Vue">
+      <button class="view-btn px-4 py-2 transition-colors duration-300 text-brand-gray-400 hover:text-brand-white" data-view="wall" data-i18n="view.wall">Mur</button>
+      <button class="view-btn px-4 py-2 transition-colors duration-300 text-brand-gray-400 hover:text-brand-white" data-view="scene" data-i18n="view.scene">Scène</button>
+    </div>
   </div>
 
   <!-- Empty state -->
@@ -108,7 +202,7 @@ function aspectClass(ratio: string) {
 
   <!-- Masonry container -->
    <div class="relative w-full" id="projects-grid">
-    {sorted.filter(p => p.category !== 'cache').map((project, i) => {
+    {rest.map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId || (project.preview && /\.(mp4|webm|mov)$/i.test(project.preview)));
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
@@ -116,7 +210,7 @@ function aspectClass(ratio: string) {
       const isFirst = i === 0;
       return (
       <article
-        class={`project-card group overflow-hidden bg-brand-gray-900 border-0 reveal-up ${ratioClass}`}
+        class={`project-card group overflow-hidden bg-brand-gray-900 border-0 reveal-up rounded-[14px] ${ratioClass}`}
         style={`transition-delay: ${(i % 4) * 0.06}s; view-transition-name: project-${project.id}`}
         data-category={project.category || 'youtube'}
         data-youtube={ids.youtubeId}
@@ -130,6 +224,9 @@ function aspectClass(ratio: string) {
         data-tags={(project.tags || []).join(',')}
         data-aspect={project.aspectRatio || '16:9'}
         data-order={project.order}
+        tabindex={hasVideo || project.preview ? '0' : undefined}
+        role={hasVideo || project.preview ? 'button' : undefined}
+        aria-label={hasVideo || project.preview ? project.title : undefined}
         onclick={hasVideo || project.preview ? 'openVideo(this)' : undefined}
       >
         {project.preview && /\.(mp4|webm|mov)$/i.test(project.preview) ? (
@@ -156,18 +253,24 @@ function aspectClass(ratio: string) {
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         )}
-        {hasVideo && (
-          <div class="absolute inset-0 bg-brand-black/0 group-hover:bg-brand-black/40 transition-all duration-400 flex items-center justify-center px-3">
-            <span class="text-brand-white text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-400 text-center">{project.title}</span>
+        <div class="tile-overlay" aria-hidden="true">
+          <span class="tile-scrim"></span>
+          <span class="tile-play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+          <div class="tile-meta">
+            <span class="tile-cat" data-i18n={catI18n[project.category || 'youtube']}>{catLabels[project.category || 'youtube']}</span>
+            <h3 class="tile-title">{project.title}</h3>
+            {project.client && <p class="tile-client">{project.client}</p>}
           </div>
-        )}
+        </div>
       </article>
       );
     })}
     <!-- Portfolio fillers (hidden by default, used to fill last-row gaps) -->
     {Array.from({ length: 5 }).map(() => (
       <article
-        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-video"
+        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up rounded-[14px] aspect-video"
         data-filler="16:9"
         data-aspect="16:9"
         aria-hidden="true"
@@ -177,7 +280,7 @@ function aspectClass(ratio: string) {
     ))}
     {Array.from({ length: 8 }).map(() => (
       <article
-        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-[9/16]"
+        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up rounded-[14px] aspect-[9/16]"
         data-filler="9:16"
         data-aspect="9:16"
         aria-hidden="true"
@@ -189,6 +292,26 @@ function aspectClass(ratio: string) {
 
   <!-- Hidden card storage for filtered-out cards -->
   <div id="hidden-cards" style="display:none" aria-hidden="true"></div>
+
+  <!-- Scène 3D (vue secondaire) -->
+  <div id="scene" class="relative z-10 px-4 md:px-6 pb-12" style="display:none" aria-hidden="true">
+    <div id="scene-viewport" class="relative mx-auto max-w-6xl h-[58vh] min-h-[380px] max-h-[560px]" style="perspective:1600px">
+      <div id="scene-track" class="absolute inset-0" style="transform-style:preserve-3d"></div>
+      <button id="scene-prev" class="scene-arrow left-0 md:-left-5" aria-label="Projet précédent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button id="scene-next" class="scene-arrow right-0 md:-right-5" aria-label="Projet suivant">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div class="mx-auto max-w-6xl mt-6 flex items-center justify-between gap-6">
+      <div class="min-w-0">
+        <p id="scene-title" class="font-heading italic text-xl md:text-2xl text-brand-white truncate"></p>
+        <p id="scene-client" class="text-[11px] uppercase tracking-widest text-brand-gray-400 mt-1 truncate"></p>
+      </div>
+      <button id="scene-open" class="shrink-0 px-6 py-3 rounded-full bg-brand-accent text-white text-xs uppercase tracking-widest hover:bg-brand-accent-bright transition-colors duration-300 shadow-lg shadow-brand-accent/30" data-i18n="scene.open">Voir le projet</button>
+    </div>
+  </div>
 </section>
 
 <dialog
@@ -243,6 +366,7 @@ function aspectClass(ratio: string) {
 
 <script>
   const gridEl = document.getElementById('projects-grid')! as HTMLElement;
+  let activeCat = 'all';
 
   // Save filler templates once (preserve across DOM rebuilds)
   const filler169HTML = document.querySelector('.portfolio-filler[data-filler="16:9"]')?.outerHTML;
@@ -296,7 +420,7 @@ function aspectClass(ratio: string) {
         // 16:9 row
         const take = Math.min(cols169, cards169.length - i169);
         row.className = 'grid-row';
-        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols169},1fr);gap:0`;
+        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols169},1fr);gap:6px`;
         for (let i = 0; i < take; i++) {
           row.appendChild(cards169[i169 + i]);
           placed++;
@@ -318,7 +442,7 @@ function aspectClass(ratio: string) {
         // 9:16 row
         const take = Math.min(cols916, cards916.length - i916);
         row.className = 'grid-row';
-        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols916},1fr);gap:0`;
+        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols916},1fr);gap:6px`;
         for (let i = 0; i < take; i++) {
           row.appendChild(cards916[i916 + i]);
           placed++;
@@ -358,6 +482,7 @@ function aspectClass(ratio: string) {
     resizeTimer = setTimeout(() => {
       layoutRows();
       updateScrollFade();
+      if (sceneMode) layoutScene();
     }, 200);
   });
 
@@ -455,7 +580,21 @@ function aspectClass(ratio: string) {
   setTimeout(updateScrollFade, 200);
 
   function updateFilters(cat: string) {
+    activeCat = cat;
     const hiddenEl = document.getElementById('hidden-cards')!;
+
+    // La tuile "à la une" vit dans le bandeau en vue Tout, dans la grille sinon
+    const heroCard = document.getElementById('hero-featured');
+    const heroSlot = document.getElementById('hero-slot');
+    const heroBand = document.getElementById('hero-band');
+    if (heroCard && heroSlot) {
+      if (cat === 'all') {
+        heroSlot.appendChild(heroCard);
+      } else if (heroCard.parentElement !== gridEl) {
+        gridEl.appendChild(heroCard);
+      }
+    }
+    heroBand && (heroBand.style.display = cat === 'all' ? '' : 'none');
 
     document.querySelectorAll('.cat-btn').forEach(b => {
       const isActive = b.getAttribute('data-category') === cat;
@@ -516,7 +655,13 @@ function aspectClass(ratio: string) {
 
   document.querySelectorAll('.cat-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      updateFilters(btn.getAttribute('data-category')!);
+      const cat = btn.getAttribute('data-category')!;
+      if (cat === activeCat) return;
+      gridEl.classList.add('is-filtering');
+      setTimeout(() => {
+        updateFilters(cat);
+        requestAnimationFrame(() => gridEl.classList.remove('is-filtering'));
+      }, 170);
     });
   });
 
@@ -772,14 +917,198 @@ function aspectClass(ratio: string) {
       if (e.key === 'Escape' && modal.open) (window as any).closeModal();
     });
   }
+
+  // ── Activation clavier des tuiles ─────────────────────
+  document.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (!t?.matches?.('.project-card[role="button"]')) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      (window as any).openVideo(t);
+    }
+  });
+
+  // ── Scène 3D (vue secondaire) ─────────────────────────
+  const sceneEl = document.getElementById('scene');
+  const sceneTrack = document.getElementById('scene-track');
+  const sceneViewport = document.getElementById('scene-viewport');
+  const sceneTitle = document.getElementById('scene-title');
+  const sceneClient = document.getElementById('scene-client');
+  let sceneMode = false;
+  let sceneItems: { el: HTMLElement; article: HTMLElement }[] = [];
+  let sceneIdx = 0;
+  let sceneLock = 0;
+  let sceneVideo: HTMLVideoElement | null = null;
+  let sceneVideoArticle: HTMLElement | null = null;
+
+  function visibleArticles(): HTMLElement[] {
+    const heroCard = document.getElementById('hero-featured');
+    const list = ([...gridEl.querySelectorAll('article')] as HTMLElement[]);
+    if (heroCard && heroCard.parentElement?.id === 'hero-slot') list.push(heroCard);
+    return list
+      .filter(a => !a.classList.contains('portfolio-filler')
+        && a.style.display !== 'none'
+        && a.parentElement?.id !== 'hidden-cards'
+        && a.getAttribute('data-order') !== null)
+      .sort((a, b) => parseInt(a.getAttribute('data-order') || '0', 10) - parseInt(b.getAttribute('data-order') || '0', 10));
+  }
+
+  function releaseSceneVideo() {
+    if (sceneVideo && sceneVideoArticle) {
+      sceneVideo.pause();
+      sceneVideo.classList.remove('scene-video');
+      sceneVideoArticle.insertBefore(sceneVideo, sceneVideoArticle.firstChild);
+    }
+    sceneVideo = null;
+    sceneVideoArticle = null;
+  }
+
+  function buildScene() {
+    if (!sceneTrack) return;
+    releaseSceneVideo();
+    sceneTrack.innerHTML = '';
+    sceneItems = visibleArticles().map((article, i) => {
+      const el = document.createElement('div');
+      el.className = 'scene-item';
+      const aspect = article.getAttribute('data-aspect') || '16:9';
+      el.style.aspectRatio = aspect === '9:16' ? '9 / 16' : aspect === '1:1' ? '1 / 1' : '16 / 9';
+      const video = article.querySelector('video');
+      const img = article.querySelector('img');
+      const poster = video?.getAttribute('poster') || img?.getAttribute('src') || '';
+      const im = document.createElement('img');
+      im.src = poster;
+      im.alt = '';
+      im.className = 'scene-poster';
+      im.draggable = false;
+      el.appendChild(im);
+      el.addEventListener('click', () => {
+        if (i === sceneIdx) (window as any).openVideo(article);
+        else activateScene(i);
+      });
+      sceneTrack!.appendChild(el);
+      return { el, article };
+    });
+    sceneIdx = Math.min(sceneIdx, Math.max(0, sceneItems.length - 1));
+  }
+
+  function activateScene(i: number) {
+    if (!sceneItems.length) return;
+    releaseSceneVideo();
+    sceneIdx = Math.max(0, Math.min(sceneItems.length - 1, i));
+    const { el, article } = sceneItems[sceneIdx];
+    const vid = article.querySelector('video');
+    if (vid) {
+      vid.classList.add('scene-video');
+      el.appendChild(vid);
+      sceneVideo = vid;
+      sceneVideoArticle = article;
+      vid.play().catch(() => {});
+    }
+    if (sceneTitle) sceneTitle.textContent = article.dataset.title || '';
+    if (sceneClient) sceneClient.textContent = article.dataset.client || '';
+    layoutScene();
+  }
+
+  function layoutScene() {
+    if (!sceneItems.length) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const w = sceneItems[sceneIdx].el.offsetWidth || 480;
+    sceneItems.forEach((it, i) => {
+      const off = i - sceneIdx;
+      const abs = Math.abs(off);
+      const x = off * w * 0.58;
+      const rotY = reduce || off === 0 ? 0 : -Math.sign(off) * 32;
+      const z = reduce ? 0 : -abs * 170;
+      const scale = reduce ? 1 : Math.max(0.7, 1 - abs * 0.1);
+      const op = abs === 0 ? 1 : Math.max(0.2, 0.72 - (abs - 1) * 0.26);
+      it.el.style.transform = `translate(-50%, -50%) translateX(${x}px) translateZ(${z}px) rotateY(${rotY}deg) scale(${scale})`;
+      it.el.style.opacity = String(op);
+      it.el.style.zIndex = String(200 - abs);
+      it.el.classList.toggle('is-active', abs === 0);
+    });
+  }
+
+  function setView(mode: 'wall' | 'scene') {
+    const next = mode === 'scene';
+    if (next === sceneMode) return;
+    sceneMode = next;
+    document.querySelectorAll('.view-btn').forEach(b => {
+      const on = b.getAttribute('data-view') === mode;
+      b.classList.toggle('bg-brand-accent', on);
+      b.classList.toggle('text-white', on);
+      b.classList.toggle('text-brand-gray-400', !on);
+    });
+    const heroBand = document.getElementById('hero-band');
+    const filtersWrap = document.getElementById('category-filters-wrapper');
+    if (sceneMode) {
+      if (heroBand) heroBand.style.display = 'none';
+      if (filtersWrap) filtersWrap.style.display = 'none';
+      gridEl.style.display = 'none';
+      if (sceneEl) sceneEl.style.display = '';
+      buildScene();
+      activateScene(0);
+    } else {
+      releaseSceneVideo();
+      if (sceneEl) sceneEl.style.display = 'none';
+      gridEl.style.display = '';
+      if (filtersWrap) filtersWrap.style.display = '';
+      if (activeCat === 'all' && heroBand) heroBand.style.display = '';
+      layoutRows();
+    }
+  }
+
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => setView((btn.getAttribute('data-view') as 'wall' | 'scene') || 'wall'));
+    const on = btn.getAttribute('data-view') === 'wall';
+    btn.classList.toggle('bg-brand-accent', on);
+    btn.classList.toggle('text-white', on);
+    btn.classList.toggle('text-brand-gray-400', !on);
+  });
+  document.getElementById('scene-prev')?.addEventListener('click', () => activateScene(sceneIdx - 1));
+  document.getElementById('scene-next')?.addEventListener('click', () => activateScene(sceneIdx + 1));
+  document.getElementById('scene-open')?.addEventListener('click', () => {
+    const a = sceneItems[sceneIdx]?.article;
+    if (a) (window as any).openVideo(a);
+  });
+
+  sceneViewport?.addEventListener('wheel', (e) => {
+    if (!sceneMode) return;
+    e.preventDefault();
+    const now = Date.now();
+    if (now - sceneLock < 320) return;
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (Math.abs(delta) < 8) return;
+    sceneLock = now;
+    activateScene(sceneIdx + (delta > 0 ? 1 : -1));
+  }, { passive: false });
+
+  let sceneDragX = 0;
+  let sceneDragging = false;
+  sceneViewport?.addEventListener('pointerdown', (e) => { sceneDragging = true; sceneDragX = e.clientX; });
+  sceneViewport?.addEventListener('pointerup', (e) => {
+    if (!sceneDragging) return;
+    sceneDragging = false;
+    const dx = e.clientX - sceneDragX;
+    if (Math.abs(dx) > 60) activateScene(sceneIdx + (dx < 0 ? 1 : -1));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!sceneMode) return;
+    if (e.key === 'ArrowLeft') activateScene(sceneIdx - 1);
+    if (e.key === 'ArrowRight') activateScene(sceneIdx + 1);
+    if (e.key === 'Escape' && !modal?.open) setView('wall');
+  });
 </script>
 
 <style>
   #projects-grid {
     display: flex;
     flex-direction: column;
+    gap: 6px;
   }
-  #projects-grid > article {
+  #projects-grid > article,
+  #projects-grid .grid-row > article,
+  #hero-slot > article {
     position: relative;
     width: 100%;
   }

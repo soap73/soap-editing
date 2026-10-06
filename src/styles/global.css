@@ -436,6 +436,254 @@
     .filters-fade-left { left: 24px; }
     .filters-fade-right { right: 24px; }
   }
+
+  /* ── Craft des tuiles — mur ─────────────────────────────
+     Règle de forme : surfaces (cartes/modales) 40px · médias 14px · pilules full */
+  .project-card {
+    position: relative;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #121212 0%, #1b1b1b 50%, #121212 100%);
+    transition: transform .4s cubic-bezier(.16, 1, .3, 1), box-shadow .35s ease,
+                opacity .4s ease, filter .4s ease;
+  }
+  .project-card.visible:hover,
+  .project-card.visible:focus-visible {
+    transform: scale(1.02);
+    z-index: 6;
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, .5), 0 28px 56px -28px rgba(0, 0, 0, .95);
+  }
+  .project-card:focus-visible {
+    outline: 2px solid var(--color-brand-accent);
+    outline-offset: -2px;
+  }
+  #projects-grid:hover .project-card.visible:not(:hover):not(:focus-visible) {
+    opacity: .5;
+  }
+
+  .tile-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 14px 16px;
+    opacity: 0;
+    transition: opacity .3s ease;
+    pointer-events: none;
+  }
+  .project-card:hover .tile-overlay,
+  .project-card:focus-visible .tile-overlay {
+    opacity: 1;
+  }
+  .tile-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, .9) 0%, rgba(0, 0, 0, .35) 45%, rgba(0, 0, 0, 0) 75%);
+  }
+  .tile-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    font-size: 9px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(124, 58, 237, .92);
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 999px;
+    padding: 6px 12px;
+    backdrop-filter: blur(8px);
+  }
+  .tile-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(124, 58, 237, .92);
+    box-shadow: 0 10px 36px -10px rgba(124, 58, 237, .9);
+    transform: translate(-50%, -50%) scale(.88);
+    transition: transform .3s cubic-bezier(.16, 1, .3, 1);
+  }
+  .tile-play svg { width: 18px; height: 18px; color: #fff; margin-left: 2px; }
+  .project-card:hover .tile-play,
+  .project-card:focus-visible .tile-play {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .tile-meta {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tile-cat {
+    font-size: 9px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-brand-accent-bright);
+  }
+  .tile-title {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.2;
+    color: var(--color-brand-white);
+  }
+  .tile-client {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--color-brand-gray-400);
+  }
+
+  /* Skeleton : uniquement tant que le média n'est pas prêt */
+  .project-card:has(video.blur-up:not(.loaded)),
+  .project-card:has(img.blur-up:not(.loaded)) {
+    background: linear-gradient(110deg, #131313 8%, #1e1e1e 18%, #131313 33%);
+    background-size: 200% 100%;
+    animation: tile-shimmer 1.8s linear infinite;
+  }
+  @keyframes tile-shimmer {
+    to { background-position: -200% 0; }
+  }
+
+  /* Filtres : fondu sortie/entrée */
+  #projects-grid { transition: opacity .17s ease; }
+  #projects-grid.is-filtering { opacity: 0; }
+
+  /* ── Bandeau « à la une » ─────────────────────────────── */
+  .hero-editorial {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 28px;
+    border-radius: 40px;
+    background: rgba(10, 10, 10, .7);
+    border: 1px solid rgba(255, 255, 255, .07);
+    backdrop-filter: blur(24px);
+    box-shadow: 0 20px 60px -30px rgba(0, 0, 0, .9), inset 0 0 30px -8px rgba(255, 255, 255, .06);
+  }
+  .hero-available {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--color-brand-gray-200);
+  }
+  .hero-line {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.15;
+    color: var(--color-brand-white);
+  }
+  .hero-sub { font-size: 13px; color: var(--color-brand-gray-400); }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    color: var(--color-brand-white);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    transition: background .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+  }
+  .hero-cta:hover {
+    background: var(--color-brand-accent);
+    border-color: var(--color-brand-accent);
+    box-shadow: 0 10px 30px -10px rgba(124, 58, 237, .8);
+    transform: translateY(-1px);
+  }
+
+  /* ── Scène 3D (vue secondaire) ────────────────────────── */
+  .scene-item {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: min(54vh, 480px);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #141414;
+    transform: translate(-50%, -50%);
+    transition: transform .5s cubic-bezier(.16, 1, .3, 1), opacity .5s ease;
+    will-change: transform, opacity;
+    cursor: pointer;
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .9);
+  }
+  .scene-item.is-active {
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, .5), 0 40px 80px -40px rgba(0, 0, 0, 1);
+  }
+  .scene-poster,
+  .scene-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .scene-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 300;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, .6);
+    border: 1px solid rgba(255, 255, 255, .18);
+    color: #fff;
+    backdrop-filter: blur(12px);
+    transition: background .3s ease, transform .3s ease;
+  }
+  .scene-arrow:hover { background: rgba(124, 58, 237, .85); transform: translateY(-50%) scale(1.06); }
+
+  /* La tuile "à la une" affiche en permanence son badge, son titre et son scrim */
+  #hero-band .tile-overlay { opacity: 1; }
+  #hero-band .tile-play { opacity: 0; }
+  #hero-band .project-card:hover .tile-play,
+  #hero-band .project-card:focus-visible .tile-play { opacity: 1; }
+
+  /* Mobile : libellés permanents, pas de hover */
+  @media (hover: none) {
+    .tile-overlay { opacity: 1; }
+    .tile-scrim { background: linear-gradient(to top, rgba(0, 0, 0, .82), rgba(0, 0, 0, 0) 52%); }
+    .tile-play { display: none; }
+    .tile-title { font-size: 11px; }
+    .tile-client { display: none; }
+    .tile-cat { font-size: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .tile-overlay,
+    .tile-play,
+    .scene-item { transition: none !important; }
+    .project-card.visible:hover { transform: none; }
+    .project-card:has(video.blur-up:not(.loaded)),
+    .project-card:has(img.blur-up:not(.loaded)) { animation: none; }
+    .scene-arrow:hover { transform: translateY(-50%); }
+  }
 }
 
 /* Per-letter bounce entrance */
