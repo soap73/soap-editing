@@ -558,11 +558,33 @@
   #projects-grid { transition: opacity .17s ease; }
   #projects-grid.is-filtering { opacity: 0; }
 
-  /* La tuile "à la une" affiche en permanence son badge, son titre et son scrim */
-  #hero-band .tile-overlay { opacity: 1; }
-  #hero-band .tile-play { opacity: 0; }
-  #hero-band .project-card:hover .tile-play,
-  #hero-band .project-card:focus-visible .tile-play { opacity: 1; }
+  /* ── Bento : 1 vertical + 2 horizontaux empilés ─────────── */
+  .bento-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .bento-group {
+    display: grid;
+    grid-template-columns: 38.8% minmax(0, 1fr);
+    gap: 6px;
+    align-items: start;
+    min-width: 0;
+  }
+  .bento-v,
+  .bento-hs {
+    min-width: 0;
+  }
+  .bento-v > .project-card,
+  .bento-hs > .project-card {
+    width: 100%;
+  }
+  .bento-hs {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 6px;
+    align-content: start;
+  }
 
   /* Mobile : libellés permanents, pas de hover */
   @media (hover: none) {

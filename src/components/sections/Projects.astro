@@ -7,10 +7,6 @@ const sorted = projects
   .map((p) => ({ ...p.data, id: p.id }))
   .sort((a, b) => a.order - b.order);
 
-const visibleSorted = sorted.filter((p) => p.category !== 'cache');
-const featured = visibleSorted[0];
-const rest = visibleSorted.slice(1);
-
 const firstProject = sorted[0];
 
 // Libellés de catégorie pour les tuiles (i18n via setLang)
@@ -25,10 +21,6 @@ const catI18n: Record<string, string> = {
   'reseaux-sociaux': 'categories.reseauxSociaux',
 };
 
-const featuredIds = featured ? resolveVideoIds(featured) : { youtubeId: '', vimeoId: '' };
-const featuredHasVideo = featured
-  ? !!(featured.videoUrl || featured.videoFile || featuredIds.youtubeId || featuredIds.vimeoId || (featured.preview && /\.(mp4|webm|mov)$/i.test(featured.preview)))
-  : false;
 
 function ytThumb(id: string, size = 'hqdefault') {
   if (import.meta.env.DEV) {
@@ -101,61 +93,6 @@ function aspectClass(ratio: string) {
 <link rel="preload" as="image" href={firstProjectThumb()} fetchpriority="high" />
 
 <section id="projects" class="relative z-10 w-full">
-  <!-- À la une — bento d'ouverture -->
-  {featured && (
-  <div id="hero-band" class="relative z-10 px-4 md:px-6 pb-5 md:pb-6 reveal-up">
-    <div class="mx-auto max-w-6xl">
-      <div id="hero-slot" class="min-w-0">
-      <article
-        id="hero-featured"
-        class={`project-card group overflow-hidden bg-brand-gray-900 border-0 rounded-[14px] w-full ${aspectClass(featured.aspectRatio || '16:9')}`}
-        data-category={featured.category || 'youtube'}
-        data-youtube={featuredIds.youtubeId}
-        data-vimeo={featuredIds.vimeoId}
-        data-title={featured.title}
-        data-video={featured.videoUrl || ''}
-        data-video-file={featured.videoFile || ''}
-        data-preview={featured.preview || ''}
-        data-client={featured.client || ''}
-        data-description={featured.description || ''}
-        data-tags={(featured.tags || []).join(',')}
-        data-aspect={featured.aspectRatio || '16:9'}
-        data-order={featured.order}
-        tabindex="0" role="button" aria-label={featured.title}
-        onclick={featuredHasVideo || featured.preview ? 'openVideo(this)' : undefined}
-      >
-        {featured.preview && /\.(mp4|webm|mov)$/i.test(featured.preview) ? (
-          <video loop muted playsinline preload="none"
-            poster={posterUrl(featured.preview)}
-            class="block w-full h-full object-cover lazy-video blur-up"
-          >
-            <source src={featured.preview} type="video/webm" />
-          </video>
-        ) : featured.preview ? (
-          <img src={featured.preview} alt={featured.title} class="block w-full h-full object-cover blur-up" />
-        ) : (
-          <img src={thumbnailUrl(featured)} alt={featured.title} class="block w-full h-full object-cover blur-up"
-            srcset={featuredIds.youtubeId ? thumbnailSrcset(featuredIds.youtubeId) : undefined}
-            sizes="(max-width: 1024px) 100vw, 66vw" />
-        )}
-        <div class="tile-overlay" aria-hidden="true">
-          <span class="tile-scrim"></span>
-          <span class="tile-badge" data-i18n="hero.badge">À la une</span>
-          <span class="tile-play">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </span>
-          <div class="tile-meta">
-            <span class="tile-cat" data-i18n={catI18n[featured.category || 'youtube']}>{catLabels[featured.category || 'youtube']}</span>
-            <h3 class="tile-title">{featured.title}</h3>
-            {featured.client && <p class="tile-client">{featured.client}</p>}
-          </div>
-        </div>
-      </article>
-      </div>
-    </div>
-  </div>
-  )}
-
   <!-- Category filters -->
   <div class="flex justify-start px-4 md:px-6 pb-6 md:pb-8 reveal-up" id="category-filters-wrapper">
     <div class="glow-card bg-brand-dark/60 backdrop-blur-2xl border border-white/20 rounded-[100px] shadow-2xl shadow-[inset_0_0_30px_-8px_rgba(255,255,255,0.07)] px-5 md:px-6 py-2 relative overflow-hidden">
@@ -184,7 +121,7 @@ function aspectClass(ratio: string) {
 
   <!-- Masonry container -->
    <div class="relative w-full" id="projects-grid">
-    {rest.map((project, i) => {
+    {sorted.filter((p) => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId || (project.preview && /\.(mp4|webm|mov)$/i.test(project.preview)));
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
@@ -249,27 +186,6 @@ function aspectClass(ratio: string) {
       </article>
       );
     })}
-    <!-- Portfolio fillers (hidden by default, used to fill last-row gaps) -->
-    {Array.from({ length: 5 }).map(() => (
-      <article
-        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up rounded-[14px] aspect-video"
-        data-filler="16:9"
-        data-aspect="16:9"
-        aria-hidden="true"
-      >
-        <video src="/projects/portfolio-16x9.webm" poster="/projects/portfolio-16x9-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
-      </article>
-    ))}
-    {Array.from({ length: 8 }).map(() => (
-      <article
-        class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up rounded-[14px] aspect-[9/16]"
-        data-filler="9:16"
-        data-aspect="9:16"
-        aria-hidden="true"
-      >
-        <video src="/projects/portfolio-9x16.webm" poster="/projects/portfolio-9x16-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
-      </article>
-    ))}
   </div>
 
   <!-- Hidden card storage for filtered-out cards -->
@@ -330,10 +246,6 @@ function aspectClass(ratio: string) {
   const gridEl = document.getElementById('projects-grid')! as HTMLElement;
   let activeCat = 'all';
 
-  // Save filler templates once (preserve across DOM rebuilds)
-  const filler169HTML = document.querySelector('.portfolio-filler[data-filler="16:9"]')?.outerHTML;
-  const filler916HTML = document.querySelector('.portfolio-filler[data-filler="9:16"]')?.outerHTML;
-
   // Grid constants
   function rowCols169() {
     const w = window.innerWidth;
@@ -360,91 +272,79 @@ function aspectClass(ratio: string) {
   }
 
   function layoutRows() {
-    // Collect fillers BEFORE clearing grid (they live inside #projects-grid)
-    // Collect all visible non-filler articles, sorted by data-order
-    const articles = [...gridEl.querySelectorAll('article')].filter(c =>
-      !c.classList.contains('portfolio-filler') && (c as HTMLElement).style.display !== 'none'
-    ).sort((a, b) => {
-      const oa = parseInt((a as HTMLElement).getAttribute('data-order') || '9999', 10);
-      const ob = parseInt((b as HTMLElement).getAttribute('data-order') || '9999', 10);
-      return oa - ob;
-    });
+    // Cartes visibles, triées par ordre
+    const articles = ([...gridEl.querySelectorAll('article')] as HTMLElement[])
+      .filter(c => c.style.display !== 'none')
+      .sort((a, b) => {
+        const oa = parseInt(a.getAttribute('data-order') || '9999', 10);
+        const ob = parseInt(b.getAttribute('data-order') || '9999', 10);
+        return oa - ob;
+      });
 
-    const cards169 = articles.filter(c =>
-      !c.classList.contains('aspect-[9/16]') && !c.classList.contains('aspect-square')
-    );
-    const cards916 = articles.filter(c =>
-      c.classList.contains('aspect-[9/16]') || c.classList.contains('aspect-square')
-    );
+    const isVertical = (c: HTMLElement) =>
+      c.classList.contains('aspect-[9/16]') || c.classList.contains('aspect-square');
+    const hs = articles.filter(c => !isVertical(c));
+    const vs = articles.filter(isVertical);
 
-    const cols169 = bestCols(cards169.length, rowCols169());
-    const cols916 = bestCols(cards916.length, rowCols916());
-
-    // Clear grid
+    // Vider la grille (les cartes restent référencées dans `articles`)
     while (gridEl.firstChild) gridEl.firstChild.remove();
 
-    let i169 = 0, i916 = 0, rowIndex = 0;
+    let ih = 0;
+    let iv = 0;
 
-    while (i169 < cards169.length || i916 < cards916.length) {
+    // ── Rangées bento : 3 × [1 vertical | 2 horizontaux empilés] ──
+    const groupsPerRow = window.innerWidth >= 1024 ? 3 : 0;
+    const bentoRows = groupsPerRow
+      ? Math.min(Math.floor(vs.length / groupsPerRow), Math.floor(hs.length / (groupsPerRow * 2)))
+      : 0;
+
+    for (let r = 0; r < bentoRows; r++) {
       const row = document.createElement('div');
-      let placed = 0;
+      row.className = 'grid-row bento-row';
+      for (let g = 0; g < groupsPerRow; g++) {
+        const group = document.createElement('div');
+        group.className = 'bento-group';
 
-      if (rowIndex % 2 === 0) {
-        // 16:9 row
-        const take = Math.min(cols169, cards169.length - i169);
-        row.className = 'grid-row';
-        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols169},1fr);gap:6px`;
-        for (let i = 0; i < take; i++) {
-          row.appendChild(cards169[i169 + i]);
-          placed++;
-        }
-        i169 += take;
-        // Fill remaining slots with 169 fillers
-        if (placed > 0 && placed < cols169 && filler169HTML) {
-          for (let f = 0; f < cols169 - placed; f++) {
-            const temp = document.createElement('div');
-            temp.innerHTML = filler169HTML;
-            const filler = temp.firstElementChild as HTMLElement;
-            filler.style.display = '';
-            filler.classList.remove('hidden', 'reveal-up');
-            filler.classList.add('visible');
-            row.appendChild(filler);
-          }
-        }
-      } else {
-        // 9:16 row
-        const take = Math.min(cols916, cards916.length - i916);
-        row.className = 'grid-row';
-        row.style.cssText = `display:grid;grid-template-columns:repeat(${cols916},1fr);gap:6px`;
-        for (let i = 0; i < take; i++) {
-          row.appendChild(cards916[i916 + i]);
-          placed++;
-        }
-        i916 += take;
-        // Fill remaining slots with 916 fillers
-        if (placed > 0 && placed < cols916 && filler916HTML) {
-          for (let f = 0; f < cols916 - placed; f++) {
-            const temp = document.createElement('div');
-            temp.innerHTML = filler916HTML;
-            const filler = temp.firstElementChild as HTMLElement;
-            filler.style.display = '';
-            filler.classList.remove('hidden', 'reveal-up');
-            filler.classList.add('visible');
-            row.appendChild(filler);
-          }
-        }
+        const vWrap = document.createElement('div');
+        vWrap.className = 'bento-v';
+        vWrap.appendChild(vs[iv++]);
+
+        const hCol = document.createElement('div');
+        hCol.className = 'bento-hs';
+        hCol.appendChild(hs[ih++]);
+        hCol.appendChild(hs[ih++]);
+
+        group.appendChild(vWrap);
+        group.appendChild(hCol);
+        row.appendChild(group);
       }
-
-      if (row.children.length > 0) gridEl.appendChild(row);
-      rowIndex++;
+      gridEl.appendChild(row);
     }
 
-    // Re-observe lazy videos after DOM rebuild
+    // ── Rangées standard pour le reste (aucun filler) ──
+    const pushRow = (cards: HTMLElement[], cols: number) => {
+      const row = document.createElement('div');
+      row.className = 'grid-row';
+      row.style.cssText = `display:grid;grid-template-columns:repeat(${cols},1fr);gap:6px`;
+      cards.forEach(c => row.appendChild(c));
+      gridEl.appendChild(row);
+    };
+    const pushAspectRows = (cards: HTMLElement[], maxCols: number) => {
+      let i = 0;
+      while (i < cards.length) {
+        const cols = bestCols(cards.length - i, maxCols);
+        pushRow(cards.slice(i, i + cols), cols);
+        i += cols;
+      }
+    };
+    pushAspectRows(hs.slice(ih), rowCols169());
+    pushAspectRows(vs.slice(iv), rowCols916());
+
+    // Réobserver les vidéos lazy après reconstruction
     document.querySelectorAll('.lazy-video').forEach(v => {
       if (!videoObserver) return;
       videoObserver.observe(v);
     });
-    // Re-observe video blurs (handled by play() promise in processPlayQueue)
     document.querySelectorAll('img.blur-up').forEach(resolveBlurUp);
   }
 
@@ -554,29 +454,6 @@ function aspectClass(ratio: string) {
   function updateFilters(cat: string) {
     activeCat = cat;
     const hiddenEl = document.getElementById('hidden-cards')!;
-
-    // La tuile "à la une" vit dans le bandeau en vue Tout, dans la grille sinon
-    const heroCard = document.getElementById('hero-featured');
-    const heroSlot = document.getElementById('hero-slot');
-    const heroBand = document.getElementById('hero-band');
-    if (heroCard && heroSlot) {
-      if (cat === 'all') {
-        heroSlot.appendChild(heroCard);
-      } else if (heroCard.parentElement !== gridEl) {
-        gridEl.appendChild(heroCard);
-      }
-    }
-    heroBand && (heroBand.style.display = cat === 'all' ? '' : 'none');
-
-    document.querySelectorAll('.cat-btn').forEach(b => {
-      const isActive = b.getAttribute('data-category') === cat;
-      b.classList.toggle('border-brand-accent', isActive);
-      b.classList.toggle('text-brand-accent', isActive);
-      b.classList.toggle('bg-brand-accent/15', isActive);
-      b.classList.toggle('border-brand-white/10', !isActive);
-      b.classList.toggle('text-brand-gray-400', !isActive);
-      b.classList.toggle('bg-transparent', !isActive);
-    });
 
     let visibleCount = 0;
     const cards = document.querySelectorAll('#projects-grid article, #projects-grid .grid-row > article, #hidden-cards article');
@@ -909,8 +786,7 @@ function aspectClass(ratio: string) {
     gap: 6px;
   }
   #projects-grid > article,
-  #projects-grid .grid-row > article,
-  #hero-slot > article {
+  #projects-grid .grid-row > article {
     position: relative;
     width: 100%;
   }
