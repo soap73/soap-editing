@@ -123,13 +123,18 @@ function aspectClass(ratio: string) {
    <div class="relative w-full" id="projects-grid">
     <!-- Vignette "work in progress" finale (non cliquable) -->
     <article id="wip-tile" class="project-card group overflow-hidden bg-brand-gray-900 border-0 rounded-[14px] aspect-[9/16] hidden" aria-hidden="true">
-      <video src="/projects/portfolio-9x16.webm" poster="/projects/portfolio-9x16-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video"></video>
+      <video poster="/projects/portfolio-9x16-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video">
+        <source src="/projects/portfolio-9x16.webm" type="video/webm" />
+        <source src="/projects/portfolio-9x16.mp4" type="video/mp4" />
+      </video>
     </article>
     {sorted.filter((p) => p.category !== 'cache').map((project, i) => {
       const ids = resolveVideoIds(project);
       const hasVideo = !!(project.videoUrl || project.videoFile || ids.youtubeId || ids.vimeoId || (project.preview && /\.(mp4|webm|mov)$/i.test(project.preview)));
       const ratioClass = aspectClass(project.aspectRatio || '16:9');
 
+      const previewSrc = project.preview || '';
+      const previewMp4 = /\.webm$/i.test(previewSrc) ? previewSrc.replace(/\.webm$/i, '.mp4') : '';
       const isFirst = i === 0;
       return (
       <article
@@ -158,6 +163,7 @@ function aspectClass(ratio: string) {
             class="block w-full h-full object-cover lazy-video"
           >
             <source src={project.preview} type="video/webm" />
+            {previewMp4 && <source src={previewMp4} type="video/mp4" />}
           </video>
         ) : project.preview ? (
           <img src={project.preview} alt={project.title}
@@ -211,6 +217,7 @@ function aspectClass(ratio: string) {
       id="modal-bg-video"
     >
       <source src="/background-wave.webm" type="video/webm" />
+      <source src="/background-wave.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-brand-black/60"></div>
   </div>
@@ -689,10 +696,15 @@ function aspectClass(ratio: string) {
       video.controls = true;
       video.autoplay = true;
       video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
-      const vSrc = document.createElement('source');
-      vSrc.src = videoFile.replace(/\.(mp4|mov)$/i, '.webm');
-      vSrc.type = 'video/webm';
-      video.appendChild(vSrc);
+      const baseFile = videoFile.replace(/\.(webm|mp4|mov)$/i, '');
+      const fWebm = document.createElement('source');
+      fWebm.src = baseFile + '.webm';
+      fWebm.type = 'video/webm';
+      const fMp4 = document.createElement('source');
+      fMp4.src = baseFile + '.mp4';
+      fMp4.type = 'video/mp4';
+      video.appendChild(fWebm);
+      video.appendChild(fMp4);
       container.appendChild(video);
     } else if (preview) {
       // Preview file (video or image)
@@ -702,10 +714,15 @@ function aspectClass(ratio: string) {
         video.controls = true;
         video.autoplay = true;
         video.className = 'absolute inset-0 h-full w-full border-0 object-contain';
-        const vSrc = document.createElement('source');
-        vSrc.src = preview.replace(/\.(mp4|mov)$/i, '.webm');
-        vSrc.type = 'video/webm';
-        video.appendChild(vSrc);
+        const basePrev = preview.replace(/\.(webm|mp4|mov)$/i, '');
+        const pWebm = document.createElement('source');
+        pWebm.src = basePrev + '.webm';
+        pWebm.type = 'video/webm';
+        const pMp4 = document.createElement('source');
+        pMp4.src = basePrev + '.mp4';
+        pMp4.type = 'video/mp4';
+        video.appendChild(pWebm);
+        video.appendChild(pMp4);
         container.appendChild(video);
       } else {
         const img = document.createElement('img');
