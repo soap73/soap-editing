@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # playwright debug artifacts
 .playwright-mcp/
+
+# opencode tool artifacts
+.od-skills/

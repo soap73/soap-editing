@@ -169,11 +169,8 @@ function aspectClass(ratio: string) {
       <article
         class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-video"
         data-filler="16:9"
-        data-youtube="dQw4w9WgXcQ"
-        data-title="🤓🤓🤓"
-        data-client="🤓 Rick Astley"
         data-aspect="16:9"
-        onclick="openVideo(this)"
+        aria-hidden="true"
       >
         <video src="/projects/portfolio-16x9.webm" poster="/projects/portfolio-16x9-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
@@ -182,11 +179,8 @@ function aspectClass(ratio: string) {
       <article
         class="portfolio-filler hidden group overflow-hidden bg-brand-gray-900 border-0 reveal-up aspect-[9/16]"
         data-filler="9:16"
-        data-youtube="dQw4w9WgXcQ"
-        data-title="🤓🤓🤓"
-        data-client="🤓 Rick Astley"
         data-aspect="9:16"
-        onclick="openVideo(this)"
+        aria-hidden="true"
       >
         <video src="/projects/portfolio-9x16.webm" poster="/projects/portfolio-9x16-poster.webp" loop muted playsinline preload="none" class="block w-full h-full object-cover lazy-video blur-up"></video>
       </article>
@@ -602,41 +596,51 @@ function aspectClass(ratio: string) {
 
     const ytId = youtubeId || extractYtId(videoUrl);
     const container = modal.querySelector('#modal-player')!;
+    container.innerHTML = '';
 
-    const isFiller = el.dataset.filler !== undefined;
+    // En dev, la Function Cloudflare /yt-thumb n'est pas servie → image YouTube directe
+    const ytImg = (size: string) => import.meta.env.DEV
+      ? `https://img.youtube.com/vi/${ytId}/${size}.jpg`
+      : `/yt-thumb/${ytId}?size=${size}`;
+
     if (ytId) {
-      const thumbUrl = `/yt-thumb/${ytId}?size=maxresdefault`;
-      // Fillers auto-play immediately; other projects show a click-to-play facade
-      if (isFiller) {
+      const facade = document.createElement('div');
+      facade.className = 'absolute inset-0 cursor-pointer group/facade';
+      facade.innerHTML = `
+        <img src="${ytImg('maxresdefault')}" alt="" class="absolute inset-0 w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-black/30 group-hover/facade:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+          <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-brand-accent flex items-center justify-center group-hover/facade:scale-110 transition-transform duration-300 shadow-lg shadow-brand-accent/40">
+            <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>`;
+      // Fallbacks sans boucle : maxres → poster local (frame de la vidéo) → hq → masquée
+      const thumb = facade.querySelector('img') as HTMLImageElement | null;
+      const localPoster = preview ? preview.replace(/\.(webm|mp4|mov)$/i, '-poster.webp') : '';
+      const thumbSources = [ytImg('maxresdefault'), ...(localPoster ? [localPoster] : []), ytImg('hqdefault')];
+      let thumbIdx = 0;
+      const nextThumb = () => {
+        thumbIdx++;
+        if (!thumb) return;
+        if (thumbIdx < thumbSources.length) thumb.src = thumbSources[thumbIdx];
+        else thumb.style.visibility = 'hidden';
+      };
+      thumb?.addEventListener('error', nextThumb);
+      // YouTube sert un placeholder 120x90 (statut 404) quand la maxres n'existe pas :
+      // le navigateur le décode sans "error", donc on le détecte à la taille.
+      thumb?.addEventListener('load', () => {
+        if (thumb.naturalWidth <= 120) nextThumb();
+      });
+      facade.addEventListener('click', () => {
         const iframe = document.createElement('iframe');
         iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`;
         iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
         iframe.allowFullscreen = true;
         iframe.className = 'absolute inset-0 w-full h-full border-0';
-        container.appendChild(iframe);
-      } else {
-        const facade = document.createElement('div');
-        facade.className = 'absolute inset-0 cursor-pointer group/facade';
-        facade.innerHTML = `
-          <img src="${thumbUrl}" alt="" class="absolute inset-0 w-full h-full object-cover"
-            onerror="this.src='/yt-thumb/${ytId}?size=hqdefault'" />
-          <div class="absolute inset-0 bg-black/30 group-hover/facade:bg-black/50 transition-colors duration-300 flex items-center justify-center">
-            <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-brand-accent flex items-center justify-center group-hover/facade:scale-110 transition-transform duration-300 shadow-lg shadow-brand-accent/40">
-              <svg class="w-6 h-6 md:w-8 md:h-8 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
-          </div>`;
-        facade.addEventListener('click', () => {
-          const iframe = document.createElement('iframe');
-          iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0`;
-          iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-          iframe.allowFullscreen = true;
-          iframe.className = 'absolute inset-0 w-full h-full border-0';
-          facade.replaceWith(iframe);
-        });
-        container.appendChild(facade);
-      }
+        facade.replaceWith(iframe);
+      });
+      container.appendChild(facade);
     } else if (videoFile) {
       // Local video file
       const video = document.createElement('video');
