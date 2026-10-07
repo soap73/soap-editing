@@ -314,6 +314,7 @@ function aspectClass(ratio: string) {
     for (let r = 0; r < bentoRows; r++) {
       const row = document.createElement('div');
       row.className = 'grid-row bento-row';
+      row.style.gridTemplateColumns = `repeat(${groupsPerRow}, minmax(0, 1fr))`;
       for (let g = 0; g < groupsPerRow; g++) {
         const group = document.createElement('div');
         group.className = 'bento-group';

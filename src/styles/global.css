@@ -603,7 +603,7 @@
   /* ── Bento : 1 vertical + 2 horizontaux empilés ─────────── */
   .bento-row {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* surchargé par le JS selon le nombre de groupes */
     gap: 6px;
   }
   .bento-group {
