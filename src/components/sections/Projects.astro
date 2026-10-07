@@ -363,6 +363,7 @@ function aspectClass(ratio: string) {
     pushAspectRows(hs.slice(ih), rowCols169());
 
     // Rangées verticales + vignette "work in progress" en fin de mur
+    // (la vignette WIP n'apparaît que dans la vue « Tout », jamais sous filtre)
     const vRest = vs.slice(iv);
     let lastVRow: HTMLElement | null = null;
     if (vRest.length) {
@@ -371,7 +372,7 @@ function aspectClass(ratio: string) {
         const cols = bestCols(vRest.length - i, rowCols916());
         const row = pushRow(vRest.slice(i, i + cols), cols);
         i += cols;
-        if (i >= vRest.length && wipTile) {
+        if (i >= vRest.length && wipTile && activeCat === 'all') {
           row.style.gridTemplateColumns = `repeat(${cols + 1}, 1fr)`;
           wipTile.classList.remove('hidden');
           row.appendChild(wipTile);
@@ -382,7 +383,7 @@ function aspectClass(ratio: string) {
     // Pas de rangée verticale (bento a tout consommé) → la WIP ferme la dernière rangée
     // Desktop/tablette : dernière colonne proportionnelle (même hauteur que les 16:9) ;
     // mobile : carte de fin pleine largeur.
-    if (wipTile && !lastVRow && gridEl.lastElementChild) {
+    if (wipTile && activeCat === 'all' && !lastVRow && gridEl.lastElementChild) {
       wipTile.classList.remove('hidden');
       const lastRow = gridEl.lastElementChild as HTMLElement;
       if (window.innerWidth < 640) {
@@ -397,7 +398,7 @@ function aspectClass(ratio: string) {
         lastRow.style.alignItems = 'start';
         lastRow.appendChild(wipTile);
       }
-    } else if (wipTile && !gridEl.lastElementChild) {
+    } else if (wipTile && (activeCat !== 'all' || !gridEl.lastElementChild)) {
       wipTile.classList.add('hidden');
     }
 
