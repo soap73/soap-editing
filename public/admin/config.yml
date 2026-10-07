@@ -34,6 +34,7 @@ collections:
           - { label: "YouTube", value: "youtube" }
           - { label: "Court-Métrage", value: "court-metrage" }
           - { label: "Réseaux Sociaux", value: "reseaux-sociaux" }
+          - { label: "Masqué (non affiché)", value: "cache" }
         default: "youtube"
       - label: "Format"
         name: "aspectRatio"

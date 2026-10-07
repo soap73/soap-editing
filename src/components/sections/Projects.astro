@@ -262,7 +262,7 @@ function aspectClass(ratio: string) {
   // Grid constants
   function rowCols169() {
     const w = window.innerWidth;
-    if (w < 640) return 2;
+    if (w < 640) return 1;
     if (w < 1024) return 3;
     return 5;
   }
@@ -379,10 +379,24 @@ function aspectClass(ratio: string) {
         }
       }
     }
-    // Pas de rangée verticale (bento a tout consommé) → la WIP a sa propre rangée en fin de mur
+    // Pas de rangée verticale (bento a tout consommé) → la WIP ferme la dernière rangée
+    // Desktop/tablette : dernière colonne proportionnelle (même hauteur que les 16:9) ;
+    // mobile : carte de fin pleine largeur.
     if (wipTile && !lastVRow && gridEl.lastElementChild) {
       wipTile.classList.remove('hidden');
-      pushRow([wipTile as HTMLElement], rowCols916());
+      const lastRow = gridEl.lastElementChild as HTMLElement;
+      if (window.innerWidth < 640) {
+        pushRow([wipTile as HTMLElement], 1);
+      } else {
+        const n = lastRow.children.length;
+        // k = ratio largeur/hauteur (0.3164 = (9/16)² pour des tuiles 16:9 ; 0.388 = colonne verticale d'un groupe bento)
+        // → colonne en calc() pour une hauteur EXACTEMENT alignée sur les tuiles de la rangée
+        const k = lastRow.classList.contains('bento-row') ? 0.388 : 0.3164;
+        const m = (k / (n + k)).toFixed(5);
+        lastRow.style.gridTemplateColumns = `repeat(${n}, minmax(0, 1fr)) calc((100% - ${n * 6}px) * ${m})`;
+        lastRow.style.alignItems = 'start';
+        lastRow.appendChild(wipTile);
+      }
     } else if (wipTile && !gridEl.lastElementChild) {
       wipTile.classList.add('hidden');
     }
