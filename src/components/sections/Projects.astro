@@ -315,9 +315,12 @@ function aspectClass(ratio: string) {
       const row = document.createElement('div');
       row.className = 'grid-row bento-row';
       row.style.gridTemplateColumns = `repeat(${groupsPerRow}, minmax(0, 1fr))`;
+      // Une rangée sur deux est inversée (verticale à droite)
+      const isReversed = r % 2 === 1;
       for (let g = 0; g < groupsPerRow; g++) {
         const group = document.createElement('div');
-        group.className = 'bento-group';
+        group.className = isReversed ? 'bento-group is-reversed' : 'bento-group';
+        group.setAttribute('data-orientation', isReversed ? 'vertical-right' : 'vertical-left');
 
         const vWrap = document.createElement('div');
         vWrap.className = 'bento-v';
@@ -328,8 +331,13 @@ function aspectClass(ratio: string) {
         hCol.appendChild(hs[ih++]);
         hCol.appendChild(hs[ih++]);
 
-        group.appendChild(vWrap);
-        group.appendChild(hCol);
+        if (isReversed) {
+          group.appendChild(hCol);
+          group.appendChild(vWrap);
+        } else {
+          group.appendChild(vWrap);
+          group.appendChild(hCol);
+        }
         row.appendChild(group);
       }
       gridEl.appendChild(row);

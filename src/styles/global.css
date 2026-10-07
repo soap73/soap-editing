@@ -613,6 +613,10 @@
     align-items: start;
     min-width: 0;
   }
+  /* Rangée inversée : les 2 horizontaux à gauche, la verticale à droite */
+  .bento-group.is-reversed {
+    grid-template-columns: minmax(0, 1fr) 38.8%;
+  }
   .bento-v,
   .bento-hs {
     min-width: 0;
